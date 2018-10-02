@@ -3,6 +3,7 @@ import ReactTable from "react-table";
 import 'react-table/react-table.css'
 import './App.css';
 import moment from "moment";
+import {AUTH_TOKEN} from "./Constants";
 
 class App extends Component {
     constructor() {
@@ -78,7 +79,7 @@ class IssuesDisplay extends Component {
 
     componentDidMount() {
         const myHeaders = new Headers();
-        myHeaders.append('Authorization', 'Bearer perm:YWRtaW4=.dGVzdA==.xRSgd89yoN9DapAjIZIMTTxXyEyXhS');
+        myHeaders.append('Authorization', AUTH_TOKEN);
         myHeaders.append('Accept', 'application/json');
         const url = "http://support.fsight.ru/rest/issue?filter=%23Unresolved -SD -SPAM&with=Summary&max=1000";
         fetch(url, {
@@ -127,7 +128,7 @@ class IssueDetailsDisplay extends Component {
         const id = this.props.id;
         console.log("component did mount " + id);
         const headers = new Headers();
-        headers.append('Authorization', 'Bearer perm:YWRtaW4=.dGVzdA==.xRSgd89yoN9DapAjIZIMTTxXyEyXhS');
+        headers.append('Authorization', AUTH_TOKEN);
         headers.append('Accept', 'application/json');
         const url = "http://support.fsight.ru/rest/issue/" + id;
         console.log(url);
@@ -159,7 +160,6 @@ class TimeAccountingDisplay extends Component {
 
     componentDidMount() {
         const myHeaders = new Headers();
-        //myHeaders.append('Authorization', 'Bearer perm:YWRtaW4=.dGVzdA==.xRSgd89yoN9DapAjIZIMTTxXyEyXhS');
         myHeaders.append('Accept', 'application/json');
         const url = "http://10.0.172.42:8081/api/wi_today";
         fetch(url, {
