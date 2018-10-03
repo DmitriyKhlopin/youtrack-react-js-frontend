@@ -4,6 +4,7 @@ import {IssueDetailsDisplay} from "./IssueDetailsDisplay";
 import Button from '@material-ui/core/Button';
 import MuiThemeProvider from "../../node_modules/@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/es/styles/createMuiTheme";
+import {YT_ENDPOINT} from "../Const";
 
 const theme = createMuiTheme();
 
@@ -16,18 +17,23 @@ export class IssuesDisplay extends Component {
         };
     }
 
+    componentWillUnmount() {
+        this.isCancelled = true;
+    }
+
+
     componentDidMount() {
         const myHeaders = new Headers();
         myHeaders.append('Authorization', AUTH_TOKEN);
         myHeaders.append('Accept', 'application/json');
-        const url = "http://support.fsight.ru/rest/issue?filter=%23Unresolved -SD -SPAM&with=Summary&max=1000";
+        const url = YT_ENDPOINT + "issue?filter=%23Unresolved -SD -SPAM&with=Summary&max=1000";
         fetch(url, {
             method: "GET",
             headers: myHeaders
-        }).then(res => res.json()).then(json => {
-            this.setState({issues: json.issue});
-            this.setState({activeIssue: 0});
-        }).catch(err => console.log(err));
+        }).then(res => res.json()).then(json => !this.isCancelled && this.setState({
+            issues: json.issue,
+            activeIssue: 0
+        })).catch(err => console.log(err));
     }
 
     render() {
