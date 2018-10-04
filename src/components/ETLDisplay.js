@@ -9,7 +9,8 @@ export class ETLDisplay extends Component {
         super(props);
         this.state = {
             items: null,
-            isLoading: false
+            isLoading: false,
+            etlState: null
         }
     }
 
@@ -29,7 +30,7 @@ export class ETLDisplay extends Component {
         fetch(url, {
             method: "GET",
             headers: myHeaders
-        }).then(res => console.log(res.text()))
+        }).then(res => res.json()).then(res => this.setState({etlState: res}))
     }
 
     loadData() {
@@ -50,6 +51,8 @@ export class ETLDisplay extends Component {
     render() {
         const items = this.state.items;
         const isLoading = this.state.isLoading;
+        const etlState = this.state.etlState;
+        console.log(etlState);
         const selectors = <FormGroup row>
             <FormControlLabel
                 control={<Checkbox value="a" key={1} onChange={() => (console.log("aaa"))} checked={true}/>}
