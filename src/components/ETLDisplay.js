@@ -21,6 +21,17 @@ export class ETLDisplay extends Component {
 
     }
 
+    getCurrentState() {
+        console.log("bbb");
+        const myHeaders = new Headers();
+        myHeaders.append('Accept', 'application/json');
+        const url = "http://10.0.172.42:8081/etl/state";
+        fetch(url, {
+            method: "GET",
+            headers: myHeaders
+        }).then(res => console.log(res.text()))
+    }
+
     loadData() {
         this.setState({isLoading: true});
         console.log("aaa");
@@ -37,7 +48,6 @@ export class ETLDisplay extends Component {
     }
 
     render() {
-        console.log(this.state);
         const items = this.state.items;
         const isLoading = this.state.isLoading;
         const selectors = <FormGroup row>
@@ -52,6 +62,9 @@ export class ETLDisplay extends Component {
             />
             <Button variant="contained" disabled={isLoading} onClick={() => this.loadData()}>
                 Load data
+            </Button>
+            <Button variant="contained" onClick={() => this.getCurrentState()}>
+                Get current state
             </Button>
         </FormGroup>;
         if (items === null && !isLoading) return <div>{selectors}
