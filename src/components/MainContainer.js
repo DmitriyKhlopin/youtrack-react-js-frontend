@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {TimeAccountingDisplay} from "./TimeAccountingDisplay";
 import {IssuesDisplay} from "./IssuesDisplay";
 import {ETLDisplay} from "./ETLDisplay";
-import ContainedButtons from "./ContainedButtons";
+import {ReportDisplay} from "./ReportDisplay";
 
 export class MainContainer extends Component {
     constructor(props) {
@@ -24,6 +24,7 @@ export class MainContainer extends Component {
         if (state === 0) return <IssuesDisplay/>;
         if (state === 1) return <TimeAccountingDisplay/>;
         if (state === 2) return <ETLDisplay/>;
+        if (state === 3) return <ReportDisplay/>;
         return <div>{state}</div>;
     }
 }
