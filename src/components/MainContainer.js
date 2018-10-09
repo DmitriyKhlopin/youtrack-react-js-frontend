@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {TimeAccountingDisplay} from "./TimeAccountingDisplay";
 import {IssuesDisplay} from "./IssuesDisplay";
 import {ETLDisplay} from "./ETLDisplay";
-import {ReportDisplay} from "./ReportDisplay";
+import ReportDisplay from "./ReportDisplay";
 
 export class MainContainer extends Component {
     constructor(props) {
