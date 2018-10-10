@@ -120,6 +120,12 @@ class ReportContainer extends Component {
             });
             !this.isCancelled && this.setState({items: res, isLoading: false});
         }).catch(err => console.log(err));
+
+        const url2 = "http://10.0.172.42:8081/api/chart/sigma?" + "projects=" + projects + "&dateFrom=" + this.state.dateFrom + "&dateTo=" + this.state.dateTo;
+        fetch(url2, {
+            method: "GET",
+            headers: myHeaders
+        }).then(res => res.json()).then(json => console.log(json))
     };
 
     updateSelectedProjects(projects) {
