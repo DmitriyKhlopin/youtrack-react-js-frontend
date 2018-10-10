@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
-import TagFacesIcon from '@material-ui/icons/TagFaces';
 import DoneIcon from '@material-ui/icons/Done';
 
 const styles = theme => ({
@@ -20,12 +19,13 @@ class ChipsArray extends React.Component {
         this.state = {
             selectedChipData: [],
             removedChipData: [],
-            currentMode: "PP"
+            currentMode: "NONE"
         };
     }
 
-    componentWillMount() {
-        console.log(this.props.currentMode)
+    componentWillMount(){
+        this.setState({selectedChipData:this.props.projects.filter(item=> this.props.selectedProjects.includes(item.shortName))});
+        this.setState({removedChipData:this.props.projects.filter(item=> !this.props.selectedProjects.includes(item.shortName))})
     }
 
     handleDelete = data => () => {
@@ -173,16 +173,9 @@ class ChipsArray extends React.Component {
         return (
             <div>
                 <div>{this.state.selectedChipData.map(data => {
-                    let icon = null;
-
-                    if (data.label === 'React') {
-                        icon = <TagFacesIcon/>;
-                    }
-
                     return (
                         <Chip
                             key={data.shortName}
-                            icon={icon}
                             clickable
                             onClick={this.handleDelete(data)}
                             label={data.name}
@@ -196,11 +189,9 @@ class ChipsArray extends React.Component {
                 </div>
                 <div>
                     {this.state.removedChipData.map(data => {
-                        let icon = null;
                         return (
                             <Chip
                                 key={data.shortName}
-                                icon={icon}
                                 clickable
                                 label={data.name}
                                 onDelete={this.handleAdd(data)}

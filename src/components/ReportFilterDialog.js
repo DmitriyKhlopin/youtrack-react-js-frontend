@@ -1,16 +1,31 @@
 import React, {Component} from "react";
 import DialogTitle from "../../node_modules/@material-ui/core/DialogTitle/DialogTitle";
 import DialogContent from "../../node_modules/@material-ui/core/DialogContent/DialogContent";
-import DialogContentText from "../../node_modules/@material-ui/core/DialogContentText/DialogContentText";
 import DialogActions from "../../node_modules/@material-ui/core/DialogActions/DialogActions";
 import Button from "../../node_modules/@material-ui/core/Button/Button";
 import Dialog from "../../node_modules/@material-ui/core/Dialog/Dialog";
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core/styles";
+import ChipsArray from "./ChipArray";
+import TextField from "../../node_modules/@material-ui/core/TextField/TextField";
+import moment from "moment";
+import Paper from "@material-ui/core/Paper";
 
 const styles = theme => ({
+    root: {
+        display: 'flex',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        padding: theme.spacing.unit / 2,
+    },
     chip: {
         margin: theme.spacing.unit / 2,
+    },
+    button: {
+        margin: theme.spacing.unit,
+    },
+    textField: {
+        margin: theme.spacing.unit,
     },
 });
 
@@ -19,79 +34,113 @@ class ReportFilterDialog extends Component {
         super(props);
         this.state = {
             open: false,
-            scroll: 'paper'
-        }
+            scroll: 'paper',
+            projects: [],
+            selectedProjects: [],
+            previouslySelectedProjects: [],
+            currentMode: "PP",
+            dateFrom: moment().subtract(9, 'weeks').format('YYYY-MM-DD'),
+            dateTo: moment().format('YYYY-MM-DD'),
+        };
+        this.onProjectsChanged = this.onProjectsChanged.bind(this);
     }
 
-    handleClose = () => {
-        this.setState({open: false});
-    };
-
-    componentDidUpdate(prevProps, a, b){
+    componentDidUpdate(prevProps, a, b) {
+        console.log(this.state.selectedProjects);
         if (this.props.open !== prevProps.open) {
-            console.log(this.props.open);
             this.setState({open: this.props.open})
+        }
+        if (this.props.projects !== prevProps.projects) {
+            this.setState({projects: this.props.projects})
+        }
+        if (prevProps.selectedProjects !== this.props.selectedProjects) {
+            this.setState({selectedProjects: this.props.selectedProjects})
         }
     }
 
     componentDidMount() {
-        console.log("CDM");
-        this.setState({open: this.props.open})
+        this.setState({open: this.props.open});
+        this.setState({projects: this.props.projects})
     }
 
+    onProjectsChanged(projects) {
+        this.setState({selectedProjects: projects.map(item => item.shortName), currentMode: "UNDEFINED"})
+    };
+
+    handleClose(b) {
+        if (b === true) {
+            console.log(b);
+            this.setState({previouslySelectedProjects: this.state.selectedProjects});
+            this.props.handleClose(false, this.state.dateFrom, this.state.dateTo, this.state.selectedProjects)
+        } else {
+            const prev = this.state.previouslySelectedProjects;
+            if (prev) this.setState({selectedProjects: prev});
+            this.props.handleClose(false, null, null, [])
+        }
+    };
+
     render() {
+        const {classes} = this.props;
+        const {dateFrom, dateTo, currentMode, projects, selectedProjects} = this.state;
         return <Dialog
+            maxWidth={false}
             open={this.state.open}
-            onClose={this.handleClose}
+            /*onClose={this.handleClose}*/
             scroll={this.state.scroll}
             aria-labelledby="scroll-dialog-title">
             <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
             <DialogContent>
-                <DialogContentText>
-                    Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac
-                    facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum
-                    at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus
-                    sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum
-                    nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur
-                    et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras
-                    mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-                    egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                    lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-                    sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                    Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-                    consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-                    egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                    lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-                    sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                    Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-                    consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-                    egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                    lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-                    sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                    Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-                    consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-                    egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                    lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-                    sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                    Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-                    consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-                    egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                    lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-                    sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                    Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.
-                </DialogContentText>
+                <Paper className={classes.root}>
+                    <ChipsArray projects={projects} selectedProjects={selectedProjects} currentMode={currentMode}
+                                onProjectsChanged={this.onProjectsChanged}/>
+                    <Button variant="outlined" color="primary" className={classes.button}
+                            onClick={() => this.setState({currentMode: "PP"})}>
+                        Внешние проекты
+                    </Button>
+                    <Button variant="outlined" color="primary" className={classes.button}
+                            onClick={() => this.setState({currentMode: "notPP"})}>
+                        Внутренние проекты
+                    </Button>
+                    <Button variant="outlined" color="primary" className={classes.button}
+                            onClick={() => this.setState({currentMode: "LIC"})}>
+                        Лицензирование
+                    </Button>
+                    <Button variant="outlined" color="primary" className={classes.button}
+                            onClick={() => this.setState({currentMode: "ALL"})}>
+                        Все проекты
+                    </Button>
+                    <Button variant="outlined" color="primary" className={classes.button}
+                            onClick={() => this.setState({currentMode: "NONE"})}>
+                        Снять отметку
+                    </Button>
+                    <TextField
+                        variant="outlined"
+                        id="date"
+                        label="Date from"
+                        type="date"
+                        defaultValue={dateFrom}
+                        onChange={field => this.setState({dateFrom: field.target.value})}
+                        className={classes.textField}
+                        InputLabelProps={{shrink: true,}}
+                    />
+                    <TextField
+                        variant="outlined"
+                        id="date"
+                        label="Date to"
+                        type="date"
+                        defaultValue={dateTo}
+                        onChange={field => this.setState({dateTo: field.target.value})}
+                        className={classes.textField}
+                        InputLabelProps={{shrink: true,}}
+                    />
+                </Paper>
             </DialogContent>
             <DialogActions>
-                <Button onClick={this.handleClose} color="primary">
-                    Cancel
+                <Button onClick={() => this.handleClose(false)} color="primary">
+                    Отменить
                 </Button>
-                <Button onClick={this.handleClose} color="primary">
-                    Subscribe
+                <Button onClick={() => this.handleClose(true)} color="primary">
+                    Сохранить
                 </Button>
             </DialogActions>
         </Dialog>

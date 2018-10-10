@@ -40,13 +40,11 @@ class App extends React.Component {
 
     handleNavItemClick(id) {
         this.setState({activeNav: id});
-        console.log(id)
     }
 
     render() {
         const {classes, theme} = this.props;
         const activeNav = this.state.activeNav;
-
         return (
             <div className={classes.root}>
                 <AppBar

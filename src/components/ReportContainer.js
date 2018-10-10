@@ -2,13 +2,11 @@ import React, {Component} from "react";
 import {CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis} from 'recharts'
 import {drawerWidth} from "../Const";
 import moment from "moment";
-import ChipsArray from "./ChipArray";
 import Button from "../../node_modules/@material-ui/core/Button/Button";
 import * as PropTypes from "prop-types";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
-import Paper from "@material-ui/core/Paper";
-import TextField from "../../node_modules/@material-ui/core/TextField/TextField";
-import AddIcon from '@material-ui/icons/ExpandMore';
+import FilterIcon from '@material-ui/icons/Filter';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import ReportFilterDialog from "./ReportFilterDialog";
 
 const styles = theme => ({
@@ -23,6 +21,11 @@ const styles = theme => ({
         top: theme.spacing.unit * 2 + 64,
         right: theme.spacing.unit * 2,
     },
+    fabLoad: {
+        position: 'absolute',
+        top: theme.spacing.unit * 2 + 64,
+        right: theme.spacing.unit * 2 + 64,
+    },
     container: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -34,39 +37,16 @@ const styles = theme => ({
     button: {
         margin: theme.spacing.unit,
     },
-    actions: {
-        display: 'flex',
-    },
-    expand: {
-        transform: 'rotate(0deg)',
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-        marginLeft: 'auto',
-        [theme.breakpoints.up('sm')]: {
-            marginRight: -8,
-        },
-    },
-    expandOpen: {
-        transform: 'rotate(180deg)',
-    },
     card: {
         margin: '16px',
     },
-    moreVertical: {
-        marginLeft: 'auto',
-        marginRight: '8px',
-        [theme.breakpoints.up('sm')]: {
-            marginRight: -8,
-        },
-    },
-
 });
 
 class ReportContainer extends Component {
     constructor(props) {
         super(props);
         this.updateSelectedProjects = this.updateSelectedProjects.bind(this);
+        this.handleClose = this.handleClose.bind(this);
         this.state = {
             projects: [],
             selectedProjects: [],
@@ -81,10 +61,6 @@ class ReportContainer extends Component {
             scroll: 'paper',
         }
     }
-
-    handleExpandClick = () => {
-        this.setState(state => ({expanded: !state.expanded}));
-    };
 
     componentWillUnmount() {
         this.isCancelled = true;
@@ -114,11 +90,17 @@ class ReportContainer extends Component {
     }
 
     handleClickOpen = scroll => () => {
+        console.log(this.state.open);
         this.setState({open: true, scroll});
     };
 
-    handleClose = () => {
-        this.setState({open: false});
+    handleClose(open, dateFrom, dateTo, projects) {
+        console.log(dateFrom, dateTo, projects);
+        this.setState({open: open});
+        if (dateFrom !== null && dateTo !== null) {
+            console.log("hey motherfucker, i'm updating");
+            this.setState({dateFrom: dateFrom, dateTo: dateTo, selectedProjects: projects})
+        }
     };
 
     loadData = () => {
@@ -141,65 +123,15 @@ class ReportContainer extends Component {
     };
 
     updateSelectedProjects(projects) {
-        const p = projects.map(item => item.shortName);
-        this.setState({selectedProjects: p});
+        /*const p = projects.map(item => item.shortName);*/
+        this.setState({selectedProjects: projects.map(item => item.shortName)});
     };
 
     render() {
         const {classes} = this.props;
-        const {items, projects, currentMode} = this.state;
+        const {items, currentMode} = this.state;
         return (
             <form className={classes.container} noValidate autoComplete="off">
-
-
-                <Paper className={classes.root}>
-                    <ChipsArray projects={projects} currentMode={currentMode}
-                                onProjectsChanged={this.updateSelectedProjects}/>
-                    <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => this.setState({currentMode: "PP"})}>
-                        Внешние проекты
-                    </Button>
-                    <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => this.setState({currentMode: "notPP"})}>
-                        Внутренние проекты
-                    </Button>
-                    <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => this.setState({currentMode: "LIC"})}>
-                        Лицензирование
-                    </Button>
-                    <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => this.setState({currentMode: "ALL"})}>
-                        Все проекты
-                    </Button>
-                    <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => this.setState({currentMode: "NONE"})}>
-                        Снять отметку
-                    </Button>
-                    <TextField
-                        variant="outlined"
-                        id="date"
-                        label="Date from"
-                        type="date"
-                        defaultValue={moment().subtract(9, 'weeks').format('YYYY-MM-DD')}
-                        onChange={field => this.setState({dateFrom: field.target.value})}
-                        className={classes.textField}
-                        InputLabelProps={{shrink: true,}}
-                    />
-                    <TextField
-                        variant="outlined"
-                        id="date"
-                        label="Date to"
-                        type="date"
-                        defaultValue={moment().format('YYYY-MM-DD')}
-                        onChange={field => this.setState({dateTo: field.target.value})}
-                        className={classes.textField}
-                        InputLabelProps={{shrink: true,}}
-                    />
-                    <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={this.loadData}>
-                        Загрузить данные
-                    </Button>
-                </Paper>
                 <LineChart width={window.innerWidth - drawerWidth} height={600} data={items}
                            margin={{top: 30, right: 60, left: 30, bottom: 30}}>
                     <XAxis dataKey="week"/>
@@ -211,68 +143,18 @@ class ReportContainer extends Component {
                     <Line type="monotone" dataKey="created" stroke="#FDD835" name="Создано"/>
                     <Line type="monotone" dataKey="resolved" stroke="#43A047" name="Решено"/>
                 </LineChart>
+                <Button variant="fab" className={classes.fabLoad} color={'secondary'} onClick={this.loadData}>
+                    <RefreshIcon/>
+                </Button>
                 <Button variant="fab" className={classes.fab} color={'primary'} onClick={this.handleClickOpen('paper')}>
-                    <AddIcon/>
+                    <FilterIcon/>
                 </Button>
                 <ReportFilterDialog open={this.state.open}
-                                    onClose={this.handleClose}
+                                    handleClose={this.handleClose}
+                                    projects={this.state.projects}
+                                    selectedprojects={this.state.selectedProjects}
+                                    currentMode={currentMode}
                                     aria-labelledby="scroll-dialog-title"/>
-                {/*<Dialog
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                    scroll={this.state.scroll}
-                    aria-labelledby="scroll-dialog-title"
-                >
-                    <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac
-                            facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum
-                            at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus
-                            sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum
-                            nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur
-                            et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras
-                            mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-                            egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                            Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                            lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-                            sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                            Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-                            consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-                            egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                            Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                            lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-                            sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                            Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-                            consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-                            egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                            Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                            lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-                            sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                            Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-                            consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-                            egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                            Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                            lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-                            sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                            Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla. Cras mattis
-                            consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-                            egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                            Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                            lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean lacinia bibendum nulla
-                            sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                            Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
-                            Cancel
-                        </Button>
-                        <Button onClick={this.handleClose} color="primary">
-                            Subscribe
-                        </Button>
-                    </DialogActions>
-                </Dialog>*/}
             </form>
         );
     }
@@ -285,4 +167,45 @@ ReportContainer.propTypes = {
 export default withStyles(styles)(ReportContainer);
 
 
-
+/*<ChipsArray projects={projects} currentMode={currentMode}
+                               onProjectsChanged={this.updateSelectedProjects}/>
+                   <Button variant="outlined" color="primary" className={classes.button}
+                           onClick={() => this.setState({currentMode: "PP"})}>
+                       Внешние проекты
+                   </Button>
+                   <Button variant="outlined" color="primary" className={classes.button}
+                           onClick={() => this.setState({currentMode: "notPP"})}>
+                       Внутренние проекты
+                   </Button>
+                   <Button variant="outlined" color="primary" className={classes.button}
+                           onClick={() => this.setState({currentMode: "LIC"})}>
+                       Лицензирование
+                   </Button>
+                   <Button variant="outlined" color="primary" className={classes.button}
+                           onClick={() => this.setState({currentMode: "ALL"})}>
+                       Все проекты
+                   </Button>
+                   <Button variant="outlined" color="primary" className={classes.button}
+                           onClick={() => this.setState({currentMode: "NONE"})}>
+                       Снять отметку
+                   </Button>
+                   <TextField
+                       variant="outlined"
+                       id="date"
+                       label="Date from"
+                       type="date"
+                       defaultValue={moment().subtract(9, 'weeks').format('YYYY-MM-DD')}
+                       onChange={field => this.setState({dateFrom: field.target.value})}
+                       className={classes.textField}
+                       InputLabelProps={{shrink: true,}}
+                   />
+                   <TextField
+                       variant="outlined"
+                       id="date"
+                       label="Date to"
+                       type="date"
+                       defaultValue={moment().format('YYYY-MM-DD')}
+                       onChange={field => this.setState({dateTo: field.target.value})}
+                       className={classes.textField}
+                       InputLabelProps={{shrink: true,}}
+                   />*/
