@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import DoneIcon from '@material-ui/icons/Done';
+import {innerProjects, licProjects} from "../Const";
 
 const styles = theme => ({
     chip: {
@@ -10,8 +11,7 @@ const styles = theme => ({
     },
 });
 
-const innerProjects = ["PP_Lic", "SD", "PDP", "W", "P_PROJ1", "T", "TEST", "SPAM"];
-const licProjects = ["PP_Lic"];
+
 
 class ChipsArray extends React.Component {
     constructor(props) {
