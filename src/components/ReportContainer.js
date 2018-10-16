@@ -21,6 +21,9 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import ReportFilterDialog from "./ReportFilterDialog";
 import Grid from "../../node_modules/@material-ui/core/Grid/Grid";
 import {innerProjects} from "../Const";
+import {connect} from "react-redux";
+import store from "../redux/store";
+import {addProjectToSelected, fetchProjects} from "../redux/actions/filtersActions";
 
 const styles = theme => ({
     root: {
@@ -84,12 +87,22 @@ class ReportContainer extends Component {
         }
     }
 
+    componentWillMount() {
+        store.dispatch(fetchProjects());
+    }
+
     componentWillUnmount() {
         this.isCancelled = true;
     }
 
     componentDidMount() {
         this.loadProjects();
+    }
+
+    componentWillUpdate(newProps, oldProps, a) {
+        console.log('aa');
+        if (this.props.filters && this.props.filters.projSelected /*&& this.props.filters.projSelected.length > 2*/ && this.props.filters.projSelected === newProps.filters.projSelected) store.dispatch(addProjectToSelected(['aaaa', 'bb']));
+
     }
 
     loadProjects() {
@@ -166,6 +179,7 @@ class ReportContainer extends Component {
     };
 
     render() {
+        /*console.log(this.props.filters);*/
         const {classes} = this.props;
         const {items, currentMode, sigmaItems, sigma, sigmaMaxX, sigmaMaxY} = this.state;
         return (
@@ -210,7 +224,8 @@ class ReportContainer extends Component {
                                            fill="#E6EE9C" fillOpacity={1.0}/>
                             <ReferenceArea x1={sigma * 2} x2={sigmaMaxX} y1={0} y2={sigmaMaxY}
                                            fill="#FFAB91" fillOpacity={1.0}/>
-                            <XAxis dataKey={'day'} type="number" name='Дни' unit='' domain={[0, sigmaMaxX]} tickSize={4} />
+                            <XAxis dataKey={'day'} type="number" name='Дни' unit='' domain={[0, sigmaMaxX]}
+                                   tickSize={4}/>
                             <YAxis axisLine={false} dataKey={'count'} type="number" name='Количетство запросов' unit=''
                                    domain={[0, sigmaMaxY]}/>
                             <Scatter name='A school' data={sigmaItems} fill='#8884d8'/>
@@ -239,4 +254,12 @@ ReportContainer.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ReportContainer);
+function mapStateToProps(state) {
+    return {
+        filters: state.filters
+    }
+}
+
+/*
+export default withStyles(styles)(ReportContainer);*/
+export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(ReportContainer));
