@@ -4,6 +4,9 @@ import {withStyles} from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import DoneIcon from '@material-ui/icons/Done';
 import {innerProjects, licProjects} from "../Const";
+import store from "../redux/store";
+import {addProjectToSelected, removeProjectFromSelected} from "../redux/actions/filtersActions";
+import connect from "react-redux/es/connect/connect";
 
 const styles = theme => ({
     chip: {
@@ -12,24 +15,25 @@ const styles = theme => ({
 });
 
 
-
 class ChipsArray extends React.Component {
-    constructor(props) {
+    /*constructor(props) {
         super(props);
         this.state = {
             selectedChipData: [],
             removedChipData: [],
             currentMode: "NONE"
         };
-    }
+    }*/
 
-    componentWillMount(){
-        this.setState({selectedChipData:this.props.projects.filter(item=> this.props.selectedProjects.includes(item.shortName))});
-        this.setState({removedChipData:this.props.projects.filter(item=> !this.props.selectedProjects.includes(item.shortName))})
-    }
+    /*componentWillMount() {
+        this.setState({selectedChipData: this.props.projects.filter(item => this.props.selectedProjects.includes(item.shortName))});
+        this.setState({removedChipData: this.props.projects.filter(item => !this.props.selectedProjects.includes(item.shortName))})
+    }*/
 
     handleDelete = data => () => {
-        if (data.label === 'React') {
+        console.log(data);
+        store.dispatch(removeProjectFromSelected(data.shortName));
+        /*if (data.label === 'React') {
             alert('Why would you want to delete React?! :)'); // eslint-disable-line no-alert
             return;
         }
@@ -42,11 +46,13 @@ class ChipsArray extends React.Component {
             removedChipData.push(data);
             this.onProjectsChanged(selectedChipData);
             return {selectedChipData: selectedChipData, removedChipData: removedChipData};
-        });
+        });*/
     };
 
     handleAdd = data => () => {
-        if (data.label === 'React') {
+        console.log(data);
+        store.dispatch(addProjectToSelected(data.shortName));
+        /*if (data.label === 'React') {
             alert('Why would you want to delete React?! :)'); // eslint-disable-line no-alert
             return;
         }
@@ -68,10 +74,10 @@ class ChipsArray extends React.Component {
             selectedChipData.sort(compare);
             this.onProjectsChanged(selectedChipData);
             return {selectedChipData: selectedChipData, removedChipData: removedChipData};
-        });
+        });*/
     };
 
-    onProjectsChanged(data) {
+    /*onProjectsChanged(data) {
         this.props.onProjectsChanged(data);
     };
 
@@ -166,13 +172,16 @@ class ChipsArray extends React.Component {
                 this.onProjectsChanged(selected);
             }
         }
-    }
+    }*/
 
     render() {
         const {classes} = this.props;
+        const allProjects = this.props.filters.proj;
+        const selected = this.props.filters.projSelected;
+        const notSelected = allProjects.filter(item => !selected.map(item => item.shortName).includes(item.shortName));
         return (
             <div>
-                <div>{this.state.selectedChipData.map(data => {
+                <div>{selected.map(data => {
                     return (
                         <Chip
                             key={data.shortName}
@@ -188,7 +197,7 @@ class ChipsArray extends React.Component {
                 })}
                 </div>
                 <div>
-                    {this.state.removedChipData.map(data => {
+                    {notSelected.map(data => {
                         return (
                             <Chip
                                 key={data.shortName}
@@ -214,4 +223,12 @@ ChipsArray.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ChipsArray);
+/*export default withStyles(styles)(ChipsArray);*/
+function mapStateToProps(state) {
+    return {
+        filters: state.filters
+    }
+}
+
+/*export default withStyles(styles)(ReportFilterDialog);*/
+export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(ChipsArray));

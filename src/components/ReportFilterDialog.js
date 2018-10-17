@@ -10,6 +10,7 @@ import ChipsArray from "./ChipArray";
 import TextField from "../../node_modules/@material-ui/core/TextField/TextField";
 import moment from "moment";
 import Paper from "@material-ui/core/Paper";
+import connect from "react-redux/es/connect/connect";
 
 const styles = theme => ({
     root: {
@@ -80,7 +81,8 @@ class ReportFilterDialog extends Component {
     };
 
     render() {
-        const {classes} = this.props;
+        const {classes, filters} = this.props;
+        console.log(filters);
         const {dateFrom, dateTo, currentMode, projects, selectedProjects} = this.state;
         return <Dialog
             maxWidth={false}
@@ -91,7 +93,8 @@ class ReportFilterDialog extends Component {
             <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
             <DialogContent>
                 <Paper className={classes.root}>
-                    <ChipsArray projects={projects} selectedProjects={selectedProjects} currentMode={currentMode}
+                    <ChipsArray projects={filters.proj} selectedProjects={filters.projDefault}
+                                currentMode={currentMode}
                                 onProjectsChanged={this.onProjectsChanged}/>
                     <Button variant="outlined" color="primary" className={classes.button}
                             onClick={() => this.setState({currentMode: "PP"})}>
@@ -151,4 +154,11 @@ ReportFilterDialog.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ReportFilterDialog);
+function mapStateToProps(state) {
+    return {
+        filters: state.filters
+    }
+}
+
+/*export default withStyles(styles)(ReportFilterDialog);*/
+export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(ReportFilterDialog));

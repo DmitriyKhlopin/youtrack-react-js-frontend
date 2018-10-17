@@ -34,16 +34,21 @@ export default function reducer(state = {
             break;
         }
         case 'ADD_PROJECT_TO_SELECTED': {
+            const pr = [...state.projSelected];
+            pr.push(...state.proj.filter(item => item.shortName === action.payload));
             state = {
                 ...state,
-                projSelected: action.payload,
+                projSelected: pr
             };
             break;
         }
         case 'REMOVE_PROJECT_FROM_SELECTED': {
+            const pr = [...state.projSelected];
+            const chipToDelete = pr.map(item => item.shortName).indexOf(action.payload);
+            pr.splice(chipToDelete, 1);
             state = {
                 ...state,
-                projSelected: action.payload,
+                projSelected: pr
             };
             break;
         }

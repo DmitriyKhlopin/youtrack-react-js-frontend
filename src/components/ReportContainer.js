@@ -101,7 +101,7 @@ class ReportContainer extends Component {
 
     componentWillUpdate(newProps, oldProps, a) {
         console.log('aa');
-        if (this.props.filters && this.props.filters.projSelected /*&& this.props.filters.projSelected.length > 2*/ && this.props.filters.projSelected === newProps.filters.projSelected) store.dispatch(addProjectToSelected(['aaaa', 'bb']));
+        /*if (this.props.filters && this.props.filters.projSelected /!*&& this.props.filters.projSelected.length > 2*!/ && this.props.filters.projSelected === newProps.filters.projSelected) store.dispatch(addProjectToSelected(['aaaa', 'bb']));*/
 
     }
 
