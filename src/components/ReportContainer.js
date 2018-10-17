@@ -72,7 +72,7 @@ class ReportContainer extends Component {
         return (
             <Grid container spacing={24}>
                 <Grid item md={12} lg={6}>
-                    <ResponsiveContainer width='100%' aspect={4.0 / 1.5}>
+                    <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
                         <LineChart data={dynamics}
                                    margin={{top: 30, right: 60, left: 0, bottom: 30}}>
                             <XAxis dataKey="week"/>
@@ -87,7 +87,7 @@ class ReportContainer extends Component {
                     </ResponsiveContainer>
                 </Grid>
                 <Grid item md={12} lg={6}>
-                    <ResponsiveContainer width='100%' aspect={4.0 / 1.5}>
+                    <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
                         <ScatterChart margin={{top: 30, right: 60, left: 0, bottom: 30}}>
                             <ReferenceArea x1={0} x2={sigma2.sigma} y1={0} y2={sigma2.sigmaMaxY}
                                            fill="#A5D6A7" fillOpacity={1.0}/>
@@ -98,12 +98,18 @@ class ReportContainer extends Component {
                                            fill="#E6EE9C" fillOpacity={1.0}/>
                             <ReferenceArea x1={sigma2.sigma * 2} x2={sigma2.sigmaMaxX} y1={0} y2={sigma2.sigmaMaxY}
                                            fill="#FFAB91" fillOpacity={1.0}/>
-                            <XAxis dataKey={'day'} type="number" name='Дни' unit='' domain={[0, sigma2.sigmaMaxX]}
-                                   tickSize={4}/>
+                            <XAxis dataKey={'day'} type="number" name='Дни' unit='' domain={[0, sigma2.sigmaMaxX]}/>
                             <YAxis axisLine={false} dataKey={'count'} type="number" name='Количетство запросов' unit=''
                                    domain={[0, sigma2.sigmaMaxY]}/>
-                            <Scatter name='A school' data={sigma2.sigmaItems} fill='#8884d8'/>
+                            <Scatter name='Активные запросы' data={sigma2.sigmaItems} fill='#8884d8'/>
                             <Tooltip cursor={{strokeDasharray: '4 6'}}/>
+                            <Legend
+                                payload={[
+                                    {value: 'Активные запросы', type: 'scatter', id: 'ID01', color: '#8884d8'},
+                                    {value: 'Активные запросы', type: 'square', id: 'ID01', color: '#A5D6A7'},
+                                    {value: 'Активные запросы', type: 'square', id: 'ID01', color: '#E6EE9C'},
+                                    {value: 'Активные запросы', type: 'square', id: 'ID01', color: '#FFAB91'}
+                                ]}/>
                         </ScatterChart>
                     </ResponsiveContainer>
                 </Grid>

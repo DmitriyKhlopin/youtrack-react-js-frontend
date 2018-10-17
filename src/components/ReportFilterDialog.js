@@ -11,7 +11,7 @@ import TextField from "../../node_modules/@material-ui/core/TextField/TextField"
 import moment from "moment";
 import connect from "react-redux/es/connect/connect";
 import store from "../redux/store";
-import {selectProjectsByMode} from "../redux/actions/filtersActions";
+import {selectProjectsByMode, setDateFrom, setDateTo} from "../redux/actions/filtersActions";
 
 const styles = theme => ({
     root: {
@@ -19,7 +19,8 @@ const styles = theme => ({
         /*minHeight: 400,*/
         justifyContent: 'center',
         flexWrap: 'wrap',
-        padding: theme.spacing.unit * 3,
+        paddingLeft: theme.spacing.unit * 3,
+        paddingRight: theme.spacing.unit * 3,
     },
     chip: {
         margin: theme.spacing.unit / 2,
@@ -69,8 +70,9 @@ class ReportFilterDialog extends Component {
         this.setState({selectedProjects: projects.map(item => item.shortName), currentMode: "UNDEFINED"})
     };
 
-    handleClose(b) {
-        if (b === true) {
+    handleClose() {
+        this.props.handleClose(false, null, null, [])
+        /*if (b === true) {
             console.log(b);
             this.setState({previouslySelectedProjects: this.state.selectedProjects});
             this.props.handleClose(false, this.state.dateFrom, this.state.dateTo, this.state.selectedProjects)
@@ -78,19 +80,17 @@ class ReportFilterDialog extends Component {
             const prev = this.state.previouslySelectedProjects;
             if (prev) this.setState({selectedProjects: prev});
             this.props.handleClose(false, null, null, [])
-        }
+        }*/
     };
 
     render() {
-        const {classes, filters} = this.props;
-        const {dateFrom, dateTo, currentMode} = this.state;
+        const {classes} = this.props;
         return <Dialog
             maxWidth={false}
             open={this.state.open}
-            /*onClose={this.handleClose}*/
             scroll={this.state.scroll}
             aria-labelledby="scroll-dialog-title">
-            <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
+            <DialogTitle id="scroll-dialog-title">Параметры отчёта</DialogTitle>
             <DialogContent className={classes.root}>
                 <ChipsArray/>
                 <Button variant="outlined" color="primary" className={classes.button}
@@ -118,8 +118,8 @@ class ReportFilterDialog extends Component {
                     id="date"
                     label="Date from"
                     type="date"
-                    defaultValue={dateFrom}
-                    onChange={field => this.setState({dateFrom: field.target.value})}
+                    defaultValue={this.props.filters.dateFrom}
+                    onChange={field => store.dispatch(setDateFrom(field.target.value)) /*this.setState({dateFrom: field.target.value})*/}
                     className={classes.textField}
                     InputLabelProps={{shrink: true,}}
                 />
@@ -128,19 +128,15 @@ class ReportFilterDialog extends Component {
                     id="date"
                     label="Date to"
                     type="date"
-                    defaultValue={dateTo}
-                    onChange={field => this.setState({dateTo: field.target.value})}
+                    defaultValue={this.props.filters.dateTo}
+                    onChange={field => store.dispatch(setDateTo(field.target.value)) /*this.setState({dateTo: field.target.value})*/}
                     className={classes.textField}
                     InputLabelProps={{shrink: true,}}
                 />
-
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => this.handleClose(false)} color="primary">
-                    Отменить
-                </Button>
-                <Button onClick={() => this.handleClose(true)} color="primary">
-                    Сохранить
+                <Button onClick={() => this.handleClose()} color="primary">
+                    Закрыть
                 </Button>
             </DialogActions>
         </Dialog>
@@ -157,5 +153,4 @@ function mapStateToProps(state) {
     }
 }
 
-/*export default withStyles(styles)(ReportFilterDialog);*/
 export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(ReportFilterDialog));

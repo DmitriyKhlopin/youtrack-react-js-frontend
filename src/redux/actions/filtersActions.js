@@ -57,3 +57,20 @@ export function selectProjectsByMode(mode) {
     }
 }
 
+export function setDateFrom(dateFrom) {
+    return function (dispatch) {
+        dispatch({
+            type: "SET_DATE_FROM",
+            payload: dateFrom
+        });
+    }
+}
+
+export function setDateTo(dateTo) {
+    return function (dispatch) {
+        dispatch({
+            type: "SET_DATE_TO",
+            payload: dateTo
+        });
+    }
+}

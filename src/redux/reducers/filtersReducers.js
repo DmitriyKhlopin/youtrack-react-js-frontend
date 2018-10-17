@@ -1,4 +1,5 @@
 import {innerProjects, licProjects} from "../../Const";
+import moment from "moment";
 
 export default function reducer(state = {
     fetching: false,
@@ -6,7 +7,9 @@ export default function reducer(state = {
     error: null,
     proj: [],
     projDefault: [],
-    projSelected: []
+    projSelected: [],
+    dateFrom: moment().subtract(8, 'weeks').format('YYYY-MM-DD'),
+    dateTo: moment().format('YYYY-MM-DD'),
 }, action) {
     switch (action.type) {
         case 'FETCH_PROJECTS_PENDING': {
@@ -53,6 +56,20 @@ export default function reducer(state = {
             state = {
                 ...state,
                 projSelected: pr
+            };
+            break;
+        }
+        case 'SET_DATE_FROM': {
+            state = {
+                ...state,
+                dateFrom: action.payload
+            };
+            break;
+        }
+        case 'SET_DATE_TO': {
+            state = {
+                ...state,
+                dateTo: action.payload
             };
             break;
         }
@@ -103,6 +120,7 @@ export default function reducer(state = {
                     };
                     break;
                 }
+
             }
         }
     }
