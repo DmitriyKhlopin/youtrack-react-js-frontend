@@ -23,7 +23,8 @@ import Grid from "../../node_modules/@material-ui/core/Grid/Grid";
 import {innerProjects} from "../Const";
 import {connect} from "react-redux";
 import store from "../redux/store";
-import {addProjectToSelected, fetchProjects} from "../redux/actions/filtersActions";
+import {fetchProjects} from "../redux/actions/filtersActions";
+import {fetchReportData} from "../redux/actions/resportsActions";
 
 const styles = theme => ({
     root: {
@@ -139,6 +140,7 @@ class ReportContainer extends Component {
     };
 
     loadData = () => {
+        store.dispatch(fetchReportData());
         const projects = this.state.selectedProjects;
         console.log(projects);
         this.setState({isLoading: true});
@@ -182,11 +184,14 @@ class ReportContainer extends Component {
         /*console.log(this.props.filters);*/
         const {classes} = this.props;
         const {items, currentMode, sigmaItems, sigma, sigmaMaxX, sigmaMaxY} = this.state;
+        /*console.log(this.props);*/
+        const sigma2 = this.props.reports.sigmaData;
+        const dynamics = this.props.reports.dynamicsData;
         return (
             <Grid container spacing={24}>
                 <Grid item md={12} lg={6}>
                     <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
-                        <LineChart data={items}
+                        <LineChart data={dynamics}
                                    margin={{top: 30, right: 60, left: 0, bottom: 30}}>
                             <XAxis dataKey="week"/>
                             <YAxis axisLine={false}/>
@@ -199,36 +204,21 @@ class ReportContainer extends Component {
                         </LineChart>
                     </ResponsiveContainer>
                 </Grid>
-                {/*<Grid item md={12} lg={6}>
-                    <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
-                        <LineChart data={items}
-                                   margin={{top: 30, right: 60, left: 0, bottom: 30}}>
-                            <XAxis dataKey="week"/>
-                            <YAxis axisLine={false}/>
-                            <CartesianGrid strokeDasharray="3 3"/>
-                            <Tooltip/>
-                            <Legend/>
-                            <Line type="monotone" dataKey="active" stroke="#1E88E5" name="В работе"/>
-                            <Line type="monotone" dataKey="created" stroke="#FDD835" name="Создано"/>
-                            <Line type="monotone" dataKey="resolved" stroke="#43A047" name="Решено"/>
-                        </LineChart>
-                    </ResponsiveContainer>
-                </Grid>*/}
                 <Grid item md={12} lg={6}>
                     <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
                         <ScatterChart margin={{top: 30, right: 60, left: 0, bottom: 30}}>
-                            <ReferenceArea x1={0} x2={sigma} y1={0} y2={sigmaMaxY}
+                            <ReferenceArea x1={0} x2={sigma2.sigma} y1={0} y2={sigma2.sigmaMaxY}
                                            fill="#A5D6A7" fillOpacity={1.0}/>
-                            <ReferenceArea x1={sigma} x2={(sigma * 2 > sigmaMaxX) ? sigmaMaxX : sigma * 2} y1={0}
-                                           y2={sigmaMaxY}
+                            <ReferenceArea x1={sigma2.sigma} x2={(sigma2.sigma * 2 > sigma2.sigmaMaxX) ? sigma2.sigmaMaxX : sigma2.sigma * 2} y1={0}
+                                           y2={sigma2.sigmaMaxY}
                                            fill="#E6EE9C" fillOpacity={1.0}/>
-                            <ReferenceArea x1={sigma * 2} x2={sigmaMaxX} y1={0} y2={sigmaMaxY}
+                            <ReferenceArea x1={sigma2.sigma * 2} x2={sigma2.sigmaMaxX} y1={0} y2={sigma2.sigmaMaxY}
                                            fill="#FFAB91" fillOpacity={1.0}/>
-                            <XAxis dataKey={'day'} type="number" name='Дни' unit='' domain={[0, sigmaMaxX]}
+                            <XAxis dataKey={'day'} type="number" name='Дни' unit='' domain={[0, sigma2.sigmaMaxX]}
                                    tickSize={4}/>
                             <YAxis axisLine={false} dataKey={'count'} type="number" name='Количетство запросов' unit=''
-                                   domain={[0, sigmaMaxY]}/>
-                            <Scatter name='A school' data={sigmaItems} fill='#8884d8'/>
+                                   domain={[0,sigma2.sigmaMaxY]}/>
+                            <Scatter name='A school' data={sigma2.sigmaItems} fill='#8884d8'/>
                             <Tooltip cursor={{strokeDasharray: '4 6'}}/>
                         </ScatterChart>
                     </ResponsiveContainer>
@@ -256,10 +246,9 @@ ReportContainer.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        filters: state.filters
+        filters: state.filters,
+        reports: state.reports
     }
 }
 
-/*
-export default withStyles(styles)(ReportContainer);*/
 export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(ReportContainer));

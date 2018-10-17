@@ -9,7 +9,6 @@ import {withStyles} from "@material-ui/core/styles";
 import ChipsArray from "./ChipArray";
 import TextField from "../../node_modules/@material-ui/core/TextField/TextField";
 import moment from "moment";
-import Paper from "@material-ui/core/Paper";
 import connect from "react-redux/es/connect/connect";
 import store from "../redux/store";
 import {selectProjectsByMode} from "../redux/actions/filtersActions";
@@ -17,10 +16,10 @@ import {selectProjectsByMode} from "../redux/actions/filtersActions";
 const styles = theme => ({
     root: {
         display: 'flex',
-        minHeight: 400,
+        /*minHeight: 400,*/
         justifyContent: 'center',
         flexWrap: 'wrap',
-        padding: theme.spacing.unit / 2,
+        padding: theme.spacing.unit * 3,
     },
     chip: {
         margin: theme.spacing.unit / 2,
@@ -92,52 +91,49 @@ class ReportFilterDialog extends Component {
             scroll={this.state.scroll}
             aria-labelledby="scroll-dialog-title">
             <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
-            <DialogContent>
-                <Paper className={classes.root}>
-                    <ChipsArray projects={filters.proj} selectedProjects={filters.projDefault}
-                                currentMode={currentMode}
-                                onProjectsChanged={this.onProjectsChanged}/>
-                    <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => store.dispatch(selectProjectsByMode('PP'))}>
-                        Внешние проекты
-                    </Button>
-                    <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => store.dispatch(selectProjectsByMode('notPP'))}>
-                        Внутренние проекты
-                    </Button>
-                    <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => store.dispatch(selectProjectsByMode('LIC'))}>
-                        Лицензирование
-                    </Button>
-                    <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => store.dispatch(selectProjectsByMode('ALL'))}>
-                        Все проекты
-                    </Button>
-                    <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => store.dispatch(selectProjectsByMode('NONE'))}>
-                        Снять отметку
-                    </Button>
-                    <TextField
-                        variant="outlined"
-                        id="date"
-                        label="Date from"
-                        type="date"
-                        defaultValue={dateFrom}
-                        onChange={field => this.setState({dateFrom: field.target.value})}
-                        className={classes.textField}
-                        InputLabelProps={{shrink: true,}}
-                    />
-                    <TextField
-                        variant="outlined"
-                        id="date"
-                        label="Date to"
-                        type="date"
-                        defaultValue={dateTo}
-                        onChange={field => this.setState({dateTo: field.target.value})}
-                        className={classes.textField}
-                        InputLabelProps={{shrink: true,}}
-                    />
-                </Paper>
+            <DialogContent className={classes.root}>
+                <ChipsArray/>
+                <Button variant="outlined" color="primary" className={classes.button}
+                        onClick={() => store.dispatch(selectProjectsByMode('PP'))}>
+                    Внешние проекты
+                </Button>
+                <Button variant="outlined" color="primary" className={classes.button}
+                        onClick={() => store.dispatch(selectProjectsByMode('notPP'))}>
+                    Внутренние проекты
+                </Button>
+                <Button variant="outlined" color="primary" className={classes.button}
+                        onClick={() => store.dispatch(selectProjectsByMode('LIC'))}>
+                    Лицензирование
+                </Button>
+                <Button variant="outlined" color="primary" className={classes.button}
+                        onClick={() => store.dispatch(selectProjectsByMode('ALL'))}>
+                    Все проекты
+                </Button>
+                <Button variant="outlined" color="primary" className={classes.button}
+                        onClick={() => store.dispatch(selectProjectsByMode('NONE'))}>
+                    Снять отметку
+                </Button>
+                <TextField
+                    variant="outlined"
+                    id="date"
+                    label="Date from"
+                    type="date"
+                    defaultValue={dateFrom}
+                    onChange={field => this.setState({dateFrom: field.target.value})}
+                    className={classes.textField}
+                    InputLabelProps={{shrink: true,}}
+                />
+                <TextField
+                    variant="outlined"
+                    id="date"
+                    label="Date to"
+                    type="date"
+                    defaultValue={dateTo}
+                    onChange={field => this.setState({dateTo: field.target.value})}
+                    className={classes.textField}
+                    InputLabelProps={{shrink: true,}}
+                />
+
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => this.handleClose(false)} color="primary">
