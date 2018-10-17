@@ -12,7 +12,6 @@ import {
     XAxis,
     YAxis
 } from 'recharts'
-import moment from "moment";
 import Button from "../../node_modules/@material-ui/core/Button/Button";
 import * as PropTypes from "prop-types";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
@@ -20,7 +19,6 @@ import FilterIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ReportFilterDialog from "./ReportFilterDialog";
 import Grid from "../../node_modules/@material-ui/core/Grid/Grid";
-import {innerProjects} from "../Const";
 import {connect} from "react-redux";
 import store from "../redux/store";
 import {fetchProjects} from "../redux/actions/filtersActions";
@@ -43,46 +41,13 @@ const styles = theme => ({
         top: theme.spacing.unit * 2 + 64,
         right: theme.spacing.unit * 2 + 64,
     },
-    container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    textField: {
-        margin: theme.spacing.unit,
-
-    },
-    button: {
-        margin: theme.spacing.unit,
-    },
-    card: {
-        margin: '16px',
-    },
-    paper: {
-        padding: theme.spacing.unit * 2,
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    },
 });
 
 class ReportContainer extends Component {
     constructor(props) {
         super(props);
-        this.updateSelectedProjects = this.updateSelectedProjects.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.state = {
-            projects: [],
-            selectedProjects: [],
-            items: null,
-            sigmaItems: null,
-            sigma: 0,
-            sigmaMaxX: 0,
-            sigmaMaxY: 0,
-            isLoading: false,
-            etlState: null,
-            dateFrom: moment().subtract(9, 'weeks').format('YYYY-MM-DD'),
-            dateTo: moment().format('YYYY-MM-DD'),
-            currentMode: "PP",
-            expanded: true,
             open: false,
             scroll: 'paper',
         }
@@ -92,105 +57,22 @@ class ReportContainer extends Component {
         store.dispatch(fetchProjects());
     }
 
-    componentWillUnmount() {
-        this.isCancelled = true;
-    }
-
-    componentDidMount() {
-        this.loadProjects();
-    }
-
-    componentWillUpdate(newProps, oldProps, a) {
-        console.log('aa');
-        /*if (this.props.filters && this.props.filters.projSelected /!*&& this.props.filters.projSelected.length > 2*!/ && this.props.filters.projSelected === newProps.filters.projSelected) store.dispatch(addProjectToSelected(['aaaa', 'bb']));*/
-
-    }
-
-    loadProjects() {
-        this.setState({isLoading: true});
-        const myHeaders = new Headers();
-        myHeaders.append('Accept', 'application/json');
-        const url = "http://10.0.172.42:8081/api/project";
-        fetch(url, {
-            method: "GET",
-            headers: myHeaders
-        }).then(res => res.json()).then(json => {
-            console.log(json.map(item => item.shortName).filter(item => !innerProjects.includes(item)));
-            /*!this.isCancelled &&*/
-            this.setState({
-                projects: json,
-                selectedProjects: json.map(item => item.shortName).filter(item => !innerProjects.includes(item)),
-                isLoading: false
-            });
-        }).catch(err => console.log(err));
-    }
-
     handleClickOpen = scroll => () => {
-        console.log(this.state.open);
         this.setState({open: true, scroll});
     };
 
-    handleClose(open, dateFrom, dateTo, projects) {
-        console.log(dateFrom, dateTo, projects);
-        this.setState({open: open});
-        if (dateFrom !== null && dateTo !== null) {
-            console.log("hey motherfucker, i'm updating");
-            this.setState({dateFrom: dateFrom, dateTo: dateTo, selectedProjects: projects})
-        }
-    };
-
-    loadData = () => {
-        store.dispatch(fetchReportData());
-        const projects = this.state.selectedProjects;
-        console.log(projects);
-        this.setState({isLoading: true});
-        const myHeaders = new Headers();
-        myHeaders.append('Accept', 'application/json');
-        const url = "http://10.0.172.42:8081/api/chart/dynamics?" + "projects=" + projects + "&dateFrom=" + this.state.dateFrom + "&dateTo=" + this.state.dateTo;
-        fetch(url, {
-            method: "GET",
-            headers: myHeaders
-        }).then(res => res.json()).then(json => {
-            const res = json.map(function (item) {
-                item.week = moment(item.week).format('L');
-                return item
-            });
-            !this.isCancelled && this.setState({items: res});
-        }).catch(err => console.log(err));
-
-        const url2 = "http://10.0.172.42:8081/api/chart/sigma?" + "projects=" + projects + "&dateFrom=" + this.state.dateFrom + "&dateTo=" + this.state.dateTo;
-        fetch(url2, {
-            method: "GET",
-            headers: myHeaders
-        }).then(res => res.json()).then(json => {
-            console.log(json);
-            console.log(Math.max(...json.data.map(item => item.day)));
-            !this.isCancelled && this.setState({
-                sigmaItems: json.data,
-                sigma: json.sigma,
-                isLoading: false,
-                sigmaMaxX: Math.max(...json.data.map(item => item.day)) + 2,
-                sigmaMaxY: Math.max(...json.data.map(item => item.count)) + 2,
-            });
-        })
-    };
-
-    updateSelectedProjects(projects) {
-        /*const p = projects.map(item => item.shortName);*/
-        this.setState({selectedProjects: projects.map(item => item.shortName)});
+    handleClose = () => {
+        this.setState({open: false});
     };
 
     render() {
-        /*console.log(this.props.filters);*/
         const {classes} = this.props;
-        const {items, currentMode, sigmaItems, sigma, sigmaMaxX, sigmaMaxY} = this.state;
-        /*console.log(this.props);*/
         const sigma2 = this.props.reports.sigmaData;
         const dynamics = this.props.reports.dynamicsData;
         return (
             <Grid container spacing={24}>
                 <Grid item md={12} lg={6}>
-                    <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
+                    <ResponsiveContainer width='100%' aspect={4.0 / 1.5}>
                         <LineChart data={dynamics}
                                    margin={{top: 30, right: 60, left: 0, bottom: 30}}>
                             <XAxis dataKey="week"/>
@@ -205,11 +87,13 @@ class ReportContainer extends Component {
                     </ResponsiveContainer>
                 </Grid>
                 <Grid item md={12} lg={6}>
-                    <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
+                    <ResponsiveContainer width='100%' aspect={4.0 / 1.5}>
                         <ScatterChart margin={{top: 30, right: 60, left: 0, bottom: 30}}>
                             <ReferenceArea x1={0} x2={sigma2.sigma} y1={0} y2={sigma2.sigmaMaxY}
                                            fill="#A5D6A7" fillOpacity={1.0}/>
-                            <ReferenceArea x1={sigma2.sigma} x2={(sigma2.sigma * 2 > sigma2.sigmaMaxX) ? sigma2.sigmaMaxX : sigma2.sigma * 2} y1={0}
+                            <ReferenceArea x1={sigma2.sigma}
+                                           x2={(sigma2.sigma * 2 > sigma2.sigmaMaxX) ? sigma2.sigmaMaxX : sigma2.sigma * 2}
+                                           y1={0}
                                            y2={sigma2.sigmaMaxY}
                                            fill="#E6EE9C" fillOpacity={1.0}/>
                             <ReferenceArea x1={sigma2.sigma * 2} x2={sigma2.sigmaMaxX} y1={0} y2={sigma2.sigmaMaxY}
@@ -217,13 +101,14 @@ class ReportContainer extends Component {
                             <XAxis dataKey={'day'} type="number" name='Дни' unit='' domain={[0, sigma2.sigmaMaxX]}
                                    tickSize={4}/>
                             <YAxis axisLine={false} dataKey={'count'} type="number" name='Количетство запросов' unit=''
-                                   domain={[0,sigma2.sigmaMaxY]}/>
+                                   domain={[0, sigma2.sigmaMaxY]}/>
                             <Scatter name='A school' data={sigma2.sigmaItems} fill='#8884d8'/>
                             <Tooltip cursor={{strokeDasharray: '4 6'}}/>
                         </ScatterChart>
                     </ResponsiveContainer>
                 </Grid>
-                <Button variant="fab" className={classes.fabLoad} color={'secondary'} onClick={this.loadData}>
+                <Button variant="fab" className={classes.fabLoad} color={'secondary'}
+                        onClick={() => store.dispatch(fetchReportData())}>
                     <RefreshIcon/>
                 </Button>
                 <Button variant="fab" className={classes.fab} color={'primary'} onClick={this.handleClickOpen('paper')}>
@@ -231,9 +116,6 @@ class ReportContainer extends Component {
                 </Button>
                 <ReportFilterDialog open={this.state.open}
                                     handleClose={this.handleClose}
-                                    projects={this.state.projects}
-                                    selectedProjects={this.state.selectedProjects}
-                                    currentMode={currentMode}
                                     aria-labelledby="scroll-dialog-title"/>
             </Grid>
         );
