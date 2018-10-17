@@ -47,3 +47,13 @@ export function removeProjectFromSelected(id) {
         });
     }
 }
+
+export function selectProjectsByMode(mode) {
+    return function (dispatch) {
+        dispatch({
+            type: "SELECT_PROJECTS_BY_MODE",
+            payload: mode
+        });
+    }
+}
+

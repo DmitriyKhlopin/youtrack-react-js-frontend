@@ -11,10 +11,13 @@ import TextField from "../../node_modules/@material-ui/core/TextField/TextField"
 import moment from "moment";
 import Paper from "@material-ui/core/Paper";
 import connect from "react-redux/es/connect/connect";
+import store from "../redux/store";
+import {selectProjectsByMode} from "../redux/actions/filtersActions";
 
 const styles = theme => ({
     root: {
         display: 'flex',
+        minHeight: 400,
         justifyContent: 'center',
         flexWrap: 'wrap',
         padding: theme.spacing.unit / 2,
@@ -47,7 +50,6 @@ class ReportFilterDialog extends Component {
     }
 
     componentDidUpdate(prevProps, a, b) {
-        console.log(this.state.selectedProjects);
         if (this.props.open !== prevProps.open) {
             this.setState({open: this.props.open})
         }
@@ -82,8 +84,7 @@ class ReportFilterDialog extends Component {
 
     render() {
         const {classes, filters} = this.props;
-        console.log(filters);
-        const {dateFrom, dateTo, currentMode, projects, selectedProjects} = this.state;
+        const {dateFrom, dateTo, currentMode} = this.state;
         return <Dialog
             maxWidth={false}
             open={this.state.open}
@@ -97,23 +98,23 @@ class ReportFilterDialog extends Component {
                                 currentMode={currentMode}
                                 onProjectsChanged={this.onProjectsChanged}/>
                     <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => this.setState({currentMode: "PP"})}>
+                            onClick={() => store.dispatch(selectProjectsByMode('PP'))}>
                         Внешние проекты
                     </Button>
                     <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => this.setState({currentMode: "notPP"})}>
+                            onClick={() => store.dispatch(selectProjectsByMode('notPP'))}>
                         Внутренние проекты
                     </Button>
                     <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => this.setState({currentMode: "LIC"})}>
+                            onClick={() => store.dispatch(selectProjectsByMode('LIC'))}>
                         Лицензирование
                     </Button>
                     <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => this.setState({currentMode: "ALL"})}>
+                            onClick={() => store.dispatch(selectProjectsByMode('ALL'))}>
                         Все проекты
                     </Button>
                     <Button variant="outlined" color="primary" className={classes.button}
-                            onClick={() => this.setState({currentMode: "NONE"})}>
+                            onClick={() => store.dispatch(selectProjectsByMode('NONE'))}>
                         Снять отметку
                     </Button>
                     <TextField
