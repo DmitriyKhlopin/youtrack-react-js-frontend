@@ -4,13 +4,8 @@ export default function reducer(state = {
         sigma: 0,
         sigmaMaxX: 0,
         sigmaMaxY: 0
-    }
-    /*fetching: false,
-    fetched: false,
-    error: null,
-    proj: [],
-    projDefault: [],
-    projSelected: []*/
+    },
+    aggregatedIssuesByPartner: []
 }, action) {
     switch (action.type) {
         case 'FETCH_REPORT_DYNAMICS_FULFILLED': {
@@ -25,6 +20,13 @@ export default function reducer(state = {
             state = {
                 ...state,
                 sigmaData: action.payload
+            };
+            break;
+        }
+        case 'FETCH_REPORT_ISSUES_FROM_PARTNERS_OVER_LAST_WEEK_FULFILLED': {
+            state = {
+                ...state,
+                aggregatedIssuesByPartner: action.payload
             };
             break;
         }

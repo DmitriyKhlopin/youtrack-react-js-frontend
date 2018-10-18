@@ -46,6 +46,15 @@ export function fetchReportData(/*projects, dateFrom, dateTo*/) {
                 }))
             .catch(err => console.log(err));
 
+        fetch(baseUrl + 'created_on_week' + filters, obj)
+            .then(res => res.json())
+            .then(json =>
+                dispatch({
+                    type: 'FETCH_REPORT_ISSUES_FROM_PARTNERS_OVER_LAST_WEEK_FULFILLED',
+                    payload: json
+                }))
+            .catch(err => console.log(err));
+
 
         /*const url2 = 'http://10.0.172.42:8081/api/chart/sigma?projects=' + projects + '&dateFrom=' + this.state.dateFrom + '&dateTo=' + this.state.dateTo;*/
         /*fetch(baseUrl + 'sigma' + filters, obj)

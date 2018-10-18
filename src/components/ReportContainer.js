@@ -1,9 +1,12 @@
 import React, {Component} from "react";
 import {
     CartesianGrid,
+    Cell,
     Legend,
     Line,
     LineChart,
+    Pie,
+    PieChart,
     ReferenceArea,
     ResponsiveContainer,
     Scatter,
@@ -24,6 +27,9 @@ import store from "../redux/store";
 import {fetchProjects} from "../redux/actions/filtersActions";
 import {fetchReportData} from "../redux/actions/resportsActions";
 
+/*const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];*/
+const COLORS2 = ['#1B4079', '#4D7C8A', '#8FAD88', '#CBDF90'];
+
 const styles = theme => ({
     root: {
         display: 'flex',
@@ -42,6 +48,33 @@ const styles = theme => ({
         right: theme.spacing.unit * 2 + 64,
     },
 });
+const RADIAN = Math.PI / 180;
+
+const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index, value, name, fill}) => {
+    const sin = Math.sin(-RADIAN * midAngle);
+    const cos = Math.cos(-RADIAN * midAngle);
+    const sx = cx + (outerRadius + 10) * cos;
+    const sy = cy + (outerRadius + 10) * sin;
+    const mx = cx + (outerRadius + 30) * cos;
+    const my = cy + (outerRadius + 30) * sin;
+    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+    const ey = my;
+    const textAnchor = cos >= 0 ? 'start' : 'end';
+    return (
+        <g>
+            <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none"/>
+            <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none"/>
+            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor}
+                  fill={fill}>{`${name} - ${value}`}</text>
+
+        </g>
+    );
+};
+
+{/*<text x={x} y={y} fill="blue" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+                {`${name} - ${value}`}
+            </text>*/
+}
 
 class ReportContainer extends Component {
     constructor(props) {
@@ -69,6 +102,8 @@ class ReportContainer extends Component {
         const {classes} = this.props;
         const sigma2 = this.props.reports.sigmaData;
         const dynamics = this.props.reports.dynamicsData;
+        const aggregatedIssuesByPartner = this.props.reports.aggregatedIssuesByPartner;
+        console.log(aggregatedIssuesByPartner);
         return (
             <Grid container spacing={24}>
                 <Grid item md={12} lg={6}>
@@ -84,6 +119,27 @@ class ReportContainer extends Component {
                             <Line type="monotone" dataKey="created" stroke="#FDD835" name="Создано"/>
                             <Line type="monotone" dataKey="resolved" stroke="#43A047" name="Решено"/>
                         </LineChart>
+                    </ResponsiveContainer>
+                </Grid>
+                <Grid item md={12} lg={6}>
+                    <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
+                        <PieChart margin={{top: 30, right: 60, left: 0, bottom: 30}}>
+                            <Pie data={aggregatedIssuesByPartner}
+                                 nameKey={'name'}
+                                 dataKey={'value'}
+                                 labelLine={true}
+                                 label={renderCustomizedLabel}
+                                 fill="#8884d8"
+                                 startAngle={450}
+                                 endAngle={90}
+                                 paddingAngle={1}
+                            >
+                                {
+                                    aggregatedIssuesByPartner.map((entry, index) => <Cell key={`cell-${index}`}
+                                                                                          fill={COLORS2[index % COLORS2.length]}/>)
+                                }
+                            </Pie>
+                        </PieChart>
                     </ResponsiveContainer>
                 </Grid>
                 <Grid item md={12} lg={6}>
