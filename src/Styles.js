@@ -70,4 +70,10 @@ export const styles = theme => ({
     input: {
         display: 'none',
     },
+    /*button: {
+        margin: theme.spacing.unit,
+    },*/
+    textField: {
+        margin: theme.spacing.unit,
+    },
 });

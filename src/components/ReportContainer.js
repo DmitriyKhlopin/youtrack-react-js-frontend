@@ -28,7 +28,12 @@ import {fetchProjects} from "../redux/actions/filtersActions";
 import {fetchReportData} from "../redux/actions/resportsActions";
 
 /*const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];*/
-const COLORS2 = ['#1B4079', '#4D7C8A', '#8FAD88', '#CBDF90'];
+/*const COLORS2 = ['#1B4079', '#4D7C8A', '#8FAD88', '#CBDF90'];*/
+
+/**https://flatuicolors.com/palette/defo*/
+const LINE_CHART_COLORS = ['#3498db', '#f1c40f', '#2ecc71'];
+const COLORS = ['#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#34495e', '#f1c40f', '#e67e22', '#e74c3c', '#ecf0f1', '#95a5a6'];
+const SIGMA_COLORS = ['#34495e', '#2ecc71', '#f1c40f', '#e67e22'];
 
 const styles = theme => ({
     root: {
@@ -71,11 +76,6 @@ const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, perc
     );
 };
 
-{/*<text x={x} y={y} fill="blue" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-                {`${name} - ${value}`}
-            </text>*/
-}
-
 class ReportContainer extends Component {
     constructor(props) {
         super(props);
@@ -115,9 +115,9 @@ class ReportContainer extends Component {
                             <CartesianGrid strokeDasharray="3 3"/>
                             <Tooltip/>
                             <Legend/>
-                            <Line type="monotone" dataKey="active" stroke="#1E88E5" name="В работе"/>
-                            <Line type="monotone" dataKey="created" stroke="#FDD835" name="Создано"/>
-                            <Line type="monotone" dataKey="resolved" stroke="#43A047" name="Решено"/>
+                            <Line type="monotone" dataKey="active" stroke={LINE_CHART_COLORS[0]} name="В работе"/>
+                            <Line type="monotone" dataKey="created" stroke={LINE_CHART_COLORS[1]} name="Создано"/>
+                            <Line type="monotone" dataKey="resolved" stroke={LINE_CHART_COLORS[2]} name="Решено"/>
                         </LineChart>
                     </ResponsiveContainer>
                 </Grid>
@@ -136,7 +136,7 @@ class ReportContainer extends Component {
                             >
                                 {
                                     aggregatedIssuesByPartner.map((entry, index) => <Cell key={`cell-${index}`}
-                                                                                          fill={COLORS2[index % COLORS2.length]}/>)
+                                                                                          fill={COLORS[index % COLORS.length]}/>)
                                 }
                             </Pie>
                         </PieChart>
@@ -146,25 +146,25 @@ class ReportContainer extends Component {
                     <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
                         <ScatterChart margin={{top: 30, right: 60, left: 0, bottom: 30}}>
                             <ReferenceArea x1={0} x2={sigma2.sigma} y1={0} y2={sigma2.sigmaMaxY}
-                                           fill="#A5D6A7" fillOpacity={1.0}/>
+                                           fill={SIGMA_COLORS[1]} fillOpacity={1.0}/>
                             <ReferenceArea x1={sigma2.sigma}
                                            x2={(sigma2.sigma * 2 > sigma2.sigmaMaxX) ? sigma2.sigmaMaxX : sigma2.sigma * 2}
                                            y1={0}
                                            y2={sigma2.sigmaMaxY}
-                                           fill="#E6EE9C" fillOpacity={1.0}/>
+                                           fill={SIGMA_COLORS[2]} fillOpacity={1.0}/>
                             <ReferenceArea x1={sigma2.sigma * 2} x2={sigma2.sigmaMaxX} y1={0} y2={sigma2.sigmaMaxY}
-                                           fill="#FFAB91" fillOpacity={1.0}/>
+                                           fill={SIGMA_COLORS[3]} fillOpacity={1.0}/>
                             <XAxis dataKey={'day'} type="number" name='Дни' unit='' domain={[0, sigma2.sigmaMaxX]}/>
                             <YAxis axisLine={false} dataKey={'count'} type="number" name='Количетство запросов' unit=''
                                    domain={[0, sigma2.sigmaMaxY]}/>
-                            <Scatter name='Активные запросы' data={sigma2.sigmaItems} fill='#8884d8'/>
+                            <Scatter name='Активные запросы' data={sigma2.sigmaItems} fill={SIGMA_COLORS[0]}/>
                             <Tooltip cursor={{strokeDasharray: '4 6'}}/>
                             <Legend
                                 payload={[
-                                    {value: 'Активные запросы', type: 'scatter', id: 'ID01', color: '#8884d8'},
-                                    {value: 'Активные запросы', type: 'square', id: 'ID01', color: '#A5D6A7'},
-                                    {value: 'Активные запросы', type: 'square', id: 'ID01', color: '#E6EE9C'},
-                                    {value: 'Активные запросы', type: 'square', id: 'ID01', color: '#FFAB91'}
+                                    /*{value: 'Активные запросы', type: 'scatter', id: 'ID01', color: SIGMA_COLORS[0]},*/
+                                    {value: 'Область допустимых значений', type: 'square', id: 'ID01', color: SIGMA_COLORS[1]},
+                                    {value: 'Область наблюдения', type: 'square', id: 'ID01', color: SIGMA_COLORS[2]},
+                                    {value: 'Область контроля', type: 'square', id: 'ID01', color: SIGMA_COLORS[3]}
                                 ]}/>
                         </ScatterChart>
                     </ResponsiveContainer>

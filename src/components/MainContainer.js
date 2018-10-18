@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {TimeAccountingDisplay} from "./TimeAccountingDisplay";
 import {IssuesDisplay} from "./IssuesDisplay";
-import {ETLDisplay} from "./ETLDisplay";
+import ETLDisplay from "./ETLDisplay";
 import ReportContainer from "./ReportContainer";
 
 export class MainContainer extends Component {
