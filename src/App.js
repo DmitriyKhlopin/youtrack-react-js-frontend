@@ -26,6 +26,7 @@ import connect from "react-redux/es/connect/connect";
 import store from "./redux/store";
 import {toggleAppBar} from "./redux/actions/appBarActions";
 import LicenseRequest from "./components/LicenseRequest";
+import AuthDisplay from "./components/AuthDisplay";
 
 export const history = createBrowserHistory();
 
@@ -93,6 +94,7 @@ class App extends React.Component {
                                 <Route exact path='/etl' component={ETLDisplay}/>
                                 <Route exact path='/issues' component={IssuesDisplay}/>
                                 <Route exact path='/license' component={LicenseRequest}/>
+                                <Route exact path='/login' component={AuthDisplay}/>
                             </Switch>
                         </main>
                     </div>

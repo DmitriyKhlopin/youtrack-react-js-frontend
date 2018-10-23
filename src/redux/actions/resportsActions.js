@@ -54,37 +54,5 @@ export function fetchReportData(/*projects, dateFrom, dateTo*/) {
                     payload: json
                 }))
             .catch(err => console.log(err));
-
-
-        /*const url2 = 'http://10.0.172.42:8081/api/chart/sigma?projects=' + projects + '&dateFrom=' + this.state.dateFrom + '&dateTo=' + this.state.dateTo;*/
-        /*fetch(baseUrl + 'sigma' + filters, obj)
-            .then(res => res.json())
-            .then(json => {
-                !this.isCancelled && this.setState({
-                    sigmaItems: json.data,
-                    sigma: json.sigma,
-                    isLoading: false,
-                    sigmaMaxX: Math.max(...json.data.map(item => item.day)) + 2,
-                    sigmaMaxY: Math.max(...json.data.map(item => item.count)) + 2,
-                });
-            });
-
-
-        fetch(url, obj)
-            .then(res => res.json())
-            .then(json => {
-                dispatch({
-                    type: 'FETCH_REPORT_FULFILLED',
-                    payload: {
-                        proj: json,
-                        projDefault: json.filter(item => !innerProjects.includes(item.shortName)),
-                        projSelected: json.filter(item => !innerProjects.includes(item.shortName))
-                    }
-                });
-            })
-            .catch(err => dispatch({
-                type: 'FETCH_REPORT_REJECTED',
-                payload: err
-            }));*/
     }
 }

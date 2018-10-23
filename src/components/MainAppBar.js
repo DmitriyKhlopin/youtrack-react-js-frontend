@@ -12,6 +12,7 @@ import {styles} from "../Styles";
 import store from "../redux/store";
 import {toggleAppBar} from "../redux/actions/appBarActions";
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import {Link} from "react-router-dom";
 
 class MainAppBar extends Component {
     render() {
@@ -31,7 +32,7 @@ class MainAppBar extends Component {
                         {this.props.appBarState.title}
                     </Typography>
                     <div className={classes.grow}/>
-                    <IconButton className={classes.menuButton} onClick={() => console.log('a')} color="inherit">
+                    <IconButton className={classes.menuButton} color="inherit" component={Link} to="/login">
                         <AccountCircle/>
                     </IconButton>
                 </Toolbar>
