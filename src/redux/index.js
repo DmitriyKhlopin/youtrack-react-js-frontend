@@ -3,10 +3,12 @@ import filtersReducers from "./reducers/filtersReducers";
 import reportsReducer from './reducers/reportsReducers';
 import etlFiltersReducers from "./reducers/etlFiltersReducers";
 import appBarReducers from "./reducers/appBarReducers";
+import licenseRequestReducers from "./reducers/licenseRequestReducers";
 
 export default combineReducers({
     filters: filtersReducers,
     etlFilters: etlFiltersReducers,
     reports: reportsReducer,
     appBarState: appBarReducers,
+    licenseRequestState: licenseRequestReducers
 });

@@ -25,6 +25,7 @@ import MainAppBar from "./components/MainAppBar";
 import connect from "react-redux/es/connect/connect";
 import store from "./redux/store";
 import {toggleAppBar} from "./redux/actions/appBarActions";
+import LicenseRequest from "./components/LicenseRequest";
 
 export const history = createBrowserHistory();
 
@@ -75,6 +76,13 @@ class App extends React.Component {
                                     </ListItemIcon>
                                     <ListItemText primary={'Запросы'}/>
                                 </ListItem>
+                                <ListItem component={Link} to="/license"
+                                          selected={this.props.appBarState.selectedId === 4}>
+                                    <ListItemIcon>
+                                        <MenuIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={'Получить лицензию'}/>
+                                </ListItem>
                             </div>
                         </Drawer>
                         <main className={classes.content}>
@@ -83,7 +91,8 @@ class App extends React.Component {
                                 <Route exact path='/' component={ReportContainer}/>
                                 <Route exact path='/time_accounting' component={TimeAccountingDisplay}/>
                                 <Route exact path='/etl' component={ETLDisplay}/>
-                                <Route path='/issues' component={IssuesDisplay}/>
+                                <Route exact path='/issues' component={IssuesDisplay}/>
+                                <Route exact path='/license' component={LicenseRequest}/>
                             </Switch>
                         </main>
                     </div>

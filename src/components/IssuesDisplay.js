@@ -2,16 +2,12 @@ import React, {Component} from "react";
 import {AUTH_TOKEN} from "../Config";
 import {IssueDetailsDisplay} from "./IssueDetailsDisplay";
 import Button from '@material-ui/core/Button';
-import MuiThemeProvider from "../../node_modules/@material-ui/core/styles/MuiThemeProvider";
-import createMuiTheme from "@material-ui/core/es/styles/createMuiTheme";
 import {YT_ENDPOINT} from "../Const";
 import * as PropTypes from "prop-types";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
 import {styles} from "../Styles";
 import store from "../redux/store";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
-
-const theme = createMuiTheme();
 
 class IssuesDisplay extends Component {
     constructor(props) {
@@ -52,10 +48,7 @@ class IssuesDisplay extends Component {
         if (issues === null) return <div>Loading issues</div>;
         if (activeIssue === -1) return <div>Loading issues</div>;
         if (issues.length === 0) return <div>There are no active issues</div>;
-        /*return <MuiThemeProvider> <Button variant="outlined" color="primary"
-                                          >aaa</Button></MuiThemeProvider>;*/
-
-        return <MuiThemeProvider theme={theme}>
+        return <div>
             {issues.map((item, index) => (
                 <Button variant="outlined" color="primary" className={classes.button}
                         key={index}
@@ -68,7 +61,7 @@ class IssuesDisplay extends Component {
             ))}
 
             <IssueDetailsDisplay id={issues[activeIssue].id} key={activeIssue}/>
-        </MuiThemeProvider>
+        </div>
 
     }
 }

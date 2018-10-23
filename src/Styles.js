@@ -26,7 +26,7 @@ export const styles = theme => ({
     },
     menuButton: {
         marginLeft: 12,
-        marginRight: 36,
+        marginRight: 12,
     },
     hide: {
         display: 'none',
@@ -58,10 +58,18 @@ export const styles = theme => ({
         padding: '0 8px',
         ...theme.mixins.toolbar,
     },
-    content: {
+    grow: {
         flexGrow: 1,
+    },
+    content: {
+        minHeight: '100vh',
+        maxHeight: '100vh',
+        overflow: 'auto',
+        flexGrow: 1,
+        padding: 0,
+        /*flexGrow: 1,
         backgroundColor: theme.palette.background.default,
-        padding: 0 /*theme.spacing.unit * 2*/,
+        padding: 0 */
     },
     button: {
         margin: theme.spacing.unit,
@@ -71,5 +79,14 @@ export const styles = theme => ({
     },
     textField: {
         margin: theme.spacing.unit,
+    },
+    formControl: {
+        marginTop: theme.spacing.unit * 2,
+        marginLeft: theme.spacing.unit * 2,
+        marginRight: theme.spacing.unit * 2,
+    },
+    group: {
+        minWidth: 300
+        /*margin: `${theme.spacing.unit}px 0`,*/
     },
 });
