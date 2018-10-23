@@ -5,16 +5,25 @@ import Button from '@material-ui/core/Button';
 import MuiThemeProvider from "../../node_modules/@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/es/styles/createMuiTheme";
 import {YT_ENDPOINT} from "../Const";
+import * as PropTypes from "prop-types";
+import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
+import {styles} from "../Styles";
+import store from "../redux/store";
+import {setSelectedNavItem} from "../redux/actions/appBarActions";
 
 const theme = createMuiTheme();
 
-export class IssuesDisplay extends Component {
+class IssuesDisplay extends Component {
     constructor(props) {
         super(props);
         this.state = {
             issues: null,
             activeIssue: -1,
         };
+    }
+
+    componentWillMount() {
+        store.dispatch(setSelectedNavItem({title: 'Запросы', selectedId: 3}));
     }
 
     componentWillUnmount() {
@@ -37,6 +46,7 @@ export class IssuesDisplay extends Component {
     }
 
     render() {
+        const {classes} = this.props;
         const issues = this.state.issues;
         const activeIssue = this.state.activeIssue;
         if (issues === null) return <div>Loading issues</div>;
@@ -47,7 +57,7 @@ export class IssuesDisplay extends Component {
 
         return <MuiThemeProvider theme={theme}>
             {issues.map((item, index) => (
-                <Button variant="outlined" color="primary"
+                <Button variant="outlined" color="primary" className={classes.button}
                         key={index}
                         onClick={() => {
                             this.setState({id: issues[index].id});
@@ -63,7 +73,8 @@ export class IssuesDisplay extends Component {
     }
 }
 
-/*
 IssuesDisplay.propTypes = {
     classes: PropTypes.object.isRequired,
-};*/
+};
+
+export default withStyles(styles, {withTheme: true})(IssuesDisplay);

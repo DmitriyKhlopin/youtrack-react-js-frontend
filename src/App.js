@@ -4,9 +4,6 @@ import './App.css';
 import classNames from 'classnames';
 import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -14,81 +11,84 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import * as PropTypes from "prop-types";
 import {styles} from "./Styles";
-import {MainContainer} from "./components/MainContainer";
-import {NAV_ITEMS} from "./Const";
-import {AbstractListItem} from "./components/navigation/AbstractListItem";
+import MuiThemeProvider from "../node_modules/@material-ui/core/styles/MuiThemeProvider";
+import createBrowserHistory from 'history/createBrowserHistory'
+import IssuesDisplay from "./components/IssuesDisplay";
+import {TimeAccountingDisplay} from "./components/TimeAccountingDisplay";
+import ETLDisplay from "./components/ETLDisplay";
+import ReportContainer from "./components/ReportContainer";
+import ListItemIcon from "../node_modules/@material-ui/core/ListItemIcon/ListItemIcon";
+import ListItemText from "../node_modules/@material-ui/core/ListItemText/ListItemText";
+import ListItem from "../node_modules/@material-ui/core/ListItem/ListItem";
+import {Link, Route, Router, Switch} from "react-router-dom";
+import MainAppBar from "./components/MainAppBar";
+import connect from "react-redux/es/connect/connect";
+import store from "./redux/store";
+import {toggleAppBar} from "./redux/actions/appBarActions";
 
+export const history = createBrowserHistory();
 
 class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleNavItemClick = this.handleNavItemClick.bind(this);
-        this.state = {
-            open: true,
-            activeNav: 0
-        };
-    }
-
-
-    handleDrawerOpen = () => {
-        this.setState({open: true});
-    };
-
-    handleDrawerClose = () => {
-        this.setState({open: false});
-    };
-
-    handleNavItemClick(id) {
-        this.setState({activeNav: id});
-    }
-
     render() {
         const {classes, theme} = this.props;
-        const activeNav = this.state.activeNav;
         return (
-            <div className={classes.root}>
-                <AppBar
-                    position="absolute"
-                    className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
-                >
-                    <Toolbar disableGutters={!this.state.open}>
-                        <IconButton
-                            color="inherit"
-                            aria-label="Open drawer"
-                            onClick={this.handleDrawerOpen}
-                            className={classNames(classes.menuButton, this.state.open && classes.hide)}
-                        >
-                            <MenuIcon/>
-                        </IconButton>
-                        <Typography className={classes.title} variant="title" color="inherit" noWrap>
-                            {/*Центр технической поддержки*/}
-                            {NAV_ITEMS[activeNav].name}
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <Drawer
-                    variant="permanent"
-                    classes={{
-                        paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-                    }}
-                    open={this.state.open}>
-                    <div className={classes.toolbar}>
-                        <IconButton onClick={this.handleDrawerClose}>
-                            {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
-                        </IconButton>
+            <Router history={history}>
+                <MuiThemeProvider theme={theme}>
+                    <div className={classes.root}>
+                        <MainAppBar/>
+                        <Drawer
+                            variant="permanent"
+                            classes={{
+                                paper: classNames(classes.drawerPaper, !this.props.appBarState.drawerOpened && classes.drawerPaperClose),
+                            }}
+                            open={this.props.appBarState.drawerOpened}>
+                            <div className={classes.toolbar}>
+                                <IconButton onClick={() => store.dispatch(toggleAppBar())}>
+                                    {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
+                                </IconButton>
+                            </div>
+                            <Divider/>
+                            <div>
+                                <ListItem component={Link} to="/" selected={this.props.appBarState.selectedId === 0}>
+                                    <ListItemIcon>
+                                        <MenuIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={'Отчёты'}/>
+                                </ListItem>
+                                <ListItem component={Link} to="/time_accounting"
+                                          selected={this.props.appBarState.selectedId === 1}>
+                                    <ListItemIcon>
+                                        <MenuIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={'Трудозатраты'}/>
+                                </ListItem>
+                                <ListItem component={Link} to="/etl" selected={this.props.appBarState.selectedId === 2}>
+                                    <ListItemIcon>
+                                        <MenuIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={'ETL'}/>
+                                </ListItem>
+                                <ListItem component={Link} to="/issues"
+                                          selected={this.props.appBarState.selectedId === 3}>
+                                    <ListItemIcon>
+                                        <MenuIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={'Запросы'}/>
+                                </ListItem>
+                            </div>
+                        </Drawer>
+                        <main className={classes.content}>
+                            <div className={classes.toolbar}/>
+                            <Switch>
+                                <Route exact path='/' component={ReportContainer}/>
+                                <Route exact path='/time_accounting' component={TimeAccountingDisplay}/>
+                                <Route exact path='/etl' component={ETLDisplay}/>
+                                <Route path='/issues' component={IssuesDisplay}/>
+                            </Switch>
+                        </main>
                     </div>
-                    <Divider/>
-                    {NAV_ITEMS.map((item, index) => (
-                        <AbstractListItem key={index} id={item.id} title={item.name}
-                                          onItemClick={this.handleNavItemClick}/>
-                    ))}
-                </Drawer>
-                <main className={classes.content}>
-                    <div className={classes.toolbar}/>
-                    <MainContainer id={activeNav}
-                                   key={activeNav}/>
-                </main>
-            </div>
+                </MuiThemeProvider>
+            </Router>
         );
     }
 }
@@ -98,4 +98,10 @@ App.propTypes = {
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, {withTheme: true})(App);
+function mapStateToProps(state) {
+    return {
+        appBarState: state.appBarState,
+    }
+}
+
+export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(App));

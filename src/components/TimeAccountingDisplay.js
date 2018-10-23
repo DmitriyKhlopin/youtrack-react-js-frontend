@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import moment from "moment";
 import ReactTable from "react-table";
+import store from "../redux/store";
+import {setSelectedNavItem} from "../redux/actions/appBarActions";
 
 export class TimeAccountingDisplay extends Component {
     constructor(props) {
@@ -12,6 +14,10 @@ export class TimeAccountingDisplay extends Component {
 
     componentWillUnmount() {
         this.isCancelled = true;
+    }
+
+    componentWillMount() {
+        store.dispatch(setSelectedNavItem({title: 'Трудозатраты', selectedId: 1}));
     }
 
     componentDidMount() {

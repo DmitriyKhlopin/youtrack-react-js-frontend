@@ -64,15 +64,11 @@ export const styles = theme => ({
         padding: 0 /*theme.spacing.unit * 2*/,
     },
     button: {
-        /*margin: theme.spacing.unit,*/
-        margin: 0,
+        margin: theme.spacing.unit,
     },
     input: {
         display: 'none',
     },
-    /*button: {
-        margin: theme.spacing.unit,
-    },*/
     textField: {
         margin: theme.spacing.unit,
     },

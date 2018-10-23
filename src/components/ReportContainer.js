@@ -26,6 +26,7 @@ import {connect} from "react-redux";
 import store from "../redux/store";
 import {fetchProjects} from "../redux/actions/filtersActions";
 import {fetchReportData} from "../redux/actions/resportsActions";
+import {setSelectedNavItem} from "../redux/actions/appBarActions";
 
 /*const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];*/
 /*const COLORS2 = ['#1B4079', '#4D7C8A', '#8FAD88', '#CBDF90'];*/
@@ -87,6 +88,7 @@ class ReportContainer extends Component {
     }
 
     componentWillMount() {
+        store.dispatch(setSelectedNavItem({title: 'Отчёты', selectedId: 0}));
         store.dispatch(fetchProjects());
     }
 
@@ -103,7 +105,6 @@ class ReportContainer extends Component {
         const sigma2 = this.props.reports.sigmaData;
         const dynamics = this.props.reports.dynamicsData;
         const aggregatedIssuesByPartner = this.props.reports.aggregatedIssuesByPartner;
-        console.log(aggregatedIssuesByPartner);
         return (
             <Grid container spacing={24}>
                 <Grid item md={12} lg={6}>
@@ -162,7 +163,12 @@ class ReportContainer extends Component {
                             <Legend
                                 payload={[
                                     /*{value: 'Активные запросы', type: 'scatter', id: 'ID01', color: SIGMA_COLORS[0]},*/
-                                    {value: 'Область допустимых значений', type: 'square', id: 'ID01', color: SIGMA_COLORS[1]},
+                                    {
+                                        value: 'Область допустимых значений',
+                                        type: 'square',
+                                        id: 'ID01',
+                                        color: SIGMA_COLORS[1]
+                                    },
                                     {value: 'Область наблюдения', type: 'square', id: 'ID01', color: SIGMA_COLORS[2]},
                                     {value: 'Область контроля', type: 'square', id: 'ID01', color: SIGMA_COLORS[3]}
                                 ]}/>
@@ -191,7 +197,8 @@ ReportContainer.propTypes = {
 function mapStateToProps(state) {
     return {
         filters: state.filters,
-        reports: state.reports
+        reports: state.reports,
+        appBarState: state.appBarState,
     }
 }
 
