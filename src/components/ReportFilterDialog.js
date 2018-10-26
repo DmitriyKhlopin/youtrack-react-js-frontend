@@ -11,7 +11,7 @@ import TextField from "../../node_modules/@material-ui/core/TextField/TextField"
 import moment from "moment";
 import connect from "react-redux/es/connect/connect";
 import store from "../redux/store";
-import {selectProjectsByMode, setDateFrom, setDateTo} from "../redux/actions/filtersActions";
+import {selectProjectsByMode, setDateFrom, setDateTo} from "../redux/actions/reportFiltersActions";
 
 const styles = theme => ({
     root: {
@@ -118,7 +118,7 @@ class ReportFilterDialog extends Component {
                     id="date"
                     label="Date from"
                     type="date"
-                    defaultValue={this.props.filters.dateFrom}
+                    defaultValue={this.props.reportFilters.dateFrom}
                     onChange={field => store.dispatch(setDateFrom(field.target.value)) /*this.setState({dateFrom: field.target.value})*/}
                     className={classes.textField}
                     InputLabelProps={{shrink: true,}}
@@ -128,7 +128,7 @@ class ReportFilterDialog extends Component {
                     id="date"
                     label="Date to"
                     type="date"
-                    defaultValue={this.props.filters.dateTo}
+                    defaultValue={this.props.reportFilters.dateTo}
                     onChange={field => store.dispatch(setDateTo(field.target.value)) /*this.setState({dateTo: field.target.value})*/}
                     className={classes.textField}
                     InputLabelProps={{shrink: true,}}
@@ -149,7 +149,7 @@ ReportFilterDialog.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        filters: state.filters
+        reportFilters: state.reportFilters
     }
 }
 

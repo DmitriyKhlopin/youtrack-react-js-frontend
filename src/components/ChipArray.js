@@ -4,7 +4,7 @@ import {withStyles} from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import DoneIcon from '@material-ui/icons/Done';
 import store from "../redux/store";
-import {addProjectToSelected, removeProjectFromSelected} from "../redux/actions/filtersActions";
+import {addProjectToSelected, removeProjectFromSelected} from "../redux/actions/reportFiltersActions";
 import connect from "react-redux/es/connect/connect";
 
 const styles = theme => ({
@@ -24,8 +24,8 @@ class ChipsArray extends React.Component {
 
     render() {
         const {classes} = this.props;
-        const allProjects = this.props.filters.proj;
-        const selected = this.props.filters.projSelected;
+        const allProjects = this.props.reportFilters.proj;
+        const selected = this.props.reportFilters.projSelected;
         const notSelected = allProjects.filter(item => !selected.map(item => item.shortName).includes(item.shortName));
         return (
             <div>
@@ -72,7 +72,7 @@ ChipsArray.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        filters: state.filters
+        reportFilters: state.reportFilters
     }
 }
 

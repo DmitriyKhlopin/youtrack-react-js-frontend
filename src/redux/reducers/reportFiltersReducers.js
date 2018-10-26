@@ -38,7 +38,7 @@ export default function reducer(state = {
             };
             break;
         }
-        case 'ADD_PROJECT_TO_SELECTED': {
+        case 'REPORT_FILTERS_ADD_PROJECT_TO_SELECTED': {
             const pr = [...state.projSelected];
             pr.push(...state.proj.filter(item => item.shortName === action.payload));
             pr.sort(compare);
@@ -48,7 +48,7 @@ export default function reducer(state = {
             };
             break;
         }
-        case 'REMOVE_PROJECT_FROM_SELECTED': {
+        case 'REPORT_FILTERS_REMOVE_PROJECT_FROM_SELECTED': {
             const pr = [...state.projSelected];
             const chipToDelete = pr.map(item => item.shortName).indexOf(action.payload);
             pr.splice(chipToDelete, 1);
@@ -59,21 +59,21 @@ export default function reducer(state = {
             };
             break;
         }
-        case 'SET_DATE_FROM': {
+        case 'REPORT_FILTERS_SET_DATE_FROM': {
             state = {
                 ...state,
                 dateFrom: action.payload
             };
             break;
         }
-        case 'SET_DATE_TO': {
+        case 'REPORT_FILTERS_SET_DATE_TO': {
             state = {
                 ...state,
                 dateTo: action.payload
             };
             break;
         }
-        case 'SELECT_PROJECTS_BY_MODE': {
+        case 'REPORT_FILTERS_SELECT_PROJECTS_BY_MODE': {
             switch (action.payload) {
                 case 'PP': {
                     const pr = [...state.proj];

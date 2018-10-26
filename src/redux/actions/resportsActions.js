@@ -11,9 +11,9 @@ export function fetchReportData(/*projects, dateFrom, dateTo*/) {
         };
         const state = getState();
         console.log(state);
-        const projects = state.filters.projSelected.map(item => item.shortName);
-        const dateFrom = state.filters.dateFrom;
-        const dateTo = state.filters.dateTo;
+        const projects = state.reportFilters.projSelected.map(item => item.shortName);
+        const dateFrom = state.reportFilters.dateFrom;
+        const dateTo = state.reportFilters.dateTo;
         const baseUrl = 'http://10.0.172.42:8081/api/chart/';
         const filters = '?projects=' + projects + '&dateFrom=' + dateFrom + '&dateTo=' + dateTo;
         fetch(baseUrl + 'dynamics' + filters, obj)

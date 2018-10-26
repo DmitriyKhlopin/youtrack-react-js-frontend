@@ -24,7 +24,7 @@ import ReportFilterDialog from "./ReportFilterDialog";
 import Grid from "../../node_modules/@material-ui/core/Grid/Grid";
 import {connect} from "react-redux";
 import store from "../redux/store";
-import {fetchProjects} from "../redux/actions/filtersActions";
+import {fetchProjects} from "../redux/actions/reportFiltersActions";
 import {fetchReportData} from "../redux/actions/resportsActions";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 
@@ -196,7 +196,7 @@ ReportContainer.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        filters: state.filters,
+        reportFilters: state.reportFilters,
         reports: state.reports,
         appBarState: state.appBarState,
     }
