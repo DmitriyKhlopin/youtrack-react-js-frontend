@@ -1,3 +1,5 @@
+import {ENDPOINT} from "../../Const";
+
 export function setEtlFilterDateFrom(dateFrom) {
     return function (dispatch) {
         dispatch({
@@ -29,7 +31,7 @@ export function fetchETL() {
             }
         };
 
-        const url = `http://10.0.172.42:8081/etl?dateFrom=${dateFrom}&dateTo=${dateTo}`;
+        const url = `${ENDPOINT}/etl?dateFrom=${dateFrom}&dateTo=${dateTo}`;
         fetch(url, obj)
             .then(res => res.json())
             .then(json => {

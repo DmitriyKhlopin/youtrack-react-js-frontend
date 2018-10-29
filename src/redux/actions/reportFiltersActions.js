@@ -1,4 +1,4 @@
-import {innerProjects} from "../../Const";
+import {ENDPOINT, innerProjects} from "../../Const";
 
 export function fetchProjects() {
     return function (dispatch) {
@@ -10,7 +10,7 @@ export function fetchProjects() {
             }
         };
 
-        const url = "http://10.0.172.42:8081/api/project";
+        const url = `${ENDPOINT}/api/project`;
         fetch(url, obj)
             .then(res => res.json())
             .then(json => {

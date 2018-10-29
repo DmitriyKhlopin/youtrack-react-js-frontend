@@ -1,4 +1,5 @@
 export const YT_ENDPOINT = "http://support.fsight.ru/rest/";
+export const ENDPOINT = 'http://10.9.172.12:8081';
 
 export const drawerWidth = 240;
 

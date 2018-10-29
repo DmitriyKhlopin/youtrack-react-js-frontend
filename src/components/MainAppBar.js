@@ -19,13 +19,13 @@ class MainAppBar extends Component {
         const {classes} = this.props;
         return (<AppBar
                 position="fixed"
-                className={classNames(classes.appBar, this.props.appBarState.drawerOpened && classes.appBarShift)}>
-                <Toolbar disableGutters={!this.props.appBarState.drawerOpened}>
+                className={classNames(classes.appBar)}>
+                <Toolbar disableGutters={true}>
                     <IconButton
                         color="inherit"
                         aria-label="Open drawer"
                         onClick={() => store.dispatch(toggleAppBar())}
-                        className={classNames(classes.menuButton, this.props.appBarState.drawerOpened && classes.hide)}>
+                        className={classNames(classes.menuButton)}>
                         <MenuIcon/>
                     </IconButton>
                     <Typography className={classes.title} variant="title" color="inherit" noWrap>

@@ -1,8 +1,8 @@
-import {innerProjects} from "../../Const";
+import {ENDPOINT, innerProjects} from "../../Const";
 
-export function fetchProjects() {
+export function feetchEmpoyees() {
     return function (dispatch) {
-        dispatch({type: "FETCH_PROJECTS_PENDING"});
+        dispatch({type: "FETCH_TIME_ACCOUNTING_EMPLOYEES"});
         const obj = {
             method: 'GET',
             headers: {
@@ -10,12 +10,12 @@ export function fetchProjects() {
             }
         };
 
-        const url = "http://10.0.172.42:8081/api/project";
+        const url = `${ENDPOINT}/api/project`;
         fetch(url, obj)
             .then(res => res.json())
             .then(json => {
                 dispatch({
-                    type: "FETCH_PROJECTS_FULFILLED",
+                    type: "FETCH_TIME_ACCOUNTING_EMPLOYEES_FULFILLED",
                     payload: {
                         proj: json,
                         projDefault: json.filter(item => !innerProjects.includes(item.shortName)),
@@ -24,7 +24,7 @@ export function fetchProjects() {
                 });
             })
             .catch(err => dispatch({
-                type: "FETCH_PROJECTS_REJECTED",
+                type: "FETCH_TIME_ACCOUNTING_EMPLOYEES_REJECTED",
                 payload: err
             }));
     }
@@ -51,7 +51,7 @@ export function removeProjectFromSelected(id) {
 export function selectProjectsByMode(mode) {
     return function (dispatch) {
         dispatch({
-            type: "SELECT_PROJECTS_BY_MODE",
+            type: "TIME_ACCOUNTING_SELECT_PROJECTS_BY_MODE",
             payload: mode
         });
     }
@@ -60,7 +60,7 @@ export function selectProjectsByMode(mode) {
 export function setDateFrom(dateFrom) {
     return function (dispatch) {
         dispatch({
-            type: "SET_DATE_FROM",
+            type: "TIME_ACCOUNTING_FILTERS_SET_DATE_FROM",
             payload: dateFrom
         });
     }
@@ -69,7 +69,7 @@ export function setDateFrom(dateFrom) {
 export function setDateTo(dateTo) {
     return function (dispatch) {
         dispatch({
-            type: "SET_DATE_TO",
+            type: "TIME_ACCOUNTING_SET_DATE_TO",
             payload: dateTo
         });
     }

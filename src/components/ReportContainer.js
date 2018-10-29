@@ -27,6 +27,7 @@ import store from "../redux/store";
 import {fetchProjects} from "../redux/actions/reportFiltersActions";
 import {fetchReportData} from "../redux/actions/resportsActions";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
+import {styles} from "../Styles";
 
 /*const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];*/
 /*const COLORS2 = ['#1B4079', '#4D7C8A', '#8FAD88', '#CBDF90'];*/
@@ -35,25 +36,6 @@ import {setSelectedNavItem} from "../redux/actions/appBarActions";
 const LINE_CHART_COLORS = ['#3498db', '#f1c40f', '#2ecc71'];
 const COLORS = ['#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#34495e', '#f1c40f', '#e67e22', '#e74c3c', '#ecf0f1', '#95a5a6'];
 const SIGMA_COLORS = ['#34495e', '#2ecc71', '#f1c40f', '#e67e22'];
-
-const styles = theme => ({
-    root: {
-        display: 'flex',
-        justifyContent: 'center',
-        flexWrap: 'wrap',
-        padding: theme.spacing.unit / 2,
-    },
-    fab: {
-        position: 'absolute',
-        top: theme.spacing.unit * 2 + 64,
-        right: theme.spacing.unit * 2,
-    },
-    fabLoad: {
-        position: 'absolute',
-        top: theme.spacing.unit * 2 + 64,
-        right: theme.spacing.unit * 2 + 64,
-    },
-});
 const RADIAN = Math.PI / 180;
 
 const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index, value, name, fill}) => {
@@ -106,7 +88,7 @@ class ReportContainer extends Component {
         const dynamics = this.props.reports.dynamicsData;
         const aggregatedIssuesByPartner = this.props.reports.aggregatedIssuesByPartner;
         return (
-            <Grid container spacing={24}>
+            <Grid container spacing={24} className={classes.componentRoot}>
                 <Grid item md={12} lg={6}>
                     <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
                         <LineChart data={dynamics}

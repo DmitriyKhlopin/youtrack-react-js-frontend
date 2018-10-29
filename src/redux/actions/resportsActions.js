@@ -1,4 +1,5 @@
 import moment from 'moment';
+import {ENDPOINT} from "../../Const";
 
 export function fetchReportData(/*projects, dateFrom, dateTo*/) {
     return function (dispatch, getState) {
@@ -14,7 +15,7 @@ export function fetchReportData(/*projects, dateFrom, dateTo*/) {
         const projects = state.reportFilters.projSelected.map(item => item.shortName);
         const dateFrom = state.reportFilters.dateFrom;
         const dateTo = state.reportFilters.dateTo;
-        const baseUrl = 'http://10.0.172.42:8081/api/chart/';
+        const baseUrl = `${ENDPOINT}/api/chart/`;
         const filters = '?projects=' + projects + '&dateFrom=' + dateFrom + '&dateTo=' + dateTo;
         fetch(baseUrl + 'dynamics' + filters, obj)
             .then(res => res.json())

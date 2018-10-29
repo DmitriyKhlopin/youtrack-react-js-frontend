@@ -87,7 +87,6 @@ class App extends React.Component {
                             </div>
                         </Drawer>
                         <main className={classes.content}>
-                            <div className={classes.toolbar}/>
                             <Switch>
                                 <Route exact path='/' component={ReportContainer}/>
                                 <Route exact path='/time_accounting' component={TimeAccountingDisplay}/>
