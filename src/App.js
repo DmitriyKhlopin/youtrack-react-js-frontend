@@ -33,7 +33,6 @@ export const history = createBrowserHistory();
 
 class App extends React.Component {
     handleClose = () => {
-        /*this.setState({open: false});*/
         store.dispatch(closeMainDialog());
     };
 

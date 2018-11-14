@@ -6,12 +6,10 @@ import Button from "../../node_modules/@material-ui/core/Button/Button";
 import Dialog from "../../node_modules/@material-ui/core/Dialog/Dialog";
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core/styles";
-import ChipsArray from "./ChipArray";
-import TextField from "../../node_modules/@material-ui/core/TextField/TextField";
 import connect from "react-redux/es/connect/connect";
-import store from "../redux/store";
-import {selectProjectsByMode, setDateFrom, setDateTo} from "../redux/actions/reportFiltersActions";
 import {styles} from "../Styles";
+import Typography from "@material-ui/core/Typography/Typography";
+
 
 class ReportFilterDialog extends Component {
     handleClose = () => {
@@ -20,54 +18,38 @@ class ReportFilterDialog extends Component {
 
     render() {
         const {classes} = this.props;
+        const noDescriptionHelp = <DialogContent className={classes.dialog}>
+            <Typography style={{width: '100vw'}}>
+                Unfortunately I'm undefined :(
+            </Typography>
+        </DialogContent>;
+
+        const timeAccountingHelp = <DialogContent className={classes.dialog}>
+            <Typography style={{width: '100vw'}}>
+                Трудозатраты выгружаются в соотвествии с расписанием cron-планировщика:
+            </Typography>
+            <Typography style={{width: '100vw'}}>
+                '0 0/10 * * * *'
+            </Typography>
+            <br/>
+            <Typography align={'left'} style={{width: '100vw'}}>
+                Если их нет в таблице через 10 минут после внесения, то проверьте их наличие в YT и фильтры
+                отчёта.
+            </Typography>
+            <br/>
+            <Typography align={'left'} style={{width: '100vw'}}>
+                Вот вам описание, теперь всё должно быть понятно.
+            </Typography>
+        </DialogContent>;
+        const m = new Map();
+        m.set(1, timeAccountingHelp);
+        console.log(m.get(this.props.appBarState.selectedId));
         return <Dialog
             open={this.props.open}
             scroll={'paper'}
             aria-labelledby="scroll-dialog-title">
-            <DialogTitle id="scroll-dialog-title">Параметры отчёта</DialogTitle>
-            <DialogContent className={classes.dialog}>
-                <ChipsArray/>
-                <Button variant="outlined" color="primary" className={classes.button}
-                        onClick={() => store.dispatch(selectProjectsByMode('PP'))}>
-                    Внешние проекты
-                </Button>
-                <Button variant="outlined" color="primary" className={classes.button}
-                        onClick={() => store.dispatch(selectProjectsByMode('notPP'))}>
-                    Внутренние проекты
-                </Button>
-                <Button variant="outlined" color="primary" className={classes.button}
-                        onClick={() => store.dispatch(selectProjectsByMode('LIC'))}>
-                    Лицензирование
-                </Button>
-                <Button variant="outlined" color="primary" className={classes.button}
-                        onClick={() => store.dispatch(selectProjectsByMode('ALL'))}>
-                    Все проекты
-                </Button>
-                <Button variant="outlined" color="primary" className={classes.button}
-                        onClick={() => store.dispatch(selectProjectsByMode('NONE'))}>
-                    Снять отметку
-                </Button>
-                <TextField
-                    variant="outlined"
-                    id="date"
-                    label="Date from"
-                    type="date"
-                    defaultValue={this.props.reportFilters.dateFrom}
-                    onChange={field => store.dispatch(setDateFrom(field.target.value)) /*this.setState({dateFrom: field.target.value})*/}
-                    className={classes.textField}
-                    InputLabelProps={{shrink: true,}}
-                />
-                <TextField
-                    variant="outlined"
-                    id="date"
-                    label="Date to"
-                    type="date"
-                    defaultValue={this.props.reportFilters.dateTo}
-                    onChange={field => store.dispatch(setDateTo(field.target.value)) /*this.setState({dateTo: field.target.value})*/}
-                    className={classes.textField}
-                    InputLabelProps={{shrink: true,}}
-                />
-            </DialogContent>
+            <DialogTitle id="scroll-dialog-title">{this.props.appBarState.title}</DialogTitle>
+            {m.get(this.props.appBarState.selectedId) ? m.get(this.props.appBarState.selectedId) : noDescriptionHelp}
             <DialogActions>
                 <Button onClick={this.handleClose} color="primary">
                     Закрыть
@@ -83,7 +65,7 @@ ReportFilterDialog.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        reportFilters: state.reportFilters
+        appBarState: state.appBarState,
     }
 }
 
