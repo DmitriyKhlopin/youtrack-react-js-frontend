@@ -1,7 +1,7 @@
 import moment from 'moment';
 import {ENDPOINT} from "../../Const";
 
-export function fetchReportData(/*projects, dateFrom, dateTo*/) {
+export function fetchReportData() {
     return function (dispatch, getState) {
         dispatch({type: 'FETCH_REPORT_PENDING'});
         const obj = {

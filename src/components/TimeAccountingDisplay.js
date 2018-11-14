@@ -10,6 +10,7 @@ import connect from "react-redux/es/connect/connect";
 import FilterIcon from '@material-ui/icons/Settings';
 import Button from "@material-ui/core/Button/Button";
 import TimeAccountingFilterDialog from "./TimeAccountingFilterDialog";
+import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
 
 class TimeAccountingDisplay extends Component {
     constructor(props) {
@@ -34,31 +35,23 @@ class TimeAccountingDisplay extends Component {
     };
 
     handleClose = () => {
+        store.dispatch(fetchTimeAccountingData());
         this.setState({open: false});
     };
 
     componentDidMount() {
-        const myHeaders = new Headers();
-        myHeaders.append('Accept', 'application/json');
-        const url = "http://10.9.172.76:8081/api/wi_today";
-        fetch(url, {
-            method: "GET",
-            headers: myHeaders
-        }).then(res => res.json()).then(json => {
-            !this.isCancelled && this.setState({items: json});
-        }).catch(err => console.log(err));
+        store.dispatch(fetchTimeAccountingData());
     }
 
     render() {
         const {classes} = this.props;
-        const items = this.state.items;
+        const items = this.props.timeAccountingData.timeData;
         if (items === null) return <div>Loading</div>;
         if (items.length === 0) return <div>No items to display</div>;
-        const i = items.map(item => item.id).reduce(
+        /*const i = items.map(item => item.id).reduce(
             (a, b, i, arr) =>
                 (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
-            null);
-        console.log(i);
+            null);*/
         const columns = [{
             Header: 'ID',
             accessor: 'id',
@@ -78,7 +71,7 @@ class TimeAccountingDisplay extends Component {
                     row[filter.id].endsWith(filter.value)
             },
             {Header: 'Трудозатраты', accessor: 'units',},
-            {id: 'crDate', Header: 'Дата', accessor: d => moment(d).format('YYYY-MM-DD')},
+            {id: 'crDate', Header: 'Дата', accessor: d => moment(d.changedDate).format('YYYY-MM-DD')},
             {
                 Header: 'Проект',
                 accessor: 'projects',
@@ -128,9 +121,10 @@ TimeAccountingDisplay.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        reportFilters: state.reportFilters,
-        reports: state.reports,
+        /*reportFilters: state.reportFilters,
+        reports: state.reports,*/
         appBarState: state.appBarState,
+        timeAccountingData: state.timeAccountingData,
     }
 }
 

@@ -9,8 +9,8 @@ import {withStyles} from "@material-ui/core/styles";
 import TextField from "../../node_modules/@material-ui/core/TextField/TextField";
 import connect from "react-redux/es/connect/connect";
 import store from "../redux/store";
-import {setDateFrom, setDateTo} from "../redux/actions/reportFiltersActions";
 import {styles} from "../Styles";
+import {setTimeAccountingDateFrom, setTimeAccountingDateTo} from "../redux/actions/timeAccountingFiltersActions";
 
 class TimeAccountingFilterDialog extends Component {
     handleClose = () => {
@@ -30,8 +30,8 @@ class TimeAccountingFilterDialog extends Component {
                     id="date"
                     label="Date from"
                     type="date"
-                    defaultValue={this.props.reportFilters.dateFrom}
-                    onChange={field => store.dispatch(setDateFrom(field.target.value)) /*this.setState({dateFrom: field.target.value})*/}
+                    defaultValue={this.props.filters.dateFrom}
+                    onChange={field => store.dispatch(setTimeAccountingDateFrom(field.target.value))}
                     className={classes.textField}
                     InputLabelProps={{shrink: true,}}
                 />
@@ -40,8 +40,8 @@ class TimeAccountingFilterDialog extends Component {
                     id="date"
                     label="Date to"
                     type="date"
-                    defaultValue={this.props.reportFilters.dateTo}
-                    onChange={field => store.dispatch(setDateTo(field.target.value)) /*this.setState({dateTo: field.target.value})*/}
+                    defaultValue={this.props.filters.dateTo}
+                    onChange={field => store.dispatch(setTimeAccountingDateTo(field.target.value))}
                     className={classes.textField}
                     InputLabelProps={{shrink: true,}}
                 />
@@ -64,7 +64,7 @@ TimeAccountingFilterDialog.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        reportFilters: state.reportFilters
+        filters: state.timeAccountingFilters
     }
 }
 

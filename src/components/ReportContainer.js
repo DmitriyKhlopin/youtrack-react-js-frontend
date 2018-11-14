@@ -25,7 +25,7 @@ import Grid from "../../node_modules/@material-ui/core/Grid/Grid";
 import {connect} from "react-redux";
 import store from "../redux/store";
 import {fetchProjects} from "../redux/actions/reportFiltersActions";
-import {fetchReportData} from "../redux/actions/resportsActions";
+import {fetchReportData} from "../redux/actions/reportsActions";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import {styles} from "../Styles";
 

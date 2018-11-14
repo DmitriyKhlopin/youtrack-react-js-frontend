@@ -30,34 +30,7 @@ export function feetchEmpoyees() {
     }
 }
 
-export function addProjectToSelected(id) {
-    return function (dispatch) {
-        dispatch({
-            type: "ADD_PROJECT_TO_SELECTED",
-            payload: id
-        });
-    }
-}
-
-export function removeProjectFromSelected(id) {
-    return function (dispatch) {
-        dispatch({
-            type: "REMOVE_PROJECT_FROM_SELECTED",
-            payload: id
-        });
-    }
-}
-
-export function selectProjectsByMode(mode) {
-    return function (dispatch) {
-        dispatch({
-            type: "TIME_ACCOUNTING_SELECT_PROJECTS_BY_MODE",
-            payload: mode
-        });
-    }
-}
-
-export function setDateFrom(dateFrom) {
+export function setTimeAccountingDateFrom(dateFrom) {
     return function (dispatch) {
         dispatch({
             type: "TIME_ACCOUNTING_FILTERS_SET_DATE_FROM",
@@ -66,10 +39,10 @@ export function setDateFrom(dateFrom) {
     }
 }
 
-export function setDateTo(dateTo) {
+export function setTimeAccountingDateTo(dateTo) {
     return function (dispatch) {
         dispatch({
-            type: "TIME_ACCOUNTING_SET_DATE_TO",
+            type: "TIME_ACCOUNTING_FILTERS_SET_DATE_TO",
             payload: dateTo
         });
     }
