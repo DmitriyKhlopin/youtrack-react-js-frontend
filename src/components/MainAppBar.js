@@ -10,11 +10,16 @@ import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import {styles} from "../Styles";
 import store from "../redux/store";
-import {toggleAppBar} from "../redux/actions/appBarActions";
+import {openMainDialog, toggleAppBar} from "../redux/actions/appBarActions";
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import {Link} from "react-router-dom";
+import NotificationsIcon from '@material-ui/icons/Help';
 
 class MainAppBar extends Component {
+    handleClickOpenMainDialog = () => {
+        store.dispatch(openMainDialog());
+    };
+
     render() {
         const {classes} = this.props;
         return (<AppBar
@@ -31,6 +36,11 @@ class MainAppBar extends Component {
                     <Typography className={classes.title} variant="title" color="inherit" noWrap>
                         {this.props.appBarState.title}
                     </Typography>
+                    <div>
+                        <IconButton color="inherit" onClick={this.handleClickOpenMainDialog}>
+                            <NotificationsIcon/>
+                        </IconButton>
+                    </div>
                     <div className={classes.grow}/>
                     <IconButton className={classes.menuButton} color="inherit" component={Link} to="/login">
                         <AccountCircle/>

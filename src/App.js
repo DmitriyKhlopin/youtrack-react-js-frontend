@@ -24,13 +24,19 @@ import {Link, Route, Router, Switch} from "react-router-dom";
 import MainAppBar from "./components/MainAppBar";
 import connect from "react-redux/es/connect/connect";
 import store from "./redux/store";
-import {toggleAppBar} from "./redux/actions/appBarActions";
+import {closeMainDialog, toggleAppBar} from "./redux/actions/appBarActions";
 import LicenseRequest from "./components/LicenseRequest";
 import AuthDisplay from "./components/AuthDisplay";
+import HelpDialog from "./components/HelpDialog";
 
 export const history = createBrowserHistory();
 
 class App extends React.Component {
+    handleClose = () => {
+        /*this.setState({open: false});*/
+        store.dispatch(closeMainDialog());
+    };
+
     render() {
         const {classes, theme} = this.props;
         return (
@@ -96,6 +102,9 @@ class App extends React.Component {
                                 <Route exact path='/login' component={AuthDisplay}/>
                             </Switch>
                         </main>
+                        <HelpDialog open={this.props.appBarState.dialogOpened}
+                                    handleClose={this.handleClose}
+                                    aria-labelledby="scroll-dialog-title"/>
                     </div>
                 </MuiThemeProvider>
             </Router>
