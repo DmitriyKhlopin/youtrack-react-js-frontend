@@ -3,11 +3,20 @@ import moment from "moment";
 import ReactTable from "react-table";
 import store from "../redux/store";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
+import * as PropTypes from "prop-types";
+import withStyles from "@material-ui/core/styles/withStyles";
+import {styles} from "../Styles";
+import connect from "react-redux/es/connect/connect";
+import FilterIcon from '@material-ui/icons/Settings';
+import Button from "@material-ui/core/Button/Button";
+import TimeAccountingFilterDialog from "./TimeAccountingFilterDialog";
 
-export class TimeAccountingDisplay extends Component {
+class TimeAccountingDisplay extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            open: false,
+            scroll: 'paper',
             items: []
         }
     }
@@ -20,10 +29,18 @@ export class TimeAccountingDisplay extends Component {
         store.dispatch(setSelectedNavItem({title: 'Трудозатраты', selectedId: 1}));
     }
 
+    handleClickOpen = scroll => () => {
+        this.setState({open: true, scroll});
+    };
+
+    handleClose = () => {
+        this.setState({open: false});
+    };
+
     componentDidMount() {
         const myHeaders = new Headers();
         myHeaders.append('Accept', 'application/json');
-        const url = "http://10.0.172.42:8081/api/wi_today";
+        const url = "http://10.9.172.76:8081/api/wi_today";
         fetch(url, {
             method: "GET",
             headers: myHeaders
@@ -33,6 +50,7 @@ export class TimeAccountingDisplay extends Component {
     }
 
     render() {
+        const {classes} = this.props;
         const items = this.state.items;
         if (items === null) return <div>Loading</div>;
         if (items.length === 0) return <div>No items to display</div>;
@@ -85,12 +103,35 @@ export class TimeAccountingDisplay extends Component {
                     row[filter.id].endsWith(filter.value)
             }];
 
-        return <ReactTable
-            data={items}
-            filterable
-            defaultFilterMethod={(filter, row) =>
-                String(row[filter.id]) === filter.value}
-            columns={columns}
-        />
+        return <div>
+            <ReactTable
+                style={{width: '100vw'}}
+                data={items}
+                filterable
+                defaultFilterMethod={(filter, row) =>
+                    String(row[filter.id]) === filter.value}
+                columns={columns}
+            />
+            <TimeAccountingFilterDialog open={this.state.open}
+                                        handleClose={this.handleClose}
+                                        aria-labelledby="scroll-dialog-title"/>
+            <Button variant="fab" className={classes.fab} color={'primary'} onClick={this.handleClickOpen('paper')}>
+                <FilterIcon/>
+            </Button>
+        </div>
     }
 }
+
+TimeAccountingDisplay.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+function mapStateToProps(state) {
+    return {
+        reportFilters: state.reportFilters,
+        reports: state.reports,
+        appBarState: state.appBarState,
+    }
+}
+
+export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(TimeAccountingDisplay));

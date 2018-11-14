@@ -14,7 +14,7 @@ import {styles} from "./Styles";
 import MuiThemeProvider from "../node_modules/@material-ui/core/styles/MuiThemeProvider";
 import createBrowserHistory from 'history/createBrowserHistory'
 import IssuesDisplay from "./components/IssuesDisplay";
-import {TimeAccountingDisplay} from "./components/TimeAccountingDisplay";
+import TimeAccountingDisplay from "./components/TimeAccountingDisplay";
 import ETLDisplay from "./components/ETLDisplay";
 import ReportContainer from "./components/ReportContainer";
 import ListItemIcon from "../node_modules/@material-ui/core/ListItemIcon/ListItemIcon";
