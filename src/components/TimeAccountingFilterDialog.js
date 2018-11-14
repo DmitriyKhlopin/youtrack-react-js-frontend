@@ -13,7 +13,12 @@ import {styles} from "../Styles";
 import {setTimeAccountingDateFrom, setTimeAccountingDateTo} from "../redux/actions/timeAccountingFiltersActions";
 
 class TimeAccountingFilterDialog extends Component {
-    handleClose = () => {
+    state = {df: this.props.filters.dateFrom, dt: this.props.filters.dateTo};
+    handleClose = update => () => {
+        if (update === true) {
+            store.dispatch(setTimeAccountingDateFrom(this.state.df));
+            store.dispatch(setTimeAccountingDateTo(this.state.dt));
+        }
         this.props.handleClose(false, null, null, [])
     };
 
@@ -31,7 +36,7 @@ class TimeAccountingFilterDialog extends Component {
                     label="Date from"
                     type="date"
                     defaultValue={this.props.filters.dateFrom}
-                    onChange={field => store.dispatch(setTimeAccountingDateFrom(field.target.value))}
+                    onChange={field => this.setState({df: field.target.value})}
                     className={classes.textField}
                     InputLabelProps={{shrink: true,}}
                 />
@@ -41,16 +46,16 @@ class TimeAccountingFilterDialog extends Component {
                     label="Date to"
                     type="date"
                     defaultValue={this.props.filters.dateTo}
-                    onChange={field => store.dispatch(setTimeAccountingDateTo(field.target.value))}
+                    onChange={field => this.setState({dt: field.target.value})}
                     className={classes.textField}
                     InputLabelProps={{shrink: true,}}
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={this.handleClose} color="primary">
+                <Button onClick={this.handleClose(true)} color="primary">
                     Применить
                 </Button>
-                <Button onClick={this.handleClose} color="primary">
+                <Button onClick={this.handleClose(false)} color="primary">
                     Закрыть
                 </Button>
             </DialogActions>

@@ -11,6 +11,7 @@ import FilterIcon from '@material-ui/icons/Settings';
 import Button from "@material-ui/core/Button/Button";
 import TimeAccountingFilterDialog from "./TimeAccountingFilterDialog";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 class TimeAccountingDisplay extends Component {
     constructor(props) {
@@ -30,12 +31,16 @@ class TimeAccountingDisplay extends Component {
         store.dispatch(setSelectedNavItem({title: 'Трудозатраты', selectedId: 1}));
     }
 
+    requestData = () => {
+        store.dispatch(fetchTimeAccountingData());
+    };
+
     handleClickOpen = scroll => () => {
         this.setState({open: true, scroll});
     };
 
     handleClose = () => {
-        store.dispatch(fetchTimeAccountingData());
+        this.requestData();
         this.setState({open: false});
     };
 
@@ -108,7 +113,12 @@ class TimeAccountingDisplay extends Component {
             <TimeAccountingFilterDialog open={this.state.open}
                                         handleClose={this.handleClose}
                                         aria-labelledby="scroll-dialog-title"/>
-            <Button variant="fab" className={classes.fab} color={'primary'} onClick={this.handleClickOpen('paper')}>
+            <Button variant="fab" mini className={classes.fabLoad} color={'secondary'}
+                    onClick={this.requestData}>
+                <RefreshIcon/>
+            </Button>
+            <Button variant="fab" mini className={classes.fab} color={'primary'}
+                    onClick={this.handleClickOpen('paper')}>
                 <FilterIcon/>
             </Button>
         </div>

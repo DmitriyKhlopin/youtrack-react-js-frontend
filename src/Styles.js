@@ -92,7 +92,7 @@ export const styles = theme => ({
     fabLoad: {
         position: 'absolute',
         top: theme.spacing.unit * 2 + 64,
-        right: theme.spacing.unit * 2 + 64,
+        right: theme.spacing.unit * 2 + 48,
     },
     componentRoot: {
         ...theme.mixins.gutters(),

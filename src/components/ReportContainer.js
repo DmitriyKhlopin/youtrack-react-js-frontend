@@ -157,11 +157,12 @@ class ReportContainer extends Component {
                         </ScatterChart>
                     </ResponsiveContainer>
                 </Grid>
-                <Button variant="fab" className={classes.fabLoad} color={'secondary'}
+                <Button variant="fab" mini className={classes.fabLoad} color={'secondary'}
                         onClick={() => store.dispatch(fetchReportData())}>
                     <RefreshIcon/>
                 </Button>
-                <Button variant="fab" className={classes.fab} color={'primary'} onClick={this.handleClickOpen('paper')}>
+                <Button variant="fab" mini className={classes.fab} color={'primary'}
+                        onClick={this.handleClickOpen('paper')}>
                     <FilterIcon/>
                 </Button>
                 <ReportFilterDialog open={this.state.open}
