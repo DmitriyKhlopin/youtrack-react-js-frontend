@@ -71,6 +71,13 @@ export const styles = theme => ({
         marginLeft: theme.spacing.unit * 2,
         marginRight: theme.spacing.unit * 2,
     },
+    formControlMultiSelect: {
+        margin: theme.spacing.unit,
+        maxWidth: 300,
+        minWidth: 300,
+        minHeight: 48,
+
+    },
     group: {
         minWidth: 300
     },
