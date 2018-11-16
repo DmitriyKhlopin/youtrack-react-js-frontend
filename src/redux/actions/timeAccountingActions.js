@@ -17,11 +17,6 @@ export function fetchTimeAccountingData() {
         fetch(`${ENDPOINT}/api/time${filters}`, obj)
             .then(res => res.json())
             .then(json => {
-                    /*const res = json.map(function (item) {
-                        item.week = moment(item.week).format('L');
-                        return item
-                    });*/
-                    console.log(json);
                     dispatch({
                         type: 'FETCH_TIME_ACCOUNTING_FULFILLED',
                         payload: json
@@ -32,6 +27,36 @@ export function fetchTimeAccountingData() {
                 console.log(err);
                 dispatch({
                     type: 'FETCH_TIME_ACCOUNTING_FAILED',
+                    payload: err
+                });
+            });
+    }
+}
+
+export function fetchTimeAccountingDictionaryData() {
+    return function (dispatch, getState) {
+        dispatch({type: 'FETCH_TIME_ACCOUNTING_DICTIONARY_PENDING'});
+        const obj = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        };
+        const state = getState();
+        console.log(state);
+        fetch(`${ENDPOINT}/api/time/dictionary`, obj)
+            .then(res => res.json())
+            .then(json => {
+                    dispatch({
+                        type: 'FETCH_TIME_ACCOUNTING_DICTIONARY_FULFILLED',
+                        payload: json
+                    })
+                }
+            )
+            .catch(err => {
+                console.log(err);
+                dispatch({
+                    type: 'FETCH_TIME_ACCOUNTING_DICTIONARY_FAILED',
                     payload: err
                 });
             });

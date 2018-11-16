@@ -28,6 +28,7 @@ import {closeMainDialog, toggleAppBar} from "./redux/actions/appBarActions";
 import LicenseRequest from "./components/LicenseRequest";
 import AuthDisplay from "./components/AuthDisplay";
 import HelpDialog from "./components/HelpDialog";
+import AccountedTimeDisplay from "./components/AccountedTimeDisplay";
 
 export const history = createBrowserHistory();
 
@@ -61,6 +62,13 @@ class App extends React.Component {
                                         <MenuIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={'Отчёты'}/>
+                                </ListItem>
+                                <ListItem component={Link} to="/accounted_time"
+                                          selected={this.props.appBarState.selectedId === 6}>
+                                    <ListItemIcon>
+                                        <MenuIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={'Отработанное время'}/>
                                 </ListItem>
                                 <ListItem component={Link} to="/time_accounting"
                                           selected={this.props.appBarState.selectedId === 1}>
@@ -99,6 +107,7 @@ class App extends React.Component {
                                 <Route exact path='/issues' component={IssuesDisplay}/>
                                 <Route exact path='/license' component={LicenseRequest}/>
                                 <Route exact path='/login' component={AuthDisplay}/>
+                                <Route exact path='/accounted_time' component={AccountedTimeDisplay}/>
                             </Switch>
                         </main>
                         <HelpDialog open={this.props.appBarState.dialogOpened}

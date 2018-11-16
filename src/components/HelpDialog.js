@@ -36,10 +36,6 @@ class ReportFilterDialog extends Component {
                 Если их нет в таблице через 10 минут после внесения, то проверьте их наличие в YT и фильтры
                 отчёта.
             </Typography>
-            <br/>
-            <Typography align={'left'} style={{width: '100vw'}}>
-                Вот вам описание, теперь всё должно быть понятно.
-            </Typography>
         </DialogContent>;
         const m = new Map();
         m.set(1, timeAccountingHelp);

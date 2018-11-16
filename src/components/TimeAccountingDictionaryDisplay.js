@@ -7,45 +7,19 @@ import * as PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {styles} from "../Styles";
 import connect from "react-redux/es/connect/connect";
-import FilterIcon from '@material-ui/icons/Settings';
 import Button from "@material-ui/core/Button/Button";
 import TimeAccountingFilterDialog from "./TimeAccountingFilterDialog";
-import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
+import {fetchTimeAccountingDictionaryData} from "../redux/actions/timeAccountingActions";
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-class TimeAccountingDisplay extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            open: false,
-            scroll: 'paper',
-            items: []
-        }
-    }
-
-    componentWillUnmount() {
-        this.isCancelled = true;
-    }
-
-    componentWillMount() {
-        store.dispatch(setSelectedNavItem({title: 'Трудозатраты', selectedId: 1}));
-    }
-
+class TimeAccountingDictionaryDisplay extends Component {
     requestData = () => {
-        store.dispatch(fetchTimeAccountingData());
-    };
-
-    handleClickOpen = scroll => () => {
-        this.setState({open: true, scroll});
-    };
-
-    handleClose = () => {
-        this.requestData();
-        this.setState({open: false});
+        store.dispatch(fetchTimeAccountingDictionaryData());
     };
 
     componentDidMount() {
-        store.dispatch(fetchTimeAccountingData());
+        store.dispatch(setSelectedNavItem({title: 'Справочник проектов', selectedId: 5}));
+        this.requestData();
     }
 
     render() {
@@ -53,10 +27,6 @@ class TimeAccountingDisplay extends Component {
         const items = this.props.timeAccountingData.timeData;
         if (items === null) return <div>Loading</div>;
         if (items.length === 0) return <div>No items to display</div>;
-        /*const i = items.map(item => item.id).reduce(
-            (a, b, i, arr) =>
-                (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
-            null);*/
         const columns = [{
             Header: 'ID',
             accessor: 'id',
@@ -101,9 +71,9 @@ class TimeAccountingDisplay extends Component {
                     row[filter.id].endsWith(filter.value)
             }];
 
-        return <div style={{minWidth: '100%'}}>
+        return <div>
             <ReactTable
-                style={classes.content}
+                style={{width: '100vw'}}
                 data={items}
                 filterable
                 defaultFilterMethod={(filter, row) =>
@@ -117,25 +87,19 @@ class TimeAccountingDisplay extends Component {
                     onClick={this.requestData}>
                 <RefreshIcon/>
             </Button>
-            <Button variant="fab" mini className={classes.fab} color={'primary'}
-                    onClick={this.handleClickOpen('paper')}>
-                <FilterIcon/>
-            </Button>
         </div>
     }
 }
 
-TimeAccountingDisplay.propTypes = {
+TimeAccountingDictionaryDisplay.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state) {
     return {
-        /*reportFilters: state.reportFilters,
-        reports: state.reports,*/
         appBarState: state.appBarState,
         timeAccountingData: state.timeAccountingData,
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(TimeAccountingDisplay));
+export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(TimeAccountingDictionaryDisplay));

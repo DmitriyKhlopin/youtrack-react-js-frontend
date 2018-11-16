@@ -13,7 +13,7 @@ import TimeAccountingFilterDialog from "./TimeAccountingFilterDialog";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-class TimeAccountingDisplay extends Component {
+class AccountedTimeDisplay extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -28,7 +28,7 @@ class TimeAccountingDisplay extends Component {
     }
 
     componentWillMount() {
-        store.dispatch(setSelectedNavItem({title: 'Трудозатраты', selectedId: 1}));
+        store.dispatch(setSelectedNavItem({title: 'Отработанное и учтённое время', selectedId: 6}));
     }
 
     requestData = () => {
@@ -125,7 +125,7 @@ class TimeAccountingDisplay extends Component {
     }
 }
 
-TimeAccountingDisplay.propTypes = {
+AccountedTimeDisplay.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
@@ -138,4 +138,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(TimeAccountingDisplay));
+export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(AccountedTimeDisplay));
