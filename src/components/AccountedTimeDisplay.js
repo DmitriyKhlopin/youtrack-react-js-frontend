@@ -21,6 +21,7 @@ import Button from "@material-ui/core/Button/Button";
 import OutlinedInput from "@material-ui/core/OutlinedInput/OutlinedInput";
 import * as ReactDOM from "react-dom";
 import PivotGrid, {FieldChooser} from 'devextreme-react/pivot-grid';
+import PivotGridDataSource from 'devextreme/ui/pivot_grid/data_source';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -55,16 +56,11 @@ class AccountedTimeDisplay extends Component {
     };
 
     componentDidMount() {
-
         store.dispatch(setSelectedNavItem({title: 'Отработанное и учтённое время', selectedId: 6}));
         store.dispatch(getActualTimeUsers());
         this.setState({
             labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
         });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({pivotState: nextProps});
     }
 
     handleChange = event => {
@@ -73,21 +69,83 @@ class AccountedTimeDisplay extends Component {
     };
 
     render() {
-        const users = this.props.actualTimeData.usersData.map(item => item.fullName);
+        const users = this.props.actualTimeData.usersData.map(item => item.fullName).sort();
         const {classes} = this.props;
-        const items = this.props.actualTimeData.reportData;
-
-        const columns = [{
-                Header: 'Сотрудник',
-                accessor: 'user',
-            }, items.map(item => {
-                return {
-                    Header: item.date,
-                    accessor: item.date
-
+        const dataSource = new PivotGridDataSource({
+            fields: [{
+                caption: 'Сотрудник',
+                width: 120,
+                dataField: 'user',
+                area: 'row',
+                sortBySummaryField: 'Total',
+                expanded: true
+            }, {
+                caption: 'Отработано',
+                dataField: 'spentTime',
+                summaryType: 'sum',
+                format: 'decimal',
+                width: 120,
+                area: 'data',
+                showTotals: true
+            }, {
+                caption: 'Внесено',
+                dataField: 'accountedTime',
+                summaryType: 'sum',
+                format: 'decimal',
+                width: 120,
+                area: 'data'
+            }, {
+                caption: 'Период',
+                dataField: 'date',
+                dataType: 'date',
+                groupInterval: 'year',
+                area: 'row',
+                expanded: true
+            }, {
+                caption: 'Период',
+                dataField: 'date',
+                dataType: 'date',
+                groupInterval: 'month',
+                area: 'row',
+                expanded: false
+            }, {
+                caption: 'Период',
+                dataField: 'date',
+                dataType: 'date',
+                groupInterval: 'day',
+                area: 'row',
+                expanded: false
+            }, {
+                caption: "% зарегистрированых ТЗ",
+                area: "data",
+                dataType: 'number',
+                width: 120,
+                /*selector: function (data) {
+                    console.log(data.spentTime);
+                    const i = data.accountedTime / ((data.spentTime === null || data.spentTime.toString() === '0') ? 480 : data.spentTime);
+                    console.log(i);
+                    return i;
+                },*/
+                /*customizeText: function (cellInfo) {
+                    console.log("customizing...");
+                },*/
+                calculateSummaryValue: function (cell) {
+                    const at = cell.value("accountedTime");
+                    const st = cell.value("spentTime");
+                    const actualSt = (!st || st === null || st === 0 || st.toString() === '0') ? 480 : st;
+                    return (at / actualSt * 100).toFixed(2);
+                },
+                customizeText: function (cellInfo) {
+                    console.log(cellInfo);
+                    if (cellInfo.valueText === "Division_REVENUE_VALUE")
+                        return 'Team_REVENUE_VALUE';
+                    if (cellInfo.valueText > 100) console.log("WTF");
+                    return cellInfo.valueText;
                 }
-            })]
-        ;
+            }],
+            store: this.props.actualTimeData.reportData
+        });
+
         return <div style={{minWidth: '100%'}}>
             <div style={{
                 display: 'flex',
@@ -143,32 +201,37 @@ class AccountedTimeDisplay extends Component {
                 </Button>
             </div>
             <PivotGrid
-                dataSource={this.props.actualTimeData.reportData}
+                dataSource={dataSource}
                 allowSortingBySummary={true}
                 allowFiltering={true}
+                allowExpandAll={true}
                 showBorders={true}
                 showColumnTotals={false}
-                showColumnGrandTotals={false}
+                showColumnGrandTotals={true}
                 showRowTotals={false}
                 showRowGrandTotals={false}
+                export={{
+                    enabled: true,
+                    fileName: 'test'
+                }}
+                onContentReady={(e) => this.onCR(e)}
+                onCellPrepared={(cell) => this.onCellP(cell)}
             >
                 <FieldChooser enabled={true} height={400}/>
             </PivotGrid>
-
-
         </div>
     }
-}
 
-/*
-*
-* <PivotTableUI
-                key="PIVOT-KEY"
-                data={this.props.actualTimeData.reportData}
-                onChange={s => this.setState(s)}
-                {...this.state}
-                renderers={Object.assign({}, TableRenderers, PlotlyRenderers)}
-            />*/
+    onCR = (e) => {
+        /*console.log(e);*/
+    };
+
+    onCellP = (cell) => {
+        console.log(cell);
+        cell.maxWidth = 50
+        cell.compo
+    };
+}
 
 AccountedTimeDisplay.propTypes = {
     classes: PropTypes.object.isRequired,
@@ -176,8 +239,6 @@ AccountedTimeDisplay.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        /*reportFilters: state.reportFilters,
-        reports: state.reports,*/
         appBarState: state.appBarState,
         timeAccountingData: state.timeAccountingData,
         actualTimeData: state.actualTimeData
@@ -185,12 +246,3 @@ function mapStateToProps(state) {
 }
 
 export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(AccountedTimeDisplay));
-
-/*<ReactTable
-                style={classes.content}
-                data={items}
-                filterable
-                defaultFilterMethod={(filter, row) =>
-                    String(row[filter.id]) === filter.value}
-                columns={columns}
-            />*/

@@ -3,8 +3,8 @@ import moment from "moment";
 export default function reducer(state = {
     reportData: [],
     usersData: [],
-    selectedUsersData: [],
-    dateFrom: moment().format('YYYY-MM-DD'),
+    selectedUsersData: ["Хлопин Дмитрий Алексеевич"],
+    dateFrom: moment().subtract(8, 'weeks').format('YYYY-MM-DD'),
     dateTo: moment().format('YYYY-MM-DD'),
 }, action) {
     switch (action.type) {
