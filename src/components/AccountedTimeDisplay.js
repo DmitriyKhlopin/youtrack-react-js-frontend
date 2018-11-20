@@ -65,11 +65,18 @@ class AccountedTimeDisplay extends Component {
 
     handleChange = event => {
         this.setState({name: event.target.value});
-
     };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.actualTimeData.usersData !== prevProps.actualTimeData.usersData) {
+            const users = this.props.actualTimeData.usersData.map(item => item.fullName).sort();
+            this.setState({name: users});
+        }
+    }
 
     render() {
         const users = this.props.actualTimeData.usersData.map(item => item.fullName).sort();
+        /*this.setState({name: users});*/
         const {classes} = this.props;
         const dataSource = new PivotGridDataSource({
             fields: [{
@@ -120,15 +127,6 @@ class AccountedTimeDisplay extends Component {
                 area: "data",
                 dataType: 'number',
                 width: 120,
-                /*selector: function (data) {
-                    console.log(data.spentTime);
-                    const i = data.accountedTime / ((data.spentTime === null || data.spentTime.toString() === '0') ? 480 : data.spentTime);
-                    console.log(i);
-                    return i;
-                },*/
-                /*customizeText: function (cellInfo) {
-                    console.log("customizing...");
-                },*/
                 calculateSummaryValue: function (cell) {
                     const at = cell.value("accountedTime");
                     const st = cell.value("spentTime");
@@ -228,8 +226,7 @@ class AccountedTimeDisplay extends Component {
 
     onCellP = (cell) => {
         console.log(cell);
-        cell.maxWidth = 50
-        cell.compo
+        cell.maxWidth = 50;
     };
 }
 
