@@ -87,6 +87,14 @@ class AccountedTimeDisplay extends Component {
                 sortBySummaryField: 'Total',
                 expanded: true
             }, {
+                caption: 'План',
+                dataField: 'plannedTime',
+                summaryType: 'sum',
+                format: 'decimal',
+                width: 120,
+                area: 'data',
+                showTotals: true
+            }, {
                 caption: 'Отработано',
                 dataField: 'spentTime',
                 summaryType: 'sum',
@@ -123,7 +131,25 @@ class AccountedTimeDisplay extends Component {
                 area: 'row',
                 expanded: false
             }, {
-                caption: "% зарегистрированых ТЗ",
+                caption: "% к плану",
+                area: "data",
+                dataType: 'number',
+                width: 120,
+                calculateSummaryValue: function (cell) {
+                    const at = cell.value("accountedTime");
+                    const st = cell.value("plannedTime");
+                    const actualSt = (!st || st === null || st === 0 || st.toString() === '0') ? 480 : st;
+                    return (at / actualSt * 100).toFixed(2);
+                },
+                customizeText: function (cellInfo) {
+                    /*console.log(cellInfo);*/
+                    if (cellInfo.valueText === "Division_REVENUE_VALUE")
+                        return 'Team_REVENUE_VALUE';
+                    if (cellInfo.valueText > 100) console.log("WTF");
+                    return cellInfo.valueText;
+                }
+            }, {
+                caption: "% к факту",
                 area: "data",
                 dataType: 'number',
                 width: 120,
@@ -134,7 +160,7 @@ class AccountedTimeDisplay extends Component {
                     return (at / actualSt * 100).toFixed(2);
                 },
                 customizeText: function (cellInfo) {
-                    console.log(cellInfo);
+                    /*console.log(cellInfo);*/
                     if (cellInfo.valueText === "Division_REVENUE_VALUE")
                         return 'Team_REVENUE_VALUE';
                     if (cellInfo.valueText > 100) console.log("WTF");
@@ -225,7 +251,7 @@ class AccountedTimeDisplay extends Component {
     };
 
     onCellP = (cell) => {
-        console.log(cell);
+        /*console.log(cell);*/
         cell.maxWidth = 50;
     };
 }
