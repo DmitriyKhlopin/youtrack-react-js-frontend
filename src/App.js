@@ -29,6 +29,8 @@ import LicenseRequest from "./components/LicenseRequest";
 import AuthDisplay from "./components/AuthDisplay";
 import HelpDialog from "./components/HelpDialog";
 import AccountedTimeDisplay from "./components/AccountedTimeDisplay";
+import PossibleErrorsDisplay from "./components/PossibleErrorsDisplay";
+import {PAGE_IDS} from "./Const";
 
 export const history = createBrowserHistory();
 
@@ -97,6 +99,13 @@ class App extends React.Component {
                                     </ListItemIcon>
                                     <ListItemText primary={'Получить лицензию'}/>
                                 </ListItem>
+                                <ListItem component={Link} to="/possible_errors"
+                                          selected={this.props.appBarState.selectedId === PAGE_IDS.possibleErrors.id}>
+                                    <ListItemIcon>
+                                        <MenuIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={PAGE_IDS.possibleErrors.name}/>
+                                </ListItem>
                             </div>
                         </Drawer>
                         <main className={classes.content}>
@@ -108,6 +117,7 @@ class App extends React.Component {
                                 <Route exact path='/license' component={LicenseRequest}/>
                                 <Route exact path='/login' component={AuthDisplay}/>
                                 <Route exact path='/accounted_time' component={AccountedTimeDisplay}/>
+                                <Route exact path='/possible_errors' component={PossibleErrorsDisplay}/>
                             </Switch>
                         </main>
                         <HelpDialog open={this.props.appBarState.dialogOpened}

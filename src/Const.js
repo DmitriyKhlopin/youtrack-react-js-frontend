@@ -13,3 +13,10 @@ export const NAV_ITEMS = [
         {name: "Отчёты", id: 3}
     ]
 ;
+
+export const PAGE_IDS = {
+    possibleErrors: {
+        id: 8,
+        name: 'Возможные ошибки'
+    }
+};

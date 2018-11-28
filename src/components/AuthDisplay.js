@@ -17,7 +17,7 @@ import Button from "../../node_modules/@material-ui/core/Button/Button";
 import {fetchToken, setUserLogin, setUserPassword} from "../redux/actions/userActions";
 
 const clientServiceId = '95dc00cf-e9da-479d-84ea-fbe73f4652a5';
-const redirectUrl = 'http://10.0.172.42:3000/login';
+const redirectUrl = 'http://10.9.172.76:3000/login';
 
 class AuthDisplay extends Component {
     state = {
