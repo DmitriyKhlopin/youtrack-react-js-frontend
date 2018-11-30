@@ -52,7 +52,7 @@ export function getActualTimeUsers() {
         const obj = {
             method: 'GET',
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json; charset=utf-8'
             }
         };
         fetch(`${ENDPOINT}/api/users`, obj)

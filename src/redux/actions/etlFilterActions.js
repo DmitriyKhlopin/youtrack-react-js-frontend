@@ -31,7 +31,7 @@ export function fetchETL() {
             }
         };
 
-        const url = `${ENDPOINT}/etl?dateFrom=${dateFrom}&dateTo=${dateTo}`;
+        const url = `${ENDPOINT}/api/etl?dateFrom=${dateFrom}&dateTo=${dateTo}`;
         fetch(url, obj)
             .then(res => res.json())
             .then(json => {

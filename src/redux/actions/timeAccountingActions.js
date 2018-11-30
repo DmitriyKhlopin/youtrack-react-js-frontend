@@ -39,7 +39,7 @@ export function fetchTimeAccountingDictionaryData() {
         const obj = {
             method: 'GET',
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json; charset=utf-8'
             }
         };
         const state = getState();

@@ -28,13 +28,3 @@ export function fetchToken() {
         });
     }
 }
-
-/*
-export function setUsertoken(token) {
-    return function (dispatch) {
-        dispatch({
-            type: "SET_USER_TOKEN",
-            payload: token
-        });
-    }
-}*/
