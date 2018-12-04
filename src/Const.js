@@ -1,6 +1,5 @@
 export const YT_ENDPOINT = "http://support.fsight.ru/rest/";
-export const ENDPOINT = 'http://10.9.172.76:8081';
-
+export const ENDPOINT = process.env.NODE_ENV === "development" ? "http://localhost:8080" : 'http://10.30.207.22:8080';
 export const drawerWidth = 240;
 
 export const innerProjects = ["PP_Lic", "SD", "PDP", "W", "P_PROJ1", "T", "TEST", "SPAM"];

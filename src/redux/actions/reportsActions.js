@@ -55,5 +55,20 @@ export function fetchReportData() {
                     payload: json
                 }))
             .catch(err => console.log(err));
+
+        /*console.log(baseUrl + 'time_accounting_extended_grouped' + filters);*/
+
+        fetch(baseUrl + 'time_accounting_extended_grouped' + filters, obj)
+            .then(res => res.json())
+            .then(json => {
+                /*console.log(json);*/
+                dispatch({
+                    type: 'FETCH_REPORT_TIME_ACCOUNTING_EXTENDED_GROUPED_FULFILLED',
+                    payload: json.sort(function (a, b) {
+                        return b.value - a.value;
+                    })
+                })
+            })
+            .catch(err => console.log(err));
     }
 }

@@ -28,6 +28,7 @@ import {fetchProjects} from "../redux/actions/reportFiltersActions";
 import {fetchReportData} from "../redux/actions/reportsActions";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import {styles} from "../Styles";
+import Typography from "@material-ui/core/es/Typography/Typography";
 
 /**http://materialuicolors.co/?utm_source=launchers*/
 
@@ -62,6 +63,27 @@ const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, perc
     );
 };
 
+const renderCustomizedTimeLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index, value, name, fill}) => {
+    const sin = Math.sin(-RADIAN * midAngle);
+    const cos = Math.cos(-RADIAN * midAngle);
+    const sx = cx + (outerRadius + 10) * cos;
+    const sy = cy + (outerRadius + 10) * sin;
+    const mx = cx + (outerRadius + 30) * cos;
+    const my = cy + (outerRadius + 30) * sin;
+    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+    const ey = my;
+    const textAnchor = cos >= 0 ? 'start' : 'end';
+    return (
+        <g>
+            <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none"/>
+            <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none"/>
+            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor}
+                  fill={fill}>{`${name}`}</text>
+
+        </g>
+    );
+};
+
 class ReportContainer extends Component {
     constructor(props) {
         super(props);
@@ -69,6 +91,12 @@ class ReportContainer extends Component {
         this.state = {
             open: false,
             scroll: 'paper',
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.reportFilters.proj && prevProps.reportFilters.proj.length === 0 && this.props.reportFilters.proj !== prevProps.reportFilters.proj) {
+            store.dispatch(fetchReportData());
         }
     }
 
@@ -90,12 +118,16 @@ class ReportContainer extends Component {
         const sigma2 = this.props.reports.sigmaData;
         const dynamics = this.props.reports.dynamicsData;
         const aggregatedIssuesByPartner = this.props.reports.aggregatedIssuesByPartner;
+        const aggregatedTimeAccountingByProjectType = this.props.reports.aggregatedTimeAccountingByProjectType;
         return (
             <Grid container spacing={24} className={classes.componentRoot}>
                 <Grid item md={12} lg={6}>
+                    <Typography
+                        align={'center'}
+                        variant="h5">Количество поступивших и закрытых запросов</Typography>
                     <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
                         <LineChart data={dynamics}
-                                   margin={{top: 30, right: 60, left: 0, bottom: 30}}>
+                                   margin={{top: 30, right: 0, left: 0, bottom: 30}}>
                             <XAxis dataKey="week"/>
                             <YAxis axisLine={false}/>
                             <CartesianGrid strokeDasharray="3 3"/>
@@ -111,8 +143,11 @@ class ReportContainer extends Component {
                     </ResponsiveContainer>
                 </Grid>
                 <Grid item md={12} lg={6}>
+                    <Typography
+                        align={'center'}
+                        variant="h5">Количество запросов от партнёров</Typography>
                     <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
-                        <PieChart margin={{top: 30, right: 60, left: 0, bottom: 30}}>
+                        <PieChart margin={{top: 30, right: 0, left: 0, bottom: 30}}>
                             <Pie data={aggregatedIssuesByPartner}
                                  nameKey={'name'}
                                  dataKey={'value'}
@@ -132,8 +167,11 @@ class ReportContainer extends Component {
                     </ResponsiveContainer>
                 </Grid>
                 <Grid item md={12} lg={6}>
+                    <Typography
+                        align={'center'}
+                        variant="h5">Продолжительность работ по запросам</Typography>
                     <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
-                        <ScatterChart margin={{top: 30, right: 60, left: 0, bottom: 30}}>
+                        <ScatterChart margin={{top: 30, right: 0, left: 0, bottom: 30}}>
                             <ReferenceArea x1={0} x2={sigma2.sigma} y1={0} y2={sigma2.sigmaMaxY}
                                            fill={MATERIAL_SIGMA_COLORS[1]} fillOpacity={1.0}/>
                             <ReferenceArea x1={sigma2.sigma}
@@ -171,6 +209,31 @@ class ReportContainer extends Component {
                                     }
                                 ]}/>
                         </ScatterChart>
+                    </ResponsiveContainer>
+                </Grid>
+                <Grid item md={12} lg={6}>
+                    <Typography
+                        align={'center'}
+                        variant="h5">Трудозатраты в разрезе типов проектов</Typography>
+                    <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
+                        <PieChart margin={{top: 30, right: 0, left: 0, bottom: 30}}>
+                            <Pie data={aggregatedTimeAccountingByProjectType}
+                                 nameKey={'presentation'}
+                                 dataKey={'value'}
+                                 labelLine={true}
+                                 label={renderCustomizedTimeLabel}
+                                 fill="#8884d8"
+                                 startAngle={450}
+                                 endAngle={90}
+                                 paddingAngle={1}
+                            >
+                                {
+                                    aggregatedTimeAccountingByProjectType.map((entry, index) => <Cell
+                                        key={`cell-${index}`}
+                                        fill={MATERIAL_COLORS[index % MATERIAL_COLORS.length]}/>)
+                                }
+                            </Pie>
+                        </PieChart>
                     </ResponsiveContainer>
                 </Grid>
                 <Button variant="fab" mini className={classes.fabLoad} color={'secondary'}

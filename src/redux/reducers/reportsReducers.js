@@ -5,7 +5,8 @@ export default function reducer(state = {
         sigmaMaxX: 0,
         sigmaMaxY: 0
     },
-    aggregatedIssuesByPartner: []
+    aggregatedIssuesByPartner: [],
+    aggregatedTimeAccountingByProjectType: []
 }, action) {
     switch (action.type) {
         case 'FETCH_REPORT_DYNAMICS_FULFILLED': {
@@ -27,6 +28,13 @@ export default function reducer(state = {
             state = {
                 ...state,
                 aggregatedIssuesByPartner: action.payload
+            };
+            break;
+        }
+        case 'FETCH_REPORT_TIME_ACCOUNTING_EXTENDED_GROUPED_FULFILLED': {
+            state = {
+                ...state,
+                aggregatedTimeAccountingByProjectType: action.payload
             };
             break;
         }
