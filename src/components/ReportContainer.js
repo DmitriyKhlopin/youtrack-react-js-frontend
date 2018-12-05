@@ -4,7 +4,7 @@ import * as PropTypes from "prop-types";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
 import FilterIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import ReportFilterDialog from "./ReportFilterDialog";
+import ReportFilterDialog from "./dialogs/ReportFilterDialog";
 import Grid from "../../node_modules/@material-ui/core/Grid/Grid";
 import {connect} from "react-redux";
 import store from "../redux/store";
@@ -12,17 +12,14 @@ import {fetchProjects} from "../redux/actions/reportFiltersActions";
 import {fetchReportData} from "../redux/actions/reportsActions";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import {styles} from "../Styles";
-import * as moment from "moment";
-
-import momentDurationFormatSetup from "moment-duration-format";
 
 import PieChartByProjectTypes from "./charts/PieChartByProjectTypes";
 import LineChartByWeeks from "./charts/LineChartByWeeks";
 import PieChartByPartners from "./charts/PieChartByPartners";
 import ScatterChartSigma from "./charts/ScatterChartSigma";
+import DrillDownDialog from "./dialogs/DrillDownDialog";
 
 /**http://materialuicolors.co/?utm_source=launchers*/
-
 
 
 class ReportContainer extends Component {
@@ -30,7 +27,8 @@ class ReportContainer extends Component {
         super(props);
         this.handleClose = this.handleClose.bind(this);
         this.state = {
-            open: false,
+            filtersOpen: false,
+            drillDownOpen: false,
             scroll: 'paper',
         }
     }
@@ -47,11 +45,11 @@ class ReportContainer extends Component {
     }
 
     handleClickOpen = scroll => () => {
-        this.setState({open: true, scroll});
+        this.setState({filtersOpen: true, scroll});
     };
 
     handleClose = () => {
-        this.setState({open: false});
+        this.setState({filtersOpen: false, /*drillDownOpen: false*/});
     };
 
     handleClick = (data, index) => {
@@ -75,9 +73,12 @@ class ReportContainer extends Component {
                         onClick={this.handleClickOpen('paper')}>
                     <FilterIcon/>
                 </Button>
-                <ReportFilterDialog open={this.state.open}
+                <ReportFilterDialog open={this.state.filtersOpen}
                                     handleClose={this.handleClose}
                                     aria-labelledby="scroll-dialog-title"/>
+                <DrillDownDialog open={this.props.drillDown.drillDownOpen}
+                                 handleClose={this.handleClose}
+                                 aria-labelledby="scroll-dialog-title"/>
             </Grid>
         );
     }
@@ -92,6 +93,7 @@ function mapStateToProps(state) {
         reportFilters: state.reportFilters,
         reports: state.reports,
         appBarState: state.appBarState,
+        drillDown: state.drillDown,
     }
 }
 

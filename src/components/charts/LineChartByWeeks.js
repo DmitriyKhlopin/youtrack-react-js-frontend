@@ -7,11 +7,18 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {styles} from "../../Styles";
 import connect from "react-redux/es/connect/connect";
 import {MATERIAL_LINE_CHART_COLORS} from "../../Const";
+import {openDrillDown} from "../../redux/actions/drillDownActions";
+import store from "../../redux/store";
+
 
 class LineChartByWeeks extends Component {
     handleClick = (data, index) => {
         console.log(data);
         console.log(index);
+        const filters = {
+          week: data.activeLabel,
+        };
+        store.dispatch(openDrillDown('aaaa'));
     };
 
     render() {
@@ -52,6 +59,7 @@ function mapStateToProps(state) {
         reportFilters: state.reportFilters,
         reports: state.reports,
         appBarState: state.appBarState,
+        drillDown: state.drillDown,
     }
 }
 

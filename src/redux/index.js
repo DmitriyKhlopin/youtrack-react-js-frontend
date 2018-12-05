@@ -9,6 +9,7 @@ import timeAccountingFiltersReducers from "./reducers/timeAccountingFiltersReduc
 import timeAccountingReducers from "./reducers/timeAccountingReducers";
 import actualTimeReducers from "./reducers/actualTimeReducers";
 import possibleErrorsReducers from "./reducers/possibleErrorsReducers";
+import drillDownReducers from "./reducers/drillDownReducers";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
@@ -20,5 +21,6 @@ export default combineReducers({
     licenseRequestState: licenseRequestReducers,
     user: userReducers,
     actualTimeData: actualTimeReducers,
-    possibleErrors: possibleErrorsReducers
+    possibleErrors: possibleErrorsReducers,
+    drillDown: drillDownReducers
 });
