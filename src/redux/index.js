@@ -10,13 +10,17 @@ import timeAccountingReducers from "./reducers/timeAccountingReducers";
 import actualTimeReducers from "./reducers/actualTimeReducers";
 import possibleErrorsReducers from "./reducers/possibleErrorsReducers";
 import drillDownReducers from "./reducers/drillDownReducers";
+import kpiFiltersReducers from "./reducers/kpiFiltersReducers";
+import kpiReducers from "./reducers/kpiReducers";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
+    kpiFilters: kpiFiltersReducers,
     timeAccountingData: timeAccountingReducers,
     timeAccountingFilters: timeAccountingFiltersReducers,
     etlFilters: etlFiltersReducers,
     reports: reportsReducer,
+    kpi: kpiReducers,
     appBarState: appBarReducers,
     licenseRequestState: licenseRequestReducers,
     user: userReducers,

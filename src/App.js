@@ -31,6 +31,7 @@ import HelpDialog from "./components/HelpDialog";
 import AccountedTimeDisplay from "./components/AccountedTimeDisplay";
 import PossibleErrorsDisplay from "./components/PossibleErrorsDisplay";
 import {PAGE_IDS} from "./Const";
+import KPIContainer from "./components/KPIContainer";
 
 export const history = createBrowserHistory();
 
@@ -64,6 +65,13 @@ class App extends React.Component {
                                         <MenuIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={'Отчёты'}/>
+                                </ListItem>
+                                <ListItem component={Link} to="/kpi"
+                                          selected={this.props.appBarState.selectedId === PAGE_IDS.kpi.id}>
+                                    <ListItemIcon>
+                                        <MenuIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={PAGE_IDS.kpi.name}/>
                                 </ListItem>
                                 <ListItem component={Link} to="/accounted_time"
                                           selected={this.props.appBarState.selectedId === 6}>
@@ -112,6 +120,7 @@ class App extends React.Component {
                             <Switch>
                                 <Route exact path='/' component={ReportContainer}/>
                                 <Route exact path='/time_accounting' component={TimeAccountingDisplay}/>
+                                <Route exact path='/kpi' component={KPIContainer}/>
                                 <Route exact path='/etl' component={ETLDisplay}/>
                                 <Route exact path='/issues' component={IssuesDisplay}/>
                                 <Route exact path='/license' component={LicenseRequest}/>
