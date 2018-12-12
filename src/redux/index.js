@@ -12,6 +12,7 @@ import possibleErrorsReducers from "./reducers/possibleErrorsReducers";
 import drillDownReducers from "./reducers/drillDownReducers";
 import kpiFiltersReducers from "./reducers/kpiFiltersReducers";
 import kpiReducers from "./reducers/kpiReducers";
+import repositoriesReducers from "./reducers/repositoriesReducers";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
@@ -26,5 +27,6 @@ export default combineReducers({
     user: userReducers,
     actualTimeData: actualTimeReducers,
     possibleErrors: possibleErrorsReducers,
-    drillDown: drillDownReducers
+    drillDown: drillDownReducers,
+    repositoriesData: repositoriesReducers
 });

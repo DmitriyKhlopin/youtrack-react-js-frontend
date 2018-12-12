@@ -44,5 +44,9 @@ export const PAGE_IDS = {
     kpi: {
         id: 9,
         name: 'KPI'
+    },
+    repositories: {
+        id: 10,
+        name: 'Репозитории'
     }
 };
