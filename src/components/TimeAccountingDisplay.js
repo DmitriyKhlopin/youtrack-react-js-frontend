@@ -51,8 +51,8 @@ class TimeAccountingDisplay extends Component {
     render() {
         const {classes} = this.props;
         const items = this.props.timeAccountingData.timeData;
-        if (items === null) return <div>Loading</div>;
-        if (items.length === 0) return <div>No items to display</div>;
+        /*if (items === null) return <div>Loading</div>;
+        if (items.length === 0) return <div>No items to display</div>;*/
         /*const i = items.map(item => item.id).reduce(
             (a, b, i, arr) =>
                 (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
