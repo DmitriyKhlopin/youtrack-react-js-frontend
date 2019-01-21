@@ -17,9 +17,9 @@ export function fetchProjects() {
                 dispatch({
                     type: "FETCH_PROJECTS_FULFILLED",
                     payload: {
-                        proj: json,
-                        projDefault: json.filter(item => !innerProjects.includes(item.shortName)),
-                        projSelected: json.filter(item => !innerProjects.includes(item.shortName))
+                        proj: json.sort(stringSort),
+                        projDefault: json.filter(item => !innerProjects.includes(item.shortName)).sort(stringSort),
+                        projSelected: json.filter(item => !innerProjects.includes(item.shortName)).sort(stringSort)
                     }
                 });
             })
@@ -29,6 +29,17 @@ export function fetchProjects() {
             }));
     }
 }
+
+const stringSort = function (a, b) {
+    if (a.name > b.name) {
+        return 1;
+    }
+    if (a.name < b.name) {
+        return -1;
+    }
+    // a должно быть равным b
+    return 0;
+};
 
 export function addProjectToSelected(id) {
     return function (dispatch) {

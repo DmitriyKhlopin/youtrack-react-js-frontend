@@ -33,6 +33,7 @@ import PossibleErrorsDisplay from "./components/PossibleErrorsDisplay";
 import {PAGE_IDS} from "./Const";
 import KPIContainer from "./components/KPIContainer";
 import RepositoriesDisplay from "./components/RepositoriesDisplay";
+import FixedDefectsDisplay from "./components/FixedDefectsDisplay";
 
 export const history = createBrowserHistory();
 
@@ -122,6 +123,13 @@ class App extends React.Component {
                                     </ListItemIcon>
                                     <ListItemText primary={PAGE_IDS.repositories.name}/>
                                 </ListItem>
+                                <ListItem component={Link} to="/fixed_defects"
+                                          selected={this.props.appBarState.selectedId === PAGE_IDS.fixedDefects.id}>
+                                    <ListItemIcon>
+                                        <MenuIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary={PAGE_IDS.fixedDefects.name}/>
+                                </ListItem>
                             </div>
                         </Drawer>
                         <main className={classes.content}>
@@ -136,6 +144,7 @@ class App extends React.Component {
                                 <Route exact path='/accounted_time' component={AccountedTimeDisplay}/>
                                 <Route exact path='/possible_errors' component={PossibleErrorsDisplay}/>
                                 <Route exact path='/repositories' component={RepositoriesDisplay}/>
+                                <Route exact path='/fixed_defects' component={FixedDefectsDisplay}/>
                             </Switch>
                         </main>
                         <HelpDialog open={this.props.appBarState.dialogOpened}

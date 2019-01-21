@@ -59,6 +59,13 @@ export const styles = theme => ({
     },
     button: {
         margin: theme.spacing.unit,
+        /*height: '100%'*/
+        /*height: '100vh'*/
+    },
+    button2: {
+        /*margin: theme.spacing.unit,*/
+        /*padding: 0,*/
+        height: '100%'
     },
     input: {
         display: 'none',
@@ -67,9 +74,11 @@ export const styles = theme => ({
         margin: theme.spacing.unit,
     },
     formControl: {
-        marginTop: theme.spacing.unit * 2,
+        /*marginTop: theme.spacing.unit * 2,
         marginLeft: theme.spacing.unit * 2,
-        marginRight: theme.spacing.unit * 2,
+        marginRight: theme.spacing.unit * 2,*/
+        margin: theme.spacing.unit * 2,
+        minWidth: 120,
     },
     formControlMultiSelect: {
         margin: theme.spacing.unit,
