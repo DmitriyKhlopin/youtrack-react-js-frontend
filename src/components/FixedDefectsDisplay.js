@@ -16,11 +16,12 @@ import * as ReactDOM from "react-dom";
 import {
     fetchBuildsByIteration,
     fetchIterations,
-    getFixedByIterationAndBuild
+    getFixedByIterationAndBuild, sendItemToYouTrack
 } from "../redux/actions/fixedDefectsActions";
 import Card from "@material-ui/core/Card";
 import Typography from "@material-ui/core/Typography";
 import {LinearProgress} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 
 class FixedDefectsDisplay extends Component {
     constructor(props) {
@@ -127,25 +128,44 @@ class FixedDefectsDisplay extends Component {
                     </Button>
                 </FormControl>
             </div>
-            {this.props.fixedDefectsData.fetching? <LinearProgress/> : <div/>}
+            {this.props.fixedDefectsData.fetching ? <LinearProgress/> : <div/>}
             {this.props.fixedDefectsData.items.map((item, index) => (
-                <Card key={index} style={{padding: 16}}>
-                    <Typography>
-                        Change request: {item.changeRequestId}
-                    </Typography>
-                    <Typography>
-                        {item.parentType}: {item.parentId}
-                    </Typography>
-                    <Typography>
-                        Title: {item.title}
-                    </Typography>
-                    <Typography>
-                        Description: {item.body}
-                    </Typography>
-                    <Typography>
-                        Area name: {item.areaName}
-                    </Typography>
-                </Card>
+                <div style={{padding: 16}}>
+                    <Card key={index} style={{paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8}}>
+                        <Grid container spacing={16}>
+                            <Grid item xs={12} sm>
+                                <div>
+                                    <Typography>
+                                        Change request: {item.changeRequestId}
+                                    </Typography>
+                                    <Typography>
+                                        {item.parentType}: {item.parentId}
+                                    </Typography>
+                                    <Typography>
+                                        Title: {item.title}
+                                    </Typography>
+                                    <Typography>
+                                        Description: {item.body}
+                                    </Typography>
+                                    <Typography>
+                                        Area name: {item.areaName}
+                                    </Typography>
+                                </div>
+                            </Grid>
+                            <Grid item alignItems="center"
+                                  justify="center">
+                                <FormControl variant="outlined" className={classes.formControl}>
+                                    <Button variant="contained" color="primary" className={classes.button2}
+                                            onClick={() => store.dispatch(sendItemToYouTrack(item.changeRequestId))
+                                            }>
+                                        Опубликовать
+                                    </Button>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </Card>
+                </div>
+
             ))}
         </div>;
     }

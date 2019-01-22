@@ -5,6 +5,7 @@ export default function reducer(state = {
     iterations: [],
     builds: [],
     items: [],
+    youTrackId: null
     /*projDefault: [],
     projSelected: [],
     dateFrom: moment().subtract(8, 'weeks').format('YYYY-MM-DD'),
@@ -66,7 +67,8 @@ export default function reducer(state = {
         case 'FETCH_FIXED_BY_ITERATION_AND_BUILD_PENDING': {
             state = {
                 ...state,
-                fetching: true
+                fetching: true,
+                youTrackId: null
             };
             break;
         }
@@ -83,6 +85,32 @@ export default function reducer(state = {
                 ...state,
                 fetching: false,
                 items: action.payload.items,
+                /*projDefault: action.payload.projDefault,
+                projSelected: action.payload.projDefault,*/
+                fetched: true
+            };
+            break;
+        }
+        case 'SEND_ITEM_TO_YOUTRACK_PENDING': {
+            state = {
+                ...state,
+                fetching: true
+            };
+            break;
+        }
+        case 'SEND_ITEM_TO_YOUTRACK_REJECTED': {
+            state = {
+                ...state,
+                fetching: false,
+                error: action
+            };
+            break;
+        }
+        case 'SEND_ITEM_TO_YOUTRACK_FULFILLED': {
+            state = {
+                ...state,
+                fetching: false,
+                youTrackId: action.payload.youTrackId,
                 /*projDefault: action.payload.projDefault,
                 projSelected: action.payload.projDefault,*/
                 fetched: true

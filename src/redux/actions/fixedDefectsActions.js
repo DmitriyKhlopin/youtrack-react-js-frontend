@@ -89,6 +89,36 @@ export function getFixedByIterationAndBuild(iteration, build) {
     }
 }
 
+export function sendItemToYouTrack(changeRequestId) {
+    return function (dispatch) {
+        dispatch({type: "SEND_ITEM_TO_YOUTRACK_PENDING"});
+        const obj = {
+            method: 'GET',
+            headers: {
+                /*'Accept': 'application/json'*/
+            }
+        };
+        console.log(changeRequestId);
+        const url = `${ENDPOINT}/api/tfs?action=postChangeRequest&changeRequestId=${changeRequestId}`;
+        console.log(url);
+        fetch(url, obj)
+            /*.then(res => res.json())*/
+            .then(res => res.text())
+            .then(res => {
+                dispatch({
+                    type: "SEND_ITEM_TO_YOUTRACK_FULFILLED",
+                    payload: {
+                        youTrackId: res
+                    }
+                });
+            })
+            .catch(err => dispatch({
+                type: "SEND_ITEM_TO_YOUTRACK_REJECTED",
+                payload: err
+            }));
+    }
+}
+
 const stringSort = function (a, b) {
     if (a.name > b.name) {
         return 1;
