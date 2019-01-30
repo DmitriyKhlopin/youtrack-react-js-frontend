@@ -9,7 +9,7 @@ export default function reducer(state = {
     aggregatedTimeAccountingByProjectType: []
 }, action) {
     switch (action.type) {
-        case 'FETCH_REPORT_DYNAMICS_FULFILLED': {
+        case 'FETCH_DYNAMICS_REPORT_FULFILLED': {
             /*console.log(action.payload);*/
             state = {
                 ...state,
@@ -17,21 +17,21 @@ export default function reducer(state = {
             };
             break;
         }
-        case 'FETCH_REPORT_SIGMA_FULFILLED': {
+        case 'FETCH_SIGMA_REPORT_FULFILLED': {
             state = {
                 ...state,
                 sigmaData: action.payload
             };
             break;
         }
-        case 'FETCH_REPORT_ISSUES_FROM_PARTNERS_OVER_LAST_WEEK_FULFILLED': {
+        case 'FETCH_CREATED_BY_PARTNER_ON_WEEK_REPORT_FULFILLED': {
             state = {
                 ...state,
                 aggregatedIssuesByPartner: action.payload
             };
             break;
         }
-        case 'FETCH_REPORT_TIME_ACCOUNTING_EXTENDED_GROUPED_FULFILLED': {
+        case 'FETCH_SPENT_TIME_GROUPED_BY_PROJECT_TYPE_FULFILLED': {
             state = {
                 ...state,
                 aggregatedTimeAccountingByProjectType: action.payload

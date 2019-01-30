@@ -7,6 +7,8 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {styles} from "../../Styles";
 import connect from "react-redux/es/connect/connect";
 import {MATERIAL_COLORS, RADIAN} from "../../Const";
+import store from "../../redux/store";
+import {fetchCreatedOnWeekData} from "../../redux/actions/reportsActions";
 
 const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index, value, name, fill}) => {
     const sin = Math.sin(-RADIAN * midAngle);
@@ -34,6 +36,13 @@ class PieChartByPartners extends Component {
         console.log(data);
         console.log(index);
     };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const prevFilters = prevProps.reportFilters;
+        if (prevFilters && prevFilters !== this.props.reportFilters) {
+            store.dispatch(fetchCreatedOnWeekData());
+        }
+    }
 
     render() {
         const aggregatedIssuesByPartner = this.props.reports.aggregatedIssuesByPartner;

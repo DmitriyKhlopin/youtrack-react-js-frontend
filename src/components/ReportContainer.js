@@ -13,7 +13,7 @@ import {fetchReportData} from "../redux/actions/reportsActions";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import {styles} from "../Styles";
 
-import PieChartByProjectTypes from "./charts/PieChartByProjectTypes";
+import PieChartByProjectTypes from "./charts/SpentTimeByProjectTypesPieChart";
 import LineChartByWeeks from "./charts/LineChartByWeeks";
 import PieChartByPartners from "./charts/PieChartByPartners";
 import ScatterChartSigma from "./charts/ScatterChartSigma";

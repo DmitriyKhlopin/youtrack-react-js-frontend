@@ -9,6 +9,9 @@ import connect from "react-redux/es/connect/connect";
 import {MATERIAL_COLORS, RADIAN} from "../../Const";
 import * as moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
+import store from "../../redux/store";
+import {fetchSpentTimeData} from "../../redux/actions/reportsActions";
+
 momentDurationFormatSetup(moment);
 
 const renderCustomizedTimeLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index, value, name, fill}) => {
@@ -33,11 +36,18 @@ const renderCustomizedTimeLabel = ({cx, cy, midAngle, innerRadius, outerRadius, 
     );
 };
 
-class PieChartByProjectTypes extends Component {
+class SpentTimeByProjectTypesPieChart extends Component {
     handleClick = (data, index) => {
         console.log(data);
         console.log(index);
     };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const prevFilters = prevProps.reportFilters;
+        if (prevFilters && prevFilters !== this.props.reportFilters) {
+            store.dispatch(fetchSpentTimeData());
+        }
+    }
 
     render() {
         const aggregatedTimeAccountingByProjectType = this.props.reports.aggregatedTimeAccountingByProjectType;
@@ -75,7 +85,7 @@ class PieChartByProjectTypes extends Component {
     }
 }
 
-PieChartByProjectTypes.propTypes = {
+SpentTimeByProjectTypesPieChart.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
@@ -87,4 +97,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(PieChartByProjectTypes));
+export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(SpentTimeByProjectTypesPieChart));

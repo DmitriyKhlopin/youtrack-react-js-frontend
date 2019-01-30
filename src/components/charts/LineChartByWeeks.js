@@ -9,6 +9,7 @@ import connect from "react-redux/es/connect/connect";
 import {MATERIAL_LINE_CHART_COLORS} from "../../Const";
 import {openDrillDown} from "../../redux/actions/drillDownActions";
 import store from "../../redux/store";
+import {fetchDynamicsData} from "../../redux/actions/reportsActions";
 
 
 class LineChartByWeeks extends Component {
@@ -16,10 +17,17 @@ class LineChartByWeeks extends Component {
         console.log(data);
         console.log(index);
         const filters = {
-          week: data.activeLabel,
+            week: data.activeLabel,
         };
         store.dispatch(openDrillDown('aaaa'));
     };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const prevFilters = prevProps.reportFilters;
+        if (prevFilters && prevFilters !== this.props.reportFilters) {
+            store.dispatch(fetchDynamicsData());
+        }
+    }
 
     render() {
         const dynamics = this.props.reports.dynamicsData;

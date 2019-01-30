@@ -7,12 +7,26 @@ import * as PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {styles} from "../../Styles";
 import connect from "react-redux/es/connect/connect";
+import store from "../../redux/store";
+import {fetchSigmaData} from "../../redux/actions/reportsActions";
 
 class ScatterChartSigma extends Component {
     handleClick = (data, index) => {
         console.log(data);
         console.log(index);
     };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const prevFilters = prevProps.reportFilters;
+        /*if ((prevFilters.proj && prevFilters.proj.length === 0 && this.props.reportFilters.proj !== prevFilters.proj) ||
+            (prevFilters.dateFrom && this.props.reportFilters.dateFrom !== prevFilters.dateFrom) ||
+            (prevFilters.dateTo && this.props.reportFilters.dateTo !== prevFilters.dateTo)) {
+            store.dispatch(fetchSigmaData());
+        }*/
+        if (prevFilters && prevFilters !== this.props.reportFilters) {
+            store.dispatch(fetchSigmaData());
+        }
+    }
 
     render() {
         const sigma2 = this.props.reports.sigmaData;
