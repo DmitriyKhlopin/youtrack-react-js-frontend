@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import Typography from "@material-ui/core/es/Typography";
+import Typography from '@material-ui/core/Typography';
 import {Cell, Legend, Pie, PieChart, ResponsiveContainer} from "recharts";
 import Grid from "@material-ui/core/Grid";
 import * as PropTypes from "prop-types";
@@ -47,9 +47,9 @@ class PieChartByPartners extends Component {
     render() {
         const aggregatedIssuesByPartner = this.props.reports.aggregatedIssuesByPartner;
         return <Grid item md={12} lg={6}>
-            <Typography
-                align={'center'}
-                variant="h5">Количество запросов от партнёров</Typography>
+            <Typography align={'center'} variant="h5">
+                Количество запросов от партнёров
+            </Typography>
             <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
                 <PieChart margin={{top: 30, right: 0, left: 0, bottom: 30}}>
                     <Pie data={aggregatedIssuesByPartner}

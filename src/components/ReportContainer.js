@@ -18,6 +18,7 @@ import LineChartByWeeks from "./charts/LineChartByWeeks";
 import PieChartByPartners from "./charts/PieChartByPartners";
 import ScatterChartSigma from "./charts/ScatterChartSigma";
 import DrillDownDialog from "./dialogs/DrillDownDialog";
+import ChartTemplate from "./charts/ChartTemplate";
 
 /**http://materialuicolors.co/?utm_source=launchers*/
 
@@ -65,6 +66,7 @@ class ReportContainer extends Component {
                 <PieChartByPartners/>
                 <ScatterChartSigma/>
                 <PieChartByProjectTypes/>
+                <ChartTemplate templateName='Запросы от партнёров за год'/>
                 <Button variant="fab" mini className={classes.fabLoad} color={'secondary'}
                         onClick={() => store.dispatch(fetchReportData())}>
                     <RefreshIcon/>

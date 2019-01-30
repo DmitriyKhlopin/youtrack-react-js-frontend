@@ -1,4 +1,4 @@
-import Typography from "@material-ui/core/es/Typography";
+import Typography from '@material-ui/core/Typography';
 import {Legend, ReferenceArea, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis} from "recharts";
 import {MATERIAL_SIGMA_COLORS} from "../../Const";
 import Grid from "@material-ui/core/Grid";

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import Typography from "@material-ui/core/es/Typography";
+import Typography from '@material-ui/core/Typography';
 import {Cell, Legend, Pie, PieChart, ResponsiveContainer} from "recharts";
 import Grid from "@material-ui/core/Grid";
 import * as PropTypes from "prop-types";
