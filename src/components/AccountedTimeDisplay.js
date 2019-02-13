@@ -156,7 +156,7 @@ class AccountedTimeDisplay extends Component {
                 calculateSummaryValue: function (cell) {
                     const at = cell.value("accountedTime");
                     const st = cell.value("spentTime");
-                    const actualSt = (!st || st === null || st === 0 || st.toString() === '0') ? 480 : st;
+                    const actualSt = (!st || st === 0 || st.toString() === '0') ? 480 : st;
                     return (at / actualSt * 100).toFixed(2);
                 },
                 customizeText: function (cellInfo) {

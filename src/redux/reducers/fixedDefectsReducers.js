@@ -6,10 +6,6 @@ export default function reducer(state = {
     builds: [],
     items: [],
     youTrackId: null
-    /*projDefault: [],
-    projSelected: [],
-    dateFrom: moment().subtract(8, 'weeks').format('YYYY-MM-DD'),
-    dateTo: moment().format('YYYY-MM-DD'),*/
 }, action) {
     switch (action.type) {
         case 'FETCH_ITERATIONS_PENDING': {
@@ -92,9 +88,15 @@ export default function reducer(state = {
             break;
         }
         case 'SEND_ITEM_TO_YOUTRACK_PENDING': {
+            for (var j in state.items) {
+                if (state.items[j].changeRequestId === action.payload.changeRequestId) {
+                    state.items[j].isPublishing = true;
+                    break; //Stop this loop, we found it!
+                }
+            }
             state = {
                 ...state,
-                fetching: true
+                /*fetching: true*/
             };
             break;
         }
@@ -107,13 +109,18 @@ export default function reducer(state = {
             break;
         }
         case 'SEND_ITEM_TO_YOUTRACK_FULFILLED': {
+            for (var i in state.items) {
+                if (state.items[i].changeRequestId === action.payload.changeRequestId) {
+                    state.items[i].youTrackId = action.payload.youTrackId;
+                    state.items[i].isPublishing = false;
+                    break; //Stop this loop, we found it!
+                }
+            }
             state = {
                 ...state,
-                fetching: false,
-                youTrackId: action.payload.youTrackId,
-                /*projDefault: action.payload.projDefault,
-                projSelected: action.payload.projDefault,*/
-                fetched: true
+                /*fetching: false,*/
+                /*items: action.payload.youTrackId,*/
+                /*fetched: true*/
             };
             break;
         }

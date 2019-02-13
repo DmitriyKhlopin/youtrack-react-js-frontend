@@ -16,7 +16,8 @@ import * as ReactDOM from "react-dom";
 import {
     fetchBuildsByIteration,
     fetchIterations,
-    getFixedByIterationAndBuild, sendItemToYouTrack
+    getFixedByIterationAndBuild,
+    sendItemToYouTrack
 } from "../redux/actions/fixedDefectsActions";
 import Card from "@material-ui/core/Card";
 import Typography from "@material-ui/core/Typography";
@@ -154,15 +155,18 @@ class FixedDefectsDisplay extends Component {
                             </Grid>
                             <Grid item alignItems="center"
                                   justify="center">
-                                <FormControl variant="outlined" className={classes.formControl}>
-                                    <Button variant="contained" color="primary" className={classes.button2}
-                                            onClick={() => store.dispatch(sendItemToYouTrack(item.changeRequestId))
-                                            }>
-                                        Опубликовать
-                                    </Button>
-                                </FormControl>
+                                {item.youTrackId ?
+                                    <div>{item.youTrackId}</div> :
+                                    <FormControl variant="outlined" className={classes.formControl}>
+                                        <Button variant="contained" color="primary" className={classes.button2}
+                                                onClick={() => store.dispatch(sendItemToYouTrack(item.changeRequestId))
+                                                }>
+                                            Опубликовать
+                                        </Button>
+                                    </FormControl>}
                             </Grid>
                         </Grid>
+                        {item.isPublishing ? <LinearProgress/> : <div/>}
                     </Card>
                 </div>
 

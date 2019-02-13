@@ -91,7 +91,7 @@ export function getFixedByIterationAndBuild(iteration, build) {
 
 export function sendItemToYouTrack(changeRequestId) {
     return function (dispatch) {
-        dispatch({type: "SEND_ITEM_TO_YOUTRACK_PENDING"});
+        dispatch({type: "SEND_ITEM_TO_YOUTRACK_PENDING", payload: {changeRequestId: changeRequestId}});
         const obj = {
             method: 'GET',
             headers: {
@@ -102,13 +102,14 @@ export function sendItemToYouTrack(changeRequestId) {
         const url = `${ENDPOINT}/api/tfs?action=postChangeRequest&changeRequestId=${changeRequestId}`;
         console.log(url);
         fetch(url, obj)
-            /*.then(res => res.json())*/
-            .then(res => res.text())
+            .then(res => res.json())
+            /*.then(res => res.text())*/
             .then(res => {
                 dispatch({
                     type: "SEND_ITEM_TO_YOUTRACK_FULFILLED",
                     payload: {
-                        youTrackId: res
+                        changeRequestId: changeRequestId,
+                        youTrackId: res['idReadable']
                     }
                 });
             })
