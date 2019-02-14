@@ -8,6 +8,13 @@ export default function reducer(state = {
     youTrackId: null
 }, action) {
     switch (action.type) {
+        case 'CLEAR_WORK_ITEMS': {
+            state = {
+                ...state,
+                items: []
+            };
+            break;
+        }
         case 'FETCH_ITERATIONS_PENDING': {
             state = {
                 ...state,
@@ -28,8 +35,6 @@ export default function reducer(state = {
                 ...state,
                 fetching: false,
                 iterations: action.payload.iterations,
-                /*projDefault: action.payload.projDefault,
-                projSelected: action.payload.projDefault,*/
                 fetched: true
             };
             break;
@@ -37,7 +42,8 @@ export default function reducer(state = {
         case 'FETCH_BUILDS_BY_ITERATION_PENDING': {
             state = {
                 ...state,
-                fetching: true
+                fetching: true,
+                items: []
             };
             break;
         }
@@ -64,7 +70,8 @@ export default function reducer(state = {
             state = {
                 ...state,
                 fetching: true,
-                youTrackId: null
+                youTrackId: null,
+                items: []
             };
             break;
         }

@@ -12,21 +12,20 @@ import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
-import * as ReactDOM from "react-dom";
 import {
+    clearWorkItems,
     fetchBuildsByIteration,
     fetchIterations,
-    getFixedByIterationAndBuild,
-    sendItemToYouTrack
+    getFixedByIterationAndBuild
 } from "../redux/actions/fixedDefectsActions";
-import Card from "@material-ui/core/Card";
-import Typography from "@material-ui/core/Typography";
 import {LinearProgress} from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
+import * as ReactDOM from "react-dom";
+import DefectItem from "./DefectItem";
 
 class FixedDefectsDisplay extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             items: null,
             isLoading: false,
@@ -36,26 +35,25 @@ class FixedDefectsDisplay extends Component {
         }
     }
 
+
     componentDidMount() {
+        console.log('CDM');
+        store.dispatch(setSelectedNavItem({title: PAGE_IDS.fixedDefects.name, selectedId: PAGE_IDS.fixedDefects.id}));
+        store.dispatch(fetchIterations());
         this.setState({
             labelWidth1: ReactDOM.findDOMNode(this.InputLabelRef1).offsetWidth,
             labelWidth2: ReactDOM.findDOMNode(this.InputLabelRef2).offsetWidth,
         });
     }
 
-    componentWillMount() {
-        store.dispatch(setSelectedNavItem({title: PAGE_IDS.fixedDefects.name, selectedId: PAGE_IDS.fixedDefects.id}));
-        store.dispatch(fetchIterations())
-    }
-
     handleChange = event => {
+        store.dispatch(clearWorkItems());
         this.setState({[event.target.name]: event.target.value});
         if (event.target.name === 'iteration') store.dispatch(fetchBuildsByIteration(this.props.fixedDefectsData.iterations[event.target.value]))
     };
 
     render() {
         const {classes} = this.props;
-        console.log(this.props.fixedDefectsData);
         return <div style={{minWidth: '100%'}}>
             <div style={{
                 display: 'flex',
@@ -123,54 +121,17 @@ class FixedDefectsDisplay extends Component {
                 </FormControl>
                 <FormControl variant="outlined" className={classes.formControl}>
                     <Button variant="contained" color="primary" className={classes.button2}
-                            onClick={() => store.dispatch(getFixedByIterationAndBuild(this.props.fixedDefectsData.iterations[this.state.iteration], this.props.fixedDefectsData.builds[this.state.build]))
+                            onClick={() => {
+                                store.dispatch(getFixedByIterationAndBuild(this.props.fixedDefectsData.iterations[this.state.iteration], this.props.fixedDefectsData.builds[this.state.build]));
+                                store.dispatch(clearWorkItems());
+                            }
                             }>
                         Загрузить
                     </Button>
                 </FormControl>
             </div>
             {this.props.fixedDefectsData.fetching ? <LinearProgress/> : <div/>}
-            {this.props.fixedDefectsData.items.map((item, index) => (
-                <div style={{padding: 16}}>
-                    <Card key={index} style={{paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8}}>
-                        <Grid container spacing={16}>
-                            <Grid item xs={12} sm>
-                                <div>
-                                    <Typography>
-                                        Change request: {item.changeRequestId}
-                                    </Typography>
-                                    <Typography>
-                                        {item.parentType}: {item.parentId}
-                                    </Typography>
-                                    <Typography>
-                                        Title: {item.title}
-                                    </Typography>
-                                    <Typography>
-                                        Description: {item.body}
-                                    </Typography>
-                                    <Typography>
-                                        Area name: {item.areaName}
-                                    </Typography>
-                                </div>
-                            </Grid>
-                            <Grid item alignItems="center"
-                                  justify="center">
-                                {item.youTrackId ?
-                                    <div>{item.youTrackId}</div> :
-                                    <FormControl variant="outlined" className={classes.formControl}>
-                                        <Button variant="contained" color="primary" className={classes.button2}
-                                                onClick={() => store.dispatch(sendItemToYouTrack(item.changeRequestId))
-                                                }>
-                                            Опубликовать
-                                        </Button>
-                                    </FormControl>}
-                            </Grid>
-                        </Grid>
-                        {item.isPublishing ? <LinearProgress/> : <div/>}
-                    </Card>
-                </div>
-
-            ))}
+            {this.props.fixedDefectsData.items.map((item, index) => (<DefectItem key={`di-${index}`} defect={item}/>))}
         </div>;
     }
 }

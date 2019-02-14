@@ -89,13 +89,19 @@ export function getFixedByIterationAndBuild(iteration, build) {
     }
 }
 
-export function sendItemToYouTrack(changeRequestId) {
+export function clearWorkItems(){
+    return function (dispatch) {
+        dispatch({type: 'CLEAR_WORK_ITEMS'});
+    }
+}
+
+/*export function sendItemToYouTrack(changeRequestId) {
     return function (dispatch) {
         dispatch({type: "SEND_ITEM_TO_YOUTRACK_PENDING", payload: {changeRequestId: changeRequestId}});
         const obj = {
             method: 'GET',
             headers: {
-                /*'Accept': 'application/json'*/
+                /!*'Accept': 'application/json'*!/
             }
         };
         console.log(changeRequestId);
@@ -103,7 +109,7 @@ export function sendItemToYouTrack(changeRequestId) {
         console.log(url);
         fetch(url, obj)
             .then(res => res.json())
-            /*.then(res => res.text())*/
+            /!*.then(res => res.text())*!/
             .then(res => {
                 dispatch({
                     type: "SEND_ITEM_TO_YOUTRACK_FULFILLED",
@@ -118,7 +124,7 @@ export function sendItemToYouTrack(changeRequestId) {
                 payload: err
             }));
     }
-}
+}*/
 
 const stringSort = function (a, b) {
     if (a.name > b.name) {
