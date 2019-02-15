@@ -62,68 +62,70 @@ class App extends React.Component {
                             </div>
                             <Divider/>
                             <div>
-                                <ListItem component={Link} to="/" selected={this.props.appBarState.selectedId === 0}>
+                                <ListItem style={{paddingLeft: 24}} component={Link} to="/"
+                                          selected={this.props.appBarState.selectedId === 0}>
                                     <ListItemIcon>
                                         <MenuIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={'Отчёты'}/>
                                 </ListItem>
-                                <ListItem component={Link} to="/kpi"
+                                <ListItem style={{paddingLeft: 24}} component={Link} to="/kpi"
                                           selected={this.props.appBarState.selectedId === PAGE_IDS.kpi.id}>
                                     <ListItemIcon>
                                         <MenuIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={PAGE_IDS.kpi.name}/>
                                 </ListItem>
-                                <ListItem component={Link} to="/accounted_time"
+                                <ListItem style={{paddingLeft: 24}} component={Link} to="/accounted_time"
                                           selected={this.props.appBarState.selectedId === 6}>
                                     <ListItemIcon>
                                         <MenuIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={'Отработанное время'}/>
                                 </ListItem>
-                                <ListItem component={Link} to="/time_accounting"
+                                <ListItem style={{paddingLeft: 24}} component={Link} to="/time_accounting"
                                           selected={this.props.appBarState.selectedId === 1}>
                                     <ListItemIcon>
                                         <MenuIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={'Трудозатраты'}/>
                                 </ListItem>
-                                <ListItem component={Link} to="/etl" selected={this.props.appBarState.selectedId === 2}>
+                                <ListItem style={{paddingLeft: 24}} component={Link} to="/etl"
+                                          selected={this.props.appBarState.selectedId === 2}>
                                     <ListItemIcon>
                                         <MenuIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={'ETL'}/>
                                 </ListItem>
-                                <ListItem component={Link} to="/issues"
+                                <ListItem style={{paddingLeft: 24}} component={Link} to="/issues"
                                           selected={this.props.appBarState.selectedId === 3}>
                                     <ListItemIcon>
                                         <MenuIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={'Запросы'}/>
                                 </ListItem>
-                                <ListItem component={Link} to="/license"
+                                <ListItem style={{paddingLeft: 24}} component={Link} to="/license"
                                           selected={this.props.appBarState.selectedId === 4}>
                                     <ListItemIcon>
                                         <MenuIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={'Получить лицензию'}/>
                                 </ListItem>
-                                <ListItem component={Link} to="/possible_errors"
+                                <ListItem style={{paddingLeft: 24}} component={Link} to="/possible_errors"
                                           selected={this.props.appBarState.selectedId === PAGE_IDS.possibleErrors.id}>
                                     <ListItemIcon>
                                         <MenuIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={PAGE_IDS.possibleErrors.name}/>
                                 </ListItem>
-                                <ListItem component={Link} to="/repositories"
+                                <ListItem style={{paddingLeft: 24}} component={Link} to="/repositories"
                                           selected={this.props.appBarState.selectedId === PAGE_IDS.repositories.id}>
                                     <ListItemIcon>
                                         <MenuIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary={PAGE_IDS.repositories.name}/>
                                 </ListItem>
-                                <ListItem component={Link} to="/fixed_defects"
+                                <ListItem style={{paddingLeft: 24}} component={Link} to="/fixed_defects"
                                           selected={this.props.appBarState.selectedId === PAGE_IDS.fixedDefects.id}>
                                     <ListItemIcon>
                                         <MenuIcon/>

@@ -59,18 +59,18 @@ export function fetchBuildsByIteration(iteration) {
 }
 
 export function getFixedByIterationAndBuild(iteration, build) {
-    return function (dispatch) {
+    return function (dispatch, getState) {
         dispatch({type: "FETCH_FIXED_BY_ITERATION_AND_BUILD_PENDING"});
+        const state = getState();
         const obj = {
             method: 'GET',
             headers: {
                 /*'Accept': 'application/json'*/
             }
         };
-        console.log(iteration);
-        console.log(build);
+        const builds = build.map((e) => state.fixedDefectsData.builds[e]);
 
-        const url = `${ENDPOINT}/api/tfs?action=fixed&iteration=${encodeURIComponent(iteration)}&build=${encodeURIComponent(build)}`;
+        const url = `${ENDPOINT}/api/tfs?action=fixed&iteration=${encodeURIComponent(iteration)}&build=${encodeURIComponent(builds.toString())}`;
         console.log(url);
         fetch(url, obj)
             .then(res => res.json())
@@ -89,42 +89,11 @@ export function getFixedByIterationAndBuild(iteration, build) {
     }
 }
 
-export function clearWorkItems(){
+export function clearWorkItems() {
     return function (dispatch) {
         dispatch({type: 'CLEAR_WORK_ITEMS'});
     }
 }
-
-/*export function sendItemToYouTrack(changeRequestId) {
-    return function (dispatch) {
-        dispatch({type: "SEND_ITEM_TO_YOUTRACK_PENDING", payload: {changeRequestId: changeRequestId}});
-        const obj = {
-            method: 'GET',
-            headers: {
-                /!*'Accept': 'application/json'*!/
-            }
-        };
-        console.log(changeRequestId);
-        const url = `${ENDPOINT}/api/tfs?action=postChangeRequest&changeRequestId=${changeRequestId}`;
-        console.log(url);
-        fetch(url, obj)
-            .then(res => res.json())
-            /!*.then(res => res.text())*!/
-            .then(res => {
-                dispatch({
-                    type: "SEND_ITEM_TO_YOUTRACK_FULFILLED",
-                    payload: {
-                        changeRequestId: changeRequestId,
-                        youTrackId: res['idReadable']
-                    }
-                });
-            })
-            .catch(err => dispatch({
-                type: "SEND_ITEM_TO_YOUTRACK_REJECTED",
-                payload: err
-            }));
-    }
-}*/
 
 const stringSort = function (a, b) {
     if (a.name > b.name) {

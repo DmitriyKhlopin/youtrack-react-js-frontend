@@ -28,17 +28,21 @@ class IssuesDisplay extends Component {
 
 
     componentDidMount() {
-        const myHeaders = new Headers();
-        myHeaders.append('Authorization', AUTH_TOKEN);
-        myHeaders.append('Accept', 'application/json');
-        const url = YT_ENDPOINT + "issue?filter=%23Unresolved -SD -SPAM&with=Summary&max=1000";
-        fetch(url, {
-            method: "GET",
-            headers: myHeaders
-        }).then(res => res.json()).then(json => !this.isCancelled && this.setState({
-            issues: json.issue,
-            activeIssue: 0
-        })).catch(err => console.log(err));
+        const url = YT_ENDPOINT + "issue";
+        const obj = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Origin': 'http://10.9.172.76:3000',
+                'Authorization': AUTH_TOKEN
+            }
+        };
+        fetch(url, obj)
+            .then(res => res.json())
+            .then(json => !this.isCancelled && this.setState({
+                issues: json.issue,
+                activeIssue: 0
+            })).catch(err => console.log(err));
     }
 
     render() {

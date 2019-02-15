@@ -31,7 +31,7 @@ class FixedDefectsDisplay extends Component {
             isLoading: false,
             etlState: null,
             iteration: '',
-            build: ''
+            build: []
         }
     }
 
@@ -50,6 +50,7 @@ class FixedDefectsDisplay extends Component {
         store.dispatch(clearWorkItems());
         this.setState({[event.target.name]: event.target.value});
         if (event.target.name === 'iteration') store.dispatch(fetchBuildsByIteration(this.props.fixedDefectsData.iterations[event.target.value]))
+        console.log(event.target.value);
     };
 
     render() {
@@ -102,6 +103,7 @@ class FixedDefectsDisplay extends Component {
                     <Select
                         value={this.state.build}
                         onChange={this.handleChange}
+                        multiple={true}
                         input={
                             <OutlinedInput
                                 labelWidth={this.state.labelWidth2}
@@ -122,7 +124,7 @@ class FixedDefectsDisplay extends Component {
                 <FormControl variant="outlined" className={classes.formControl}>
                     <Button variant="contained" color="primary" className={classes.button2}
                             onClick={() => {
-                                store.dispatch(getFixedByIterationAndBuild(this.props.fixedDefectsData.iterations[this.state.iteration], this.props.fixedDefectsData.builds[this.state.build]));
+                                store.dispatch(getFixedByIterationAndBuild(this.props.fixedDefectsData.iterations[this.state.iteration], this.state.build));
                                 store.dispatch(clearWorkItems());
                             }
                             }>
