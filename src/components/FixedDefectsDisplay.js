@@ -25,7 +25,6 @@ import DefectItem from "./DefectItem";
 class FixedDefectsDisplay extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             items: null,
             isLoading: false,
@@ -49,7 +48,7 @@ class FixedDefectsDisplay extends Component {
     handleChange = event => {
         store.dispatch(clearWorkItems());
         this.setState({[event.target.name]: event.target.value});
-        if (event.target.name === 'iteration') store.dispatch(fetchBuildsByIteration(this.props.fixedDefectsData.iterations[event.target.value]))
+        if (event.target.name === 'iteration') store.dispatch(fetchBuildsByIteration(this.props.fixedDefectsData.iterations[event.target.value]));
         console.log(event.target.value);
     };
 

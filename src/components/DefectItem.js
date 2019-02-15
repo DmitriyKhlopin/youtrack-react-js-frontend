@@ -9,9 +9,12 @@ import Button from "@material-ui/core/Button";
 import {ENDPOINT} from "../Const";
 import {AUTH_TOKEN} from "../Config";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import TextField from "@material-ui/core/TextField";
 
 class DefectItem extends React.Component {
     state = {
+        title: null,
+        body: null,
         defect: null,
         isPosting: false,
         isChecked: false,
@@ -19,19 +22,28 @@ class DefectItem extends React.Component {
         idReadable: null
     };
 
-    static getDerivedStateFromProps(props) {
-        return {defect: props.defect}
+    static getDerivedStateFromProps(props, state) {
+        if (state.defect === null) return {
+            defect: props.defect,
+            title: props.defect.title,
+            body: props.defect.body
+        }
     }
 
-    async sendItemToYouTrack(changeRequestId) {
+    async sendItemToYouTrack() {
         this.setState({isPosting: true});
         const obj = {
-            method: 'GET',
+            method: 'POST',
             headers: {
-                /*'Accept': 'application/json'*/
-            }
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: this.state.title,
+                body: this.state.body
+            })
         };
-        const url = `${ENDPOINT}/api/tfs?action=postChangeRequest&changeRequestId=${changeRequestId}`;
+        const url = `${ENDPOINT}/api/tfs?action=postChangeRequest&changeRequestId=${this.state.defect.changeRequestId}`;
         console.log(url);
         fetch(url, obj)
             .then(res => res.json())
@@ -42,12 +54,14 @@ class DefectItem extends React.Component {
                 });
 
             })
-            .catch(err => this.setState({
-                isPosting: false,
-
-                idReadable: null
-            }));
-    }
+            .catch(err => {
+                console.log(err);
+                this.setState({
+                    isPosting: false,
+                    idReadable: null
+                });
+            });
+    };
 
     async checkIssue(changeRequestId) {
         console.log('Checking issue');
@@ -86,6 +100,10 @@ class DefectItem extends React.Component {
             }));
     }
 
+    handleChange = name => event => {
+        this.setState({[name]: event.target.value});
+    };
+
     render() {
         const {classes} = this.props;
         const i = this.state.defect;
@@ -99,21 +117,38 @@ class DefectItem extends React.Component {
                 <Grid container spacing={16}>
                     <Grid item xs={12} sm>
                         <div>
-                            <Typography>
-                                Change request: {i.changeRequestId}
-                            </Typography>
-                            <Typography>
-                                {i.parentType}: {i.parentId}
-                            </Typography>
-                            <Typography>
-                                Title: {i.title}
-                            </Typography>
-                            <Typography>
-                                Description: {i.body}
-                            </Typography>
-                            <Typography>
-                                Area name: {i.areaName}
-                            </Typography>
+                            <form className={classes.container} noValidate autoComplete="off">
+                                <TextField
+                                    id="standard-title"
+                                    label="Заголовок"
+                                    /*style={{ margin: 8 }}*/
+                                    value={this.state.title}
+                                    onChange={this.handleChange('title')}
+                                    fullWidth
+                                    multiline
+                                    margin="normal"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                                <TextField
+                                    id="standard-body"
+                                    label="Описание"
+                                    value={this.state.body}
+                                    onChange={this.handleChange('body')}
+                                    /*helperText="Full width!"*/
+                                    fullWidth
+                                    multiline
+                                    margin="normal"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                                <Typography>
+                                    Area name: {i.areaName} // Change
+                                    request: {i.changeRequestId} // {i.parentType}: {i.parentId}
+                                </Typography>
+                            </form>
                         </div>
 
                     </Grid>
@@ -123,11 +158,10 @@ class DefectItem extends React.Component {
                             <div>{this.state.idReadable}</div> :
                             this.state.isPosting ? <CircularProgress/> :
                                 <FormControl variant="outlined" className={classes.formControl}>
-                                    <Button variant="contained" color="primary" className={classes.button2}
-                                            onClick={() => {
-                                                this.sendItemToYouTrack(i.changeRequestId)
-                                            }
-                                            }>
+                                    <Button variant="contained"
+                                            color="primary"
+                                            className={classes.button2}
+                                            onClick={() => this.sendItemToYouTrack()}>
                                         Опубликовать
                                     </Button>
                                 </FormControl>}
