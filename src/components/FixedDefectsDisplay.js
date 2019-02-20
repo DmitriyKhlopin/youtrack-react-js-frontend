@@ -36,7 +36,7 @@ class FixedDefectsDisplay extends Component {
 
 
     componentDidMount() {
-        console.log('CDM');
+
         store.dispatch(setSelectedNavItem({title: PAGE_IDS.fixedDefects.name, selectedId: PAGE_IDS.fixedDefects.id}));
         store.dispatch(fetchIterations());
         this.setState({

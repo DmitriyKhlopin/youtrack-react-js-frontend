@@ -14,6 +14,7 @@ import kpiFiltersReducers from "./reducers/kpiFiltersReducers";
 import kpiReducers from "./reducers/kpiReducers";
 import repositoriesReducers from "./reducers/repositoriesReducers";
 import fixedDefectsReducers from "./reducers/fixedDefectsReducers";
+import workDurationReducers from "./reducers/workDurationReducers";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
@@ -30,5 +31,6 @@ export default combineReducers({
     possibleErrors: possibleErrorsReducers,
     drillDown: drillDownReducers,
     repositoriesData: repositoriesReducers,
-    fixedDefectsData: fixedDefectsReducers
+    fixedDefectsData: fixedDefectsReducers,
+    workDurationData: workDurationReducers
 });

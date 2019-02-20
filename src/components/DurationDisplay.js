@@ -8,7 +8,15 @@ import connect from "react-redux/es/connect/connect";
 import Button from "@material-ui/core/Button/Button";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
 import {PAGE_IDS} from "../Const";
-import FormControl from "./FixedDefectsDisplay";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import MenuItem from "@material-ui/core/MenuItem";
+import * as ReactDOM from "react-dom";
+import InputLabel from "@material-ui/core/InputLabel";
+import {fetchProjects} from "../redux/actions/reportFiltersActions";
+import {getWorkDuration} from "../redux/actions/workDurationActions";
+
 
 //TODO style={classes.content} causes crashes in firefox
 
@@ -18,12 +26,8 @@ class DurationDisplay extends Component {
         this.state = {
             open: false,
             scroll: 'paper',
-            items: []
+            projects: []
         }
-    }
-
-    componentWillUnmount() {
-        this.isCancelled = true;
     }
 
     requestData = () => {
@@ -31,46 +35,73 @@ class DurationDisplay extends Component {
     };
 
     componentDidMount() {
-        console.log('CDM');
+        if (this.props.reportFilters.proj.length === 0) {
+            store.dispatch(fetchProjects());
+        }
         store.dispatch(setSelectedNavItem({title: PAGE_IDS.duration.name, selectedId: PAGE_IDS.duration.id}));
-        /*store.dispatch(fetchIterations());*/
-        /*this.setState({
+        this.setState({
             labelWidth2: ReactDOM.findDOMNode(this.InputLabelRef2).offsetWidth,
-        });*/
+        });
     }
 
     handleChange = event => {
-        /*store.dispatch(clearWorkItems());*/
-        this.setState({[event.target.name]: event.target.value});
-        /*if (event.target.name === 'iteration') store.dispatch(fetchBuildsByIteration(this.props.fixedDefectsData.iterations[event.target.value]));*/
-        console.log(event.target.value);
+        this.setState({[event.target.name.toLowerCase()]: event.target.value});
     };
 
     render() {
         const {classes} = this.props;
-        /*const items = this.props.timeAccountingData.timeData;*/
-        console.log(this.props.reportFilters);
+        console.log(this.props.workDurationData);
+        console.log(this.props.workDurationData.durationItems.length);
         return <div style={{minWidth: '100%'}}>
             <div style={{
                 display: 'flex',
                 flexWrap: 'wrap',
-            }}>
+            }}><FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel
+                    ref={ref => {
+                        this.InputLabelRef2 = ref;
+                    }}
+                    htmlFor="outlined-projects-simple"
+                >
+                    Projects
+                </InputLabel>
+                <Select
+                    value={this.state.projects}
+                    onChange={this.handleChange}
+                    multiple={true}
+                    input={
+                        <OutlinedInput
+                            labelWidth={this.state.labelWidth2}
+                            name="Projects"
+                            id="outlined-projects-simple"
+                        />
+                    }
+                >
+                    {<MenuItem value="">
+                        <em>Select iteration</em>
+                    </MenuItem>}
+                    {this.props.reportFilters.proj.map((item, index) => (
+                        <MenuItem key={`projects-list-item-${index}`} value={item}>{item.shortName}</MenuItem>
+                    ))}
 
-
+                </Select>
+            </FormControl>
                 <FormControl variant="outlined" className={classes.formControl}>
                     <Button variant="contained" color="primary" className={classes.button2}
                             onClick={() => {
-                                /*store.dispatch(getFixedByIterationAndBuild(this.props.fixedDefectsData.iterations[this.state.iteration], this.state.build));
-                                store.dispatch(clearWorkItems());*/
+                                store.dispatch(getWorkDuration(this.state.projects.map(project => project.shortName)));
                             }
                             }>
                         Загрузить
                     </Button>
                 </FormControl>
             </div>
+            {this.props.workDurationData.durationItems.map((item, index) => (
+                <div key={`di-${index}`}>{JSON.stringify(item)}</div>))}
         </div>;
     }
 }
+
 
 DurationDisplay.propTypes = {
     classes: PropTypes.object.isRequired,
@@ -79,7 +110,7 @@ DurationDisplay.propTypes = {
 function mapStateToProps(state) {
     return {
         appBarState: state.appBarState,
-        timeAccountingData: state.timeAccountingData,
+        workDurationData: state.workDurationData,
         reportFilters: state.reportFilters
     }
 }
