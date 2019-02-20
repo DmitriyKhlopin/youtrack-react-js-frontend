@@ -13,6 +13,8 @@ import TimeAccountingFilterDialog from "./TimeAccountingFilterDialog";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
 import RefreshIcon from '@material-ui/icons/Refresh';
 
+//TODO style={classes.content} causes crashes in firefox
+
 class TimeAccountingDisplay extends Component {
     constructor(props) {
         super(props);
@@ -103,7 +105,8 @@ class TimeAccountingDisplay extends Component {
 
         return <div style={{minWidth: '100%'}}>
             <ReactTable
-                style={classes.content}
+
+                /*style={classes.content}*/
                 data={items}
                 filterable
                 defaultFilterMethod={(filter, row) =>
