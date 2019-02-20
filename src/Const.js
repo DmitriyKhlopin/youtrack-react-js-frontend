@@ -28,14 +28,6 @@ export const MATERIAL_COLORS = [/*'#F44336',
 export const MATERIAL_LINE_CHART_COLORS = ['#2196F3', '#FFC107', '#4CAF50'];
 export const MATERIAL_SIGMA_COLORS = ['#34495e', '#4CAF50', '#FFEB3B', '#FF9800'];
 
-export const NAV_ITEMS = [
-        {name: 'Активные запросы', id: 0},
-        {name: 'Трудозатраты', id: 1},
-        {name: 'Экспорт данных из YT', id: 2},
-        {name: 'Отчёты', id: 3}
-    ]
-;
-
 export const PAGE_IDS = {
     possibleErrors: {
         id: 8,
@@ -52,5 +44,9 @@ export const PAGE_IDS = {
     fixedDefects: {
         id: 11,
         name: 'Исправленные дефекты'
+    },
+    duration: {
+        id: 12,
+        name: 'Продолжительность работ'
     }
 };
