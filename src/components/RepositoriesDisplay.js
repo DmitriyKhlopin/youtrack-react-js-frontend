@@ -98,9 +98,8 @@ class RepositoriesDisplay extends Component {
         ];
 
         return <div style={{minWidth: '100%'}}>
-
             <ReactTable
-                style={classes.content}
+                /*style={classes.content}*/
                 data={items}
                 filterable
                 defaultFilterMethod={(filter, row) =>
@@ -111,7 +110,7 @@ class RepositoriesDisplay extends Component {
                     onClick={this.requestData}>
                 <RefreshIcon/>
             </Button>
-            <form variant="outlined" style={{
+            <form style={{
                 display: 'flex',
                 flexWrap: 'wrap',
             }}>
