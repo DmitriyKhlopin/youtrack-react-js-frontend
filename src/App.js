@@ -145,6 +145,7 @@ class App extends React.Component {
                         <main className={classes.content}>
                             <Switch>
                                 <Route exact path='/' component={ReportContainer}/>
+                                <Route exact path='/index.html' component={ReportContainer}/>
                                 <Route exact path='/time_accounting' component={TimeAccountingDisplay}/>
                                 <Route exact path='/kpi' component={KPIContainer}/>
                                 <Route exact path='/etl' component={ETLDisplay}/>
