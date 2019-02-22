@@ -18,13 +18,12 @@ import {fetchProjects} from "../redux/actions/reportFiltersActions";
 import {getWorkDuration} from "../redux/actions/workDurationActions";
 
 import * as X from 'xlsx';
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 function Workbook() {
     if (!(this instanceof Workbook))
         return new Workbook();
-
     this.SheetNames = [];
-
     this.Sheets = {}
 }
 
@@ -69,31 +68,21 @@ class DurationDisplay extends Component {
     };
 
 
-    s2ab(s) {
+    static s2ab(s) {
         const buf = new ArrayBuffer(s.length);
-
         const view = new Uint8Array(buf);
-
         for (let i = 0; i !== s.length; ++i)
             view[i] = s.charCodeAt(i) & 0xFF;
-
         return buf
     }
 
     exportToExcel() {
-        const data = [
-            {key: "timeouts.DeviceOfflineTimeout", value: "00:10:00"},
-            {key: "timeouts.CommissioningValidityInterval", value: "01:00:00"}
-        ];
         const wb = new Workbook();
         const ws = X.utils.json_to_sheet(this.props.workDurationData.durationItems);
-
         wb.SheetNames.push('');
         wb.Sheets[''] = ws;
-
         const wbout = X.write(wb, {bookType: 'xlsx', bookSST: true, type: 'binary'});
-        let url = window.URL.createObjectURL(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}));
-
+        let url = window.URL.createObjectURL(new Blob([DurationDisplay.s2ab(wbout)], {type: 'application/octet-stream'}));
         this.download(url, 'import.xlsx');
     }
 
@@ -155,15 +144,11 @@ class DurationDisplay extends Component {
                     </Button>
                 </FormControl>
             </div>
-            {this.props.workDurationData.durationItems.map((item, index) => (
-                <div key={`di-${index}`}>{JSON.stringify(item)}</div>))}
+            {this.props.workDurationData.fetching ?
+                <LinearProgress/> : this.props.workDurationData.durationItems.map((item, index) => (
+                    <div key={`di-${index}`}>{JSON.stringify(item)}</div>))}
         </div>;
     }
-
-    getData() {
-        console.log('AAA')
-    }
-
 }
 
 
