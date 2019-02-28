@@ -152,8 +152,7 @@ class DefectItem extends React.Component {
                         </div>
 
                     </Grid>
-                    <Grid item
-                          justify="center">
+                    <Grid item justify="center">
                         {this.state.idReadable !== null ?
                             <div>{this.state.idReadable}</div> :
                             this.state.isPosting ? <CircularProgress/> :

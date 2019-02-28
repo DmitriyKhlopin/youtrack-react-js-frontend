@@ -13,12 +13,15 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import {
+    addBuild,
+    checkIfBuildExists,
     clearWorkItems,
     fetchBuildsByIteration,
     fetchIterations,
+    fetchYouTrackBuilds,
     getFixedByIterationAndBuild
 } from "../redux/actions/fixedDefectsActions";
-import {LinearProgress} from "@material-ui/core";
+import {CircularProgress, LinearProgress, Typography} from "@material-ui/core";
 import * as ReactDOM from "react-dom";
 import DefectItem from "./DefectItem";
 
@@ -34,11 +37,24 @@ class FixedDefectsDisplay extends Component {
         }
     }
 
+    buttonBuild = (props) => {
+        return <FormControl variant="outlined" className={props.classes.formControl} style={{minHeight: 64}}>
+            <Button variant="contained" color="primary" className={props.classes.button2}
+                    style={{height: '100%'}}
+                    onClick={() => {
+                        console.log(props);
+                        store.dispatch(addBuild(props.data.build));
+                    }
+                    }>
+                {`Создать build '${props.data.build}'`}{props.data.isPosting ? <CircularProgress/> : <div/>}
+            </Button>
+        </FormControl>
+    };
 
     componentDidMount() {
-
         store.dispatch(setSelectedNavItem({title: PAGE_IDS.fixedDefects.name, selectedId: PAGE_IDS.fixedDefects.id}));
         store.dispatch(fetchIterations());
+        store.dispatch(fetchYouTrackBuilds());
         this.setState({
             labelWidth1: ReactDOM.findDOMNode(this.InputLabelRef1).offsetWidth,
             labelWidth2: ReactDOM.findDOMNode(this.InputLabelRef2).offsetWidth,
@@ -49,7 +65,7 @@ class FixedDefectsDisplay extends Component {
         store.dispatch(clearWorkItems());
         this.setState({[event.target.name]: event.target.value});
         if (event.target.name === 'iteration') store.dispatch(fetchBuildsByIteration(this.props.fixedDefectsData.iterations[event.target.value]));
-        console.log(event.target.value);
+        if (event.target.name === 'build') store.dispatch(checkIfBuildExists(this.state.iteration, event.target.value))
     };
 
     render() {
@@ -130,12 +146,23 @@ class FixedDefectsDisplay extends Component {
                         Загрузить
                     </Button>
                 </FormControl>
+                <Typography>
+                    {this.state.build.filter(item => this.props.fixedDefectsData.youTrackBuilds.map(i => i.name).includes(item))}
+                    {/*{this.state.build.map(e => `${this.props.fixedDefectsData.iterations[this.state.iteration]}${this.props.fixedDefectsData.builds[e]}`)}*/}
+                </Typography>
+
             </div>
+            {this.props.fixedDefectsData.absentBuilds.map(e => this.buttonBuild({
+                data: e,
+                style: classes.button,
+                classes: classes
+            }))}
             {this.props.fixedDefectsData.fetching ? <LinearProgress/> : <div/>}
             {this.props.fixedDefectsData.items.map((item, index) => (<DefectItem key={`di-${index}`} defect={item}/>))}
         </div>;
     }
 }
+
 
 FixedDefectsDisplay.propTypes = {
     classes: PropTypes.object.isRequired,

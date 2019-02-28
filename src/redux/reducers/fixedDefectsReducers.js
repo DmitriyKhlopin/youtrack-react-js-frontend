@@ -5,7 +5,9 @@ export default function reducer(state = {
     iterations: [],
     builds: [],
     items: [],
-    youTrackId: null
+    youTrackId: null,
+    youTrackBuilds: [],
+    absentBuilds: []
 }, action) {
     switch (action.type) {
         case 'CLEAR_WORK_ITEMS': {
@@ -130,6 +132,41 @@ export default function reducer(state = {
                 /*fetched: true*/
             };
             break;
+        }
+        case 'FETCH_YOUTRACK_BUILDS_PENDING': {
+            state = {
+                ...state,
+                fetchingYouTrackBuilds: true,
+            };
+            break;
+        }
+        case 'FETCH_YOUTRACK_BUILDS_FULFILLED': {
+            state = {
+                ...state,
+                fetchingYouTrackBuilds: false,
+                youTrackBuilds: action.payload,
+            };
+            break;
+        }
+        case 'FETCH_YOUTRACK_BUILDS_REJECTED': {
+            state = {
+                ...state,
+                fetchingYouTrackBuilds: false,
+            };
+            break;
+        }
+        case 'SET_ABSENT_BUILDS': {
+            state = {
+                ...state,
+                absentBuilds: action.payload,
+            };
+            break;
+        }
+        case 'POST_BUILD_PENDING': {
+            state = {
+                ...state,
+                absentBuilds: action.payload,
+            };
         }
     }
     return state;

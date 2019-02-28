@@ -63,7 +63,6 @@ class DurationDisplay extends Component {
         a.href = url;
         a.download = name;
         a.click();
-
         window.URL.revokeObjectURL(url)
     };
 
@@ -83,7 +82,7 @@ class DurationDisplay extends Component {
         wb.Sheets[''] = ws;
         const wbout = X.write(wb, {bookType: 'xlsx', bookSST: true, type: 'binary'});
         let url = window.URL.createObjectURL(new Blob([DurationDisplay.s2ab(wbout)], {type: 'application/octet-stream'}));
-        this.download(url, 'import.xlsx');
+        this.download(url, 'export.xlsx');
     }
 
     render() {
