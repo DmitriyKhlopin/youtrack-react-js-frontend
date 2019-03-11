@@ -101,6 +101,19 @@ class TimeAccountingDisplay extends Component {
                 filterMethod: (filter, row) =>
                     row[filter.id].startsWith(filter.value) ||
                     row[filter.id].endsWith(filter.value)
+            },
+            {
+                Header: 'Приоритет',
+                accessor: 'priority',
+                Footer: (
+                    <span><strong>Popular: </strong>{" "} {items.map(item => item.priority).reduce(
+                        (a, b, i, arr) =>
+                            (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
+                        null)}</span>
+                ),
+                filterMethod: (filter, row) =>
+                    row[filter.id].startsWith(filter.value) ||
+                    row[filter.id].endsWith(filter.value)
             }];
 
         return <div style={{minWidth: '100%'}}>
