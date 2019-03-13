@@ -118,15 +118,4 @@ export const styles = theme => ({
         padding: 0,
         margin: 0,
     },
-    /*content: {
-        minHeight: '100vh',
-        maxHeight: '100vh',
-        overflow: 'auto',
-        flexGrow: 1,
-        padding: 0,
-        backgroundColor: theme.palette.background.default,
-        [theme.breakpoints.up('md')]: {
-            paddingRight: 0,
-        },
-    },*/
 });

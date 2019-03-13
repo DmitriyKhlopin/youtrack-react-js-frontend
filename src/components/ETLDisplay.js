@@ -11,6 +11,7 @@ import * as PropTypes from "prop-types";
 import {styles} from "../Styles";
 import {fetchETL, setEtlFilterDateFrom, setEtlFilterDateTo} from "../redux/actions/etlFilterActions";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
+import {PAGES} from "../Const";
 
 class ETLDisplay extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ class ETLDisplay extends Component {
     }
 
     componentWillMount() {
-        store.dispatch(setSelectedNavItem({title: 'ETL', selectedId: 2}));
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
     }
 
     render() {

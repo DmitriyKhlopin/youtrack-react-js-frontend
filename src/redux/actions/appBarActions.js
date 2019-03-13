@@ -1,8 +1,8 @@
-export function setSelectedNavItem(title) {
+export function setSelectedNavItem(currentPage) {
     return function (dispatch) {
         dispatch({
             type: "SET_SELECTED_NAV_ITEM",
-            payload: title
+            payload: currentPage
         });
     }
 }

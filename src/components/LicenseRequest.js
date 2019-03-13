@@ -15,6 +15,7 @@ import InputLabel from "../../node_modules/@material-ui/core/InputLabel/InputLab
 import Input from "../../node_modules/@material-ui/core/Input/Input";
 import Checkbox from "../../node_modules/@material-ui/core/Checkbox/Checkbox";
 import {setProductVersion} from "../redux/actions/licenseRequestActions";
+import {PAGES} from "../Const";
 
 const units = [{
     name: 'Prognoz Platform Server',
@@ -120,7 +121,7 @@ class LicenseRequest extends Component {
     };
 
     componentWillMount() {
-        store.dispatch(setSelectedNavItem({title: 'Запрос лицензии', selectedId: 4}));
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
     }
 
     render() {

@@ -1,14 +1,13 @@
 import React, {Component} from "react";
-import {styles} from  "../Styles"
 import store from "../redux/store";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import * as PropTypes from "prop-types";
-/*import withStyles from "@material-ui/core/styles/withStyles";*/
-import { withStyles } from '@material-ui/styles';
+import withStyles from "@material-ui/core/styles/withStyles";
+import {styles} from "../Styles";
 import connect from "react-redux/es/connect/connect";
 import Button from "@material-ui/core/Button/Button";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
-import {drawerWidth, PAGES} from "../Const";
+import {PAGES} from "../Const";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
@@ -17,9 +16,6 @@ import * as ReactDOM from "react-dom";
 import InputLabel from "@material-ui/core/InputLabel";
 import {fetchProjects} from "../redux/actions/reportFiltersActions";
 import {getWorkDuration} from "../redux/actions/workDurationActions";
-
-/*import { withTheme } from '@material-ui/styles';*/
-
 
 import * as X from 'xlsx';
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -33,25 +29,28 @@ function Workbook() {
 
 //TODO style={classes.content} causes crashes in firefox
 
-class DurationDisplay extends Component {
-    state = {
-        open: false,
-        scroll: 'paper',
-        projects: [],
-        labelWidth: 0
-    };
+class HighPriorityIssuesDisplay extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            scroll: 'paper',
+            projects: []
+        }
+    }
 
     requestData = () => {
         store.dispatch(fetchTimeAccountingData());
     };
 
     componentDidMount() {
+        console.log(this.props.location);
         store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
         if (this.props.reportFilters.proj.length === 0) {
             store.dispatch(fetchProjects());
         }
         this.setState({
-            labelWidth: ReactDOM.findDOMNode(this.InputLabelRef2).offsetWidth,
+            labelWidth2: ReactDOM.findDOMNode(this.InputLabelRef2).offsetWidth,
         });
     }
 
@@ -83,13 +82,14 @@ class DurationDisplay extends Component {
         wb.SheetNames.push('');
         wb.Sheets[''] = ws;
         const wbout = X.write(wb, {bookType: 'xlsx', bookSST: true, type: 'binary'});
-        let url = window.URL.createObjectURL(new Blob([DurationDisplay.s2ab(wbout)], {type: 'application/octet-stream'}));
+        let url = window.URL.createObjectURL(new Blob([HighPriorityIssuesDisplay.s2ab(wbout)], {type: 'application/octet-stream'}));
         this.download(url, 'export.xlsx');
     }
 
     render() {
         const {classes} = this.props;
-        console.log(this.props);
+        console.log(this.props.workDurationData);
+        console.log(this.props.workDurationData.durationItems.length);
         return <div style={{minWidth: '100%'}}>
             <div style={{
                 display: 'flex',
@@ -110,7 +110,7 @@ class DurationDisplay extends Component {
                         multiple={true}
                         input={
                             <OutlinedInput
-                                labelWidth={this.state.labelWidth}
+                                labelWidth={this.state.labelWidth2}
                                 name="Projects"
                                 id="outlined-projects-simple"
                             />
@@ -152,7 +152,7 @@ class DurationDisplay extends Component {
 }
 
 
-DurationDisplay.propTypes = {
+HighPriorityIssuesDisplay.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
@@ -164,30 +164,4 @@ function mapStateToProps(state) {
     }
 }
 
-const st = {
-    formControl: {
-        margin: 16,
-        minWidth: 120,
-    },
-    button2: {
-        height: '100%'
-    },
-};
-
-const styles2 = theme => ({
-    formControl: {
-        /*marginTop: theme.spacing.unit * 2,
-        marginLeft: theme.spacing.unit * 2,
-        marginRight: theme.spacing.unit * 2,*/
-        margin: theme.spacing.unit * 2,
-        minWidth: 120,
-    },
-});
-
-
-
-/*export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(DurationDisplay));*/
-/*export default withStyles(st, {withTheme: true})(connect(mapStateToProps, null)(DurationDisplay));*/
-export default withStyles(styles/*, {withTheme: true}*/)(connect(mapStateToProps, null)(DurationDisplay));
-/*export default withTheme()(connect(mapStateToProps, null)(DurationDisplay));*/
-
+export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(HighPriorityIssuesDisplay));

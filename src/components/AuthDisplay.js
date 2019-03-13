@@ -15,6 +15,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Paper from "../../node_modules/@material-ui/core/Paper/Paper";
 import Button from "../../node_modules/@material-ui/core/Button/Button";
 import {fetchToken, setUserLogin, setUserPassword} from "../redux/actions/userActions";
+import {PAGES} from "../Const";
 
 const clientServiceId = '95dc00cf-e9da-479d-84ea-fbe73f4652a5';
 const redirectUrl = 'http://10.9.172.76:3000/login';
@@ -31,7 +32,7 @@ class AuthDisplay extends Component {
     };
 
     componentWillMount() {
-        store.dispatch(setSelectedNavItem({title: 'Авторизайтесь, пожалуйста', selectedId: 5}));
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
     }
 
     render() {

@@ -19,6 +19,8 @@ import PieChartByPartners from "./charts/PieChartByPartners";
 import ScatterChartSigma from "./charts/ScatterChartSigma";
 import DrillDownDialog from "./dialogs/DrillDownDialog";
 import ChartTemplate from "./charts/ChartTemplate";
+import {PAGES} from "../Const";
+import {Fab} from "@material-ui/core";
 
 /**http://materialuicolors.co/?utm_source=launchers*/
 
@@ -41,7 +43,7 @@ class ReportContainer extends Component {
     }
 
     componentWillMount() {
-        store.dispatch(setSelectedNavItem({title: 'Отчёты', selectedId: 0}));
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
         store.dispatch(fetchProjects());
     }
 
@@ -61,27 +63,30 @@ class ReportContainer extends Component {
     render() {
         const {classes} = this.props;
         return (
-            <Grid container spacing={24} className={classes.componentRoot}>
-                <LineChartByWeeks/>
-                <PieChartByPartners/>
-                <ScatterChartSigma/>
-                <PieChartByProjectTypes/>
-                <ChartTemplate templateName='Запросы от партнёров за год'/>
-                <Button variant="fab" mini className={classes.fabLoad} color={'secondary'}
-                        onClick={() => store.dispatch(fetchReportData())}>
+            <div>
+                <Grid container spacing={24} className={classes.componentRoot}>
+                    <LineChartByWeeks/>
+                    <PieChartByPartners/>
+                    <ScatterChartSigma/>
+                    <PieChartByProjectTypes/>
+                    <ChartTemplate templateName='Запросы от партнёров за год'/>
+
+                    <ReportFilterDialog open={this.state.filtersOpen}
+                                        handleClose={this.handleClose}
+                                        aria-labelledby="scroll-dialog-title"/>
+                    <DrillDownDialog open={this.props.drillDown.drillDownOpen}
+                                     handleClose={this.handleClose}
+                                     aria-labelledby="scroll-dialog-title"/>
+                </Grid>
+                <Fab className={classes.fabLoad} color={'secondary'}
+                     onClick={() => store.dispatch(fetchReportData())}>
                     <RefreshIcon/>
-                </Button>
-                <Button variant="fab" mini className={classes.fab} color={'primary'}
+                </Fab>
+                <Fab className={classes.fab} color={'primary'}
                         onClick={this.handleClickOpen('paper')}>
                     <FilterIcon/>
-                </Button>
-                <ReportFilterDialog open={this.state.filtersOpen}
-                                    handleClose={this.handleClose}
-                                    aria-labelledby="scroll-dialog-title"/>
-                <DrillDownDialog open={this.props.drillDown.drillDownOpen}
-                                 handleClose={this.handleClose}
-                                 aria-labelledby="scroll-dialog-title"/>
-            </Grid>
+                </Fab>
+            </div>
         );
     }
 }

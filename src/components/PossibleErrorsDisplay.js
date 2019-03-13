@@ -6,17 +6,14 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {styles} from "../Styles";
 import connect from "react-redux/es/connect/connect";
 import {getPossibleErrors} from "../redux/actions/possibleErrorsActions";
-import {PAGE_IDS} from "../Const";
+import {PAGES} from "../Const";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/es/Typography/Typography";
 
 class PossibleErrorsDisplay extends Component {
     componentDidMount() {
         store.dispatch(getPossibleErrors());
-        store.dispatch(setSelectedNavItem({
-            title: PAGE_IDS.possibleErrors.name,
-            selectedId: PAGE_IDS.possibleErrors.id
-        }));
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
     }
 
     render() {

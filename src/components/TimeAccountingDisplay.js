@@ -12,6 +12,7 @@ import Button from "@material-ui/core/Button/Button";
 import TimeAccountingFilterDialog from "./TimeAccountingFilterDialog";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
 import RefreshIcon from '@material-ui/icons/Refresh';
+import {PAGES} from "../Const";
 
 //TODO style={classes.content} causes crashes in firefox
 
@@ -30,7 +31,8 @@ class TimeAccountingDisplay extends Component {
     }
 
     componentWillMount() {
-        store.dispatch(setSelectedNavItem({title: 'Трудозатраты', selectedId: 1}));
+        /*store.dispatch(setSelectedNavItem({title: 'Трудозатраты', selectedId: 1}));*/
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
     }
 
     requestData = () => {

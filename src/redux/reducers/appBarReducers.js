@@ -1,15 +1,15 @@
 export default function reducer(state = {
-    title: 'Default',
+    currentPage: null,
     selectedId: 0,
-    drawerOpened: false,
+    drawerOpened: true,
     dialogOpened: false,
 }, action) {
     switch (action.type) {
         case 'SET_SELECTED_NAV_ITEM': {
             state = {
                 ...state,
-                title: action.payload.title,
-                selectedId: action.payload.selectedId
+                currentPage: action.payload,
+                selectedId: action.payload.id
             };
             break;
         }

@@ -1,9 +1,8 @@
 import React, {Component} from "react";
+import {styles} from "../Styles";
 import store from "../redux/store";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import * as PropTypes from "prop-types";
-import withStyles from "@material-ui/core/styles/withStyles";
-import {styles} from "../Styles";
 import connect from "react-redux/es/connect/connect";
 import FormControl from "@material-ui/core/FormControl/FormControl";
 import InputLabel from "@material-ui/core/InputLabel/InputLabel";
@@ -22,6 +21,8 @@ import OutlinedInput from "@material-ui/core/OutlinedInput/OutlinedInput";
 import * as ReactDOM from "react-dom";
 import PivotGrid, {FieldChooser} from 'devextreme-react/pivot-grid';
 import PivotGridDataSource from 'devextreme/ui/pivot_grid/data_source';
+import {PAGES} from "../Const";
+import withStyles from "@material-ui/core/styles/withStyles";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -47,7 +48,8 @@ function getStyles(name, that) {
 class AccountedTimeDisplay extends Component {
     state = {
         name: [],
-        items: []
+        items: [],
+        labelWidth: 0
     };
 
     requestData = () => {
@@ -56,7 +58,7 @@ class AccountedTimeDisplay extends Component {
     };
 
     componentDidMount() {
-        store.dispatch(setSelectedNavItem({title: 'Отработанное и учтённое время', selectedId: 6}));
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
         store.dispatch(getActualTimeUsers());
         this.setState({
             labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
@@ -269,3 +271,4 @@ function mapStateToProps(state) {
 }
 
 export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(AccountedTimeDisplay));
+/*export default withTheme()(connect(mapStateToProps, null)(AccountedTimeDisplay));*/

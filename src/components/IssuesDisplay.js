@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {AUTH_TOKEN} from "../Config";
 import {IssueDetailsDisplay} from "./IssueDetailsDisplay";
 import Button from '@material-ui/core/Button';
-import {YT_ENDPOINT} from "../Const";
+import {PAGES, YT_ENDPOINT} from "../Const";
 import * as PropTypes from "prop-types";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
 import {styles} from "../Styles";
@@ -19,7 +19,7 @@ class IssuesDisplay extends Component {
     }
 
     componentWillMount() {
-        store.dispatch(setSelectedNavItem({title: 'Запросы', selectedId: 3}));
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
     }
 
     componentWillUnmount() {

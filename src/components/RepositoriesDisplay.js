@@ -9,7 +9,7 @@ import connect from "react-redux/es/connect/connect";
 import Button from "@material-ui/core/Button/Button";
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SaveIcon from '@material-ui/icons/Save';
-import {PAGE_IDS} from "../Const";
+import {PAGES} from "../Const";
 import {getAllRepositoriesData, postRepository} from "../redux/actions/repositoriesActions";
 import TextField from "@material-ui/core/TextField";
 
@@ -32,7 +32,7 @@ class RepositoriesDisplay extends Component {
     };
 
     componentWillMount() {
-        store.dispatch(setSelectedNavItem({title: PAGE_IDS.repositories.name, selectedId: PAGE_IDS.repositories.id}));
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
     }
 
     requestData = () => {

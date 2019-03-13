@@ -33,8 +33,8 @@ class MainAppBar extends Component {
                         className={classNames(classes.menuButton)}>
                         <MenuIcon/>
                     </IconButton>
-                    <Typography className={classes.title} variant="title" color="inherit" noWrap>
-                        {this.props.appBarState.title}
+                    <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+                        {this.props.appBarState.currentPage === null ? 'Default' : this.props.appBarState.currentPage.name}
                     </Typography>
                     <div>
                         <IconButton color="inherit" onClick={this.handleClickOpenMainDialog}>

@@ -9,7 +9,7 @@ import store from '../redux/store';
 import {fetchKpiReportData} from '../redux/actions/kpiActions';
 import {setSelectedNavItem} from '../redux/actions/appBarActions';
 import {styles} from '../Styles';
-import {PAGE_IDS} from '../Const';
+import {PAGES} from '../Const';
 import KPIFilterDialog from './dialogs/KPIFilterDialog';
 import Grid from '@material-ui/core/Grid';
 import {Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
@@ -29,8 +29,9 @@ class KPIContainer extends Component {
     }
 
     componentDidMount() {
-        store.dispatch(setSelectedNavItem({title: PAGE_IDS.kpi.name, selectedId: PAGE_IDS.kpi.id}));
+        /*store.dispatch(setSelectedNavItem({title: PAGES.kpi.name, selectedId: PAGES.kpi.id}));*/
         /*store.dispatch(fetchProjects());*/
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
         store.dispatch(fetchKpiReportData())
     }
 

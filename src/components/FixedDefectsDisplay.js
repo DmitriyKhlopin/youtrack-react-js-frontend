@@ -6,7 +6,7 @@ import connect from "react-redux/es/connect/connect";
 import * as PropTypes from "prop-types";
 import {styles} from "../Styles";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
-import {PAGE_IDS} from "../Const";
+import {PAGES} from "../Const";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
@@ -52,7 +52,7 @@ class FixedDefectsDisplay extends Component {
     };
 
     componentDidMount() {
-        store.dispatch(setSelectedNavItem({title: PAGE_IDS.fixedDefects.name, selectedId: PAGE_IDS.fixedDefects.id}));
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
         store.dispatch(fetchIterations());
         store.dispatch(fetchYouTrackBuilds());
         this.setState({
