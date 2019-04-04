@@ -5,20 +5,18 @@ import * as PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {styles} from "../Styles";
 import connect from "react-redux/es/connect/connect";
-import Button from "@material-ui/core/Button/Button";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
 import {PAGES} from "../Const";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import MenuItem from "@material-ui/core/MenuItem";
-import * as ReactDOM from "react-dom";
-import InputLabel from "@material-ui/core/InputLabel";
-import {fetchProjects} from "../redux/actions/reportFiltersActions";
-import {getWorkDuration} from "../redux/actions/workDurationActions";
+import ImportExportIcon from '@material-ui/icons/CloudDownload';
 
-import * as X from 'xlsx';
+import * as XLSX from 'xlsx';
+
 import LinearProgress from "@material-ui/core/LinearProgress";
+import {getHighPriorityIssues} from "../redux/actions/highPriorityIssuesActions";
+import {Fab} from "@material-ui/core";
+import * as moment from "moment";
+import {now} from "moment";
+import Paper from "@material-ui/core/Paper";
 
 function Workbook() {
     if (!(this instanceof Workbook))
@@ -46,12 +44,7 @@ class HighPriorityIssuesDisplay extends Component {
     componentDidMount() {
         console.log(this.props.location);
         store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
-        if (this.props.reportFilters.proj.length === 0) {
-            store.dispatch(fetchProjects());
-        }
-        this.setState({
-            labelWidth2: ReactDOM.findDOMNode(this.InputLabelRef2).offsetWidth,
-        });
+        store.dispatch(getHighPriorityIssues());
     }
 
     handleChange = event => {
@@ -77,76 +70,46 @@ class HighPriorityIssuesDisplay extends Component {
     }
 
     exportToExcel() {
+        const issues = this.props.highPriorityIssuesData.issues.map((item) => {
+            return {
+                id: item.id,
+                summary: item.summary,
+                created: moment.unix(item.created / 1000).format("MM/DD/YYYY"),
+                priority: item.priority,
+                state: item.state,
+                comment: item.comment,
+                issues: item.tfsData
+                    .map((item) => `${item.issueId} - ${item.issueState} ${item.issueMergedIn === null ? '' : ` - ${item.issueMergedIn}`}`)
+                    .join(', '),
+                defects: item.tfsData
+                    .flatMap((item) => item.defects).map((item) => `${item.defectId} - ${item.defectReason} - ${item.developmentManager}`)
+                    .join(', '),
+                changeRequests: item.tfsData
+                    .flatMap((item) => item.defects)
+                    .flatMap((item) => item.changeRequests)
+                    .map((item) => `${item.changeRequestId} - ${item.changeRequestMergedIn} - ${item.iterationPath}`)
+                    .join(', ')
+            }
+        });
+
         const wb = new Workbook();
-        const ws = X.utils.json_to_sheet(this.props.workDurationData.durationItems);
-        wb.SheetNames.push('');
-        wb.Sheets[''] = ws;
-        const wbout = X.write(wb, {bookType: 'xlsx', bookSST: true, type: 'binary'});
-        let url = window.URL.createObjectURL(new Blob([HighPriorityIssuesDisplay.s2ab(wbout)], {type: 'application/octet-stream'}));
-        this.download(url, 'export.xlsx');
+        let ws = XLSX.utils.json_to_sheet(issues);
+        XLSX.utils.book_append_sheet(wb, ws, "issues");
+        XLSX.writeFile(wb, "export.xlsx");
     }
 
     render() {
-        const {classes} = this.props;
-        console.log(this.props.workDurationData);
-        console.log(this.props.workDurationData.durationItems.length);
         return <div style={{minWidth: '100%'}}>
-            <div style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-            }}>
-                <FormControl variant="outlined" className={classes.formControl}>
-                    <InputLabel
-                        ref={ref => {
-                            this.InputLabelRef2 = ref;
-                        }}
-                        htmlFor="outlined-projects-simple"
-                    >
-                        Projects
-                    </InputLabel>
-                    <Select
-                        value={this.state.projects}
-                        onChange={this.handleChange}
-                        multiple={true}
-                        input={
-                            <OutlinedInput
-                                labelWidth={this.state.labelWidth2}
-                                name="Projects"
-                                id="outlined-projects-simple"
-                            />
-                        }
-                    >
-                        {<MenuItem value="">
-                            <em>Select iteration</em>
-                        </MenuItem>}
-                        {this.props.reportFilters.proj.map((item, index) => (
-                            <MenuItem key={`projects-list-item-${index}`} value={item}>{item.shortName}</MenuItem>
-                        ))}
-
-                    </Select>
-                </FormControl>
-                <FormControl variant="outlined" className={classes.formControl}>
-                    <Button variant="contained" color="primary" className={classes.button2}
-                            onClick={() => {
-                                store.dispatch(getWorkDuration(this.state.projects.map(project => project.shortName)));
-                            }
-                            }>
-                        Загрузить
-                    </Button>
-                </FormControl>
-                <FormControl variant="outlined" className={classes.formControl}>
-                    <Button variant="contained" color="primary" className={classes.button2}
-                            onClick={() =>
-
-                                this.exportToExcel()
-                            }>
-                        Выгрузить в xlsx
-                    </Button>
-                </FormControl>
-            </div>
-            {this.props.workDurationData.fetching ?
-                <LinearProgress/> : this.props.workDurationData.durationItems.map((item, index) => (
-                    <div key={`di-${index}`}>{JSON.stringify(item)}</div>))}
+            <Fab style={{position: 'absolute', top: 80, right: 16}} color={'secondary'}
+                 onClick={() => this.exportToExcel()}>
+                <ImportExportIcon/>
+            </Fab>
+            {this.props.highPriorityIssuesData.fetching ?
+                <LinearProgress/> : this.props.highPriorityIssuesData.issues.map((item, index) => {
+                    {/*<div key={`di-${index}`}>{JSON.stringify(item)}</div>)*/
+                    }
+                    return <HighPriorityIssueView issue={item} key={`hpiv-${index}`}/>;
+                })}
         </div>;
     }
 }
@@ -159,9 +122,99 @@ HighPriorityIssuesDisplay.propTypes = {
 function mapStateToProps(state) {
     return {
         appBarState: state.appBarState,
-        workDurationData: state.workDurationData,
-        reportFilters: state.reportFilters
+        highPriorityIssuesData: state.highPriorityIssuesData
     }
 }
 
 export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(HighPriorityIssuesDisplay));
+
+class HighPriorityIssueView extends Component {
+    render() {
+        const issue = this.props.issue;
+        console.log(issue);
+        return (<Paper style={{padding: 16, margin: 16}}>
+            <div>{issue.id} {issue.summary}</div>
+            <div>{issue.comment}</div>
+            {issue.tfsData.map((item, index) => <TFSIssueView key={`hpivas-${index}`} data={item}/>)}
+        </Paper>);
+    }
+}
+
+class TFSIssueView extends Component {
+    render() {
+        const tfsIssue = this.props.data;
+
+        const now = moment(now);
+        const then = moment(tfsIssue.issueLastUpdate, 'YYYY/MM/DD HH:mm:ss');
+        const duration = now.diff(then, 'days');
+        let color;
+        switch (true) {
+            case duration > 2 && tfsIssue.issueState !== 'Closed': {
+                color = '#e53935';
+                break;
+            }
+            case duration > 1 && tfsIssue.issueState !== 'Closed': {
+                color = '#fb8c00';
+                break;
+            }
+            case tfsIssue.issueState !== 'Closed': {
+                color = '#c0ca33';
+                break;
+            }
+            case tfsIssue.issueState === 'Closed': {
+                color = '#43a047';
+                break;
+            }
+            default: {
+                color = 'grey';
+                break;
+            }
+        }
+
+        let stateSuffix;
+        switch (tfsIssue.issueState) {
+            case 'Closed': {
+                stateSuffix = tfsIssue.issueMergedIn === null ? '' : ` (внесено в ${tfsIssue.issueMergedIn}, бранч - ${tfsIssue.iterationPath})`;
+                break;
+            }
+            default: {
+                stateSuffix = ` (без изменения с ${tfsIssue.issueLastUpdate})`;
+                break;
+            }
+        }
+
+        return (
+            <div style={{marginLeft: 8, padding: 8}}>
+                <div>Issue {tfsIssue.issueId}</div>
+                <div style={{color: color}}>{tfsIssue.issueState}{stateSuffix}</div>
+                {tfsIssue.defects.map((item, index) => <TFSDefectView key={`hpi-tfs-defect-${index}`} data={item}/>)}
+            </div>
+        );
+    }
+};
+
+class TFSDefectView extends Component {
+    render() {
+        const tfsDefect = this.props.data;
+        return (<div style={{marginLeft: 32, marginTop: 16}}>
+            <div>{tfsDefect.defectId}</div>
+            <div>{tfsDefect.defectReason}</div>
+            <div>{tfsDefect.developmentManager}</div>
+            <div>{tfsDefect.iterationPath}</div>
+            {tfsDefect.changeRequests.map((item, index) => <TFSChangeRequestsView key={`hpi-tfs-defect-${index}`}
+                                                                                  data={item}/>)}
+        </div>);
+    }
+};
+
+class TFSChangeRequestsView extends Component {
+    render() {
+        const tfsChangeRequest = this.props.data;
+        return (<div style={{marginLeft: 48, marginTop: 16}}>
+            <div>{tfsChangeRequest.changeRequestId}</div>
+            <div>{tfsChangeRequest.changeRequestMergedIn}</div>
+            <div>{tfsChangeRequest.changeRequestReason}</div>
+            <div>{tfsChangeRequest.iterationPath}</div>
+        </div>);
+    }
+};
