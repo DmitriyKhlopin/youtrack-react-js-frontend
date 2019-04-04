@@ -8,7 +8,7 @@ import connect from "react-redux/es/connect/connect";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
 import {PAGES} from "../Const";
 import ImportExportIcon from '@material-ui/icons/CloudDownload';
-
+import clsx from 'clsx';
 import * as XLSX from 'xlsx';
 
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -16,7 +16,15 @@ import {getHighPriorityIssues} from "../redux/actions/highPriorityIssuesActions"
 import {Fab} from "@material-ui/core";
 import * as moment from "moment";
 import {now} from "moment";
-import Paper from "@material-ui/core/Paper";
+import {makeStyles} from "@material-ui/styles";
+import {red} from "@material-ui/core/colors";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import IconButton from "@material-ui/core/IconButton";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Collapse from "@material-ui/core/Collapse";
+import Typography from "@material-ui/core/Typography";
 
 function Workbook() {
     if (!(this instanceof Workbook))
@@ -99,17 +107,15 @@ class HighPriorityIssuesDisplay extends Component {
     }
 
     render() {
-        return <div style={{minWidth: '100%'}}>
+        return <div style={{minWidth: '100%', position: 'relative'}}>
+            {this.props.highPriorityIssuesData.fetching ?
+                <LinearProgress/> : this.props.highPriorityIssuesData.issues.map((item, index) => {
+                    return <HighPriorityIssueView issue={item} key={`hpiv-${index}`}/>;
+                })}
             <Fab style={{position: 'absolute', top: 80, right: 16}} color={'secondary'}
                  onClick={() => this.exportToExcel()}>
                 <ImportExportIcon/>
             </Fab>
-            {this.props.highPriorityIssuesData.fetching ?
-                <LinearProgress/> : this.props.highPriorityIssuesData.issues.map((item, index) => {
-                    {/*<div key={`di-${index}`}>{JSON.stringify(item)}</div>)*/
-                    }
-                    return <HighPriorityIssueView issue={item} key={`hpiv-${index}`}/>;
-                })}
         </div>;
     }
 }
@@ -128,41 +134,157 @@ function mapStateToProps(state) {
 
 export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(HighPriorityIssuesDisplay));
 
-class HighPriorityIssueView extends Component {
-    render() {
-        const issue = this.props.issue;
-        console.log(issue);
-        return (<Paper style={{padding: 16, margin: 16}}>
-            <div>{issue.id} {issue.summary}</div>
-            <div>{issue.comment}</div>
-            {issue.tfsData.map((item, index) => <TFSIssueView key={`hpivas-${index}`} data={item}/>)}
-        </Paper>);
+function HighPriorityIssueView(props) {
+    const classes = useStyles();
+    const issue = props.issue;
+    const [expanded, setExpanded] = React.useState(false);
+
+    function handleExpandClick() {
+        setExpanded(!expanded);
     }
+
+    return (<Card className={classes.card}>
+        <CardHeader
+            title={issue.id + " " + issue.summary}
+            action={
+                <IconButton className={clsx(classes.expand, {[classes.expandOpen]: expanded,})}
+                            onClick={handleExpandClick}
+                            aria-expanded={expanded}
+                            aria-label="Show more">
+                    <ExpandMoreIcon/>
+                </IconButton>
+            }
+        />
+        <CardContent className={classes.content} onClick={handleExpandClick}>
+            <Typography>{issue.state}</Typography>
+            <Typography>{issue.comment === null ? 'Нет комментария' : issue.comment}</Typography>
+            <Typography>{issue.tfsData.length === 0 ? 'Нет issue в TFS' : `${issue.tfsData.length} issue в TFS`}</Typography>
+            <Typography>{[...new Set(issue.tfsData.map((e) => e.issueState))].map((e) => e + " " + issue.tfsData.filter((i) => i.issueState === e).length).join('; ')}</Typography>
+        </CardContent>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <CardContent>
+                {issue.tfsData.map((item, index) => <TFSIssueView key={`hpivas-${index}`} data={item}/>)}
+            </CardContent>
+        </Collapse>
+
+    </Card>);
+
 }
 
-class TFSIssueView extends Component {
-    render() {
-        const tfsIssue = this.props.data;
+const useStyles = makeStyles(theme => ({
+    card: {
+        margin: 16,
+        maxWidth: '100%',
+    },
+    content: {
+        paddingTop: 0,
+        paddingBottom: 0,
+    },
 
-        const now = moment(now);
-        const then = moment(tfsIssue.issueLastUpdate, 'YYYY/MM/DD HH:mm:ss');
-        const duration = now.diff(then, 'days');
+    media: {
+        height: 0,
+        paddingTop: '56.25%', // 16:9
+    },
+    actions: {
+        display: 'flex',
+    },
+    expand: {
+        transform: 'rotate(0deg)',
+        marginLeft: 'auto',
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.shortest,
+        }),
+    },
+    expandOpen: {
+        transform: 'rotate(180deg)',
+    },
+    avatar: {
+        backgroundColor: red[500],
+    },
+}));
+
+function TFSIssueView(props) {
+    const tfsIssue = props.data;
+    const now = moment(now);
+    const then = moment(tfsIssue.issueLastUpdate, 'YYYY/MM/DD HH:mm:ss');
+    const duration = now.diff(then, 'days');
+    let color;
+    switch (true) {
+        case duration > 2 && tfsIssue.issueState !== 'Closed': {
+            color = '#e53935';
+            break;
+        }
+        case duration > 1 && tfsIssue.issueState !== 'Closed': {
+            color = '#fb8c00';
+            break;
+        }
+        case tfsIssue.issueState !== 'Closed': {
+            color = '#c0ca33';
+            break;
+        }
+        case tfsIssue.issueState === 'Closed': {
+            color = '#43a047';
+            break;
+        }
+        default: {
+            color = 'grey';
+            break;
+        }
+    }
+
+    let stateSuffix;
+    switch (tfsIssue.issueState) {
+        case 'Closed': {
+            stateSuffix = tfsIssue.issueMergedIn === null ? '' : `Внесено в ${tfsIssue.issueMergedIn}, бранч - ${tfsIssue.iterationPath}`;
+            break;
+        }
+        default: {
+            stateSuffix = `Без изменения с ${tfsIssue.issueLastUpdate}`;
+            break;
+        }
+    }
+
+
+    return (
+        <div style={{color: color, padding: 0}}>
+            <div>Issue {tfsIssue.issueId} {tfsIssue.issueState}</div>
+            <div>{stateSuffix}</div>
+            {tfsIssue.defects.map((item, index) => <TFSDefectView key={`hpi-tfs-defect-${index}`} data={item}/>)}
+        </div>
+    );
+};
+
+class TFSDefectView extends Component {
+    render() {
+        const tfsDefect = this.props.data;
         let color;
-        switch (true) {
-            case duration > 2 && tfsIssue.issueState !== 'Closed': {
-                color = '#e53935';
+        switch (tfsDefect.defectReason.toLowerCase()) {
+            case 'test passed': {
+                color = '#43a047';
                 break;
             }
-            case duration > 1 && tfsIssue.issueState !== 'Closed': {
-                color = '#fb8c00';
+            case 'not a bug': {
+                color = '#43a047';
                 break;
             }
-            case tfsIssue.issueState !== 'Closed': {
+            case 'duplicate': {
+                color = '#43a047';
+                break;
+            }
+            case 'assigned': {
                 color = '#c0ca33';
                 break;
             }
-            case tfsIssue.issueState === 'Closed': {
-                color = '#43a047';
+            case 'cannot reproduce': {
+                color = '#fb8c00';
+                break;
+            }
+            case 'fixed': {
+                color = '#e53935';
+                break;
+            }
+            case 'not fixed': {
+                color = '#e53935';
                 break;
             }
             default: {
@@ -171,34 +293,8 @@ class TFSIssueView extends Component {
             }
         }
 
-        let stateSuffix;
-        switch (tfsIssue.issueState) {
-            case 'Closed': {
-                stateSuffix = tfsIssue.issueMergedIn === null ? '' : ` (внесено в ${tfsIssue.issueMergedIn}, бранч - ${tfsIssue.iterationPath})`;
-                break;
-            }
-            default: {
-                stateSuffix = ` (без изменения с ${tfsIssue.issueLastUpdate})`;
-                break;
-            }
-        }
-
-        return (
-            <div style={{marginLeft: 8, padding: 8}}>
-                <div>Issue {tfsIssue.issueId}</div>
-                <div style={{color: color}}>{tfsIssue.issueState}{stateSuffix}</div>
-                {tfsIssue.defects.map((item, index) => <TFSDefectView key={`hpi-tfs-defect-${index}`} data={item}/>)}
-            </div>
-        );
-    }
-};
-
-class TFSDefectView extends Component {
-    render() {
-        const tfsDefect = this.props.data;
-        return (<div style={{marginLeft: 32, marginTop: 16}}>
-            <div>{tfsDefect.defectId}</div>
-            <div>{tfsDefect.defectReason}</div>
+        return (<div style={{marginLeft: 16, marginTop: 8, color: color}}>
+            <div>Defect {tfsDefect.defectId} - {tfsDefect.defectReason}</div>
             <div>{tfsDefect.developmentManager}</div>
             <div>{tfsDefect.iterationPath}</div>
             {tfsDefect.changeRequests.map((item, index) => <TFSChangeRequestsView key={`hpi-tfs-defect-${index}`}
@@ -210,8 +306,8 @@ class TFSDefectView extends Component {
 class TFSChangeRequestsView extends Component {
     render() {
         const tfsChangeRequest = this.props.data;
-        return (<div style={{marginLeft: 48, marginTop: 16}}>
-            <div>{tfsChangeRequest.changeRequestId}</div>
+        return (<div style={{marginLeft: 32, marginTop: 8}}>
+            <div>Change request {tfsChangeRequest.changeRequestId}</div>
             <div>{tfsChangeRequest.changeRequestMergedIn}</div>
             <div>{tfsChangeRequest.changeRequestReason}</div>
             <div>{tfsChangeRequest.iterationPath}</div>
