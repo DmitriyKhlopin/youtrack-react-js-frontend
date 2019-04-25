@@ -25,6 +25,14 @@ import IconButton from "@material-ui/core/IconButton";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Collapse from "@material-ui/core/Collapse";
 import Typography from "@material-ui/core/Typography";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import MenuItem from "@material-ui/core/MenuItem";
+import Button from "@material-ui/core/Button";
+import {fetchPartnerCustomers, fetchProjects} from "../redux/actions/reportFiltersActions";
+import * as ReactDOM from "react-dom";
 
 function Workbook() {
     if (!(this instanceof Workbook))
@@ -52,13 +60,23 @@ class HighPriorityIssuesDisplay extends Component {
     componentDidMount() {
         console.log(this.props.location);
         store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
-        store.dispatch(getHighPriorityIssues());
+        /*store.dispatch(getHighPriorityIssues());*/
+        if (this.props.reportFilters.proj.length === 0) {
+            store.dispatch(fetchProjects());
+            store.dispatch(fetchPartnerCustomers());
+        }
+        this.setState({
+            labelWidth: ReactDOM.findDOMNode(this.InputLabelRef2).offsetWidth,
+        });
     }
 
     handleChange = event => {
         this.setState({[event.target.name.toLowerCase()]: event.target.value});
     };
 
+    loadData = () => {
+        store.dispatch(getHighPriorityIssues(this.state.projects));
+    };
 
     download = (url, name) => {
         let a = document.createElement('a');
@@ -107,7 +125,58 @@ class HighPriorityIssuesDisplay extends Component {
     }
 
     render() {
+        const {classes} = this.props;
         return <div style={{minWidth: '100%', position: 'relative'}}>
+            <div style={{
+                display: 'flex',
+                /*flexWrap: 'wrap',*/
+            }}>
+                <FormControl variant="outlined" /*className={classes.formControl}*/ style={{minWidth: 150, margin: 8}}>
+                    <InputLabel
+                        ref={ref => {
+                            this.InputLabelRef2 = ref;
+                        }}
+                        htmlFor="outlined-projects-simple"
+                    >
+                        Projects
+                    </InputLabel>
+                    <Select
+                        value={this.state.projects}
+                        onChange={this.handleChange}
+                        multiple={true}
+                        input={
+                            <OutlinedInput
+                                labelWidth={this.state.labelWidth}
+                                name="Projects"
+                                id="outlined-projects-simple"
+                            />
+                        }
+                    >
+                        {<MenuItem value="">
+                            <em>Select project</em>
+                        </MenuItem>}
+                        {this.props.reportFilters.proj.map((item, index) => (
+                            <MenuItem key={`projects-list-item-${index}`} value={item}>{item.shortName}</MenuItem>
+                        ))}
+
+                    </Select>
+                </FormControl>
+                <FormControl variant="outlined"
+                             style={{minWidth: 150, margin: 8, height: '100vh', verticalAlign: "bottom"}}>
+                    <Button variant="contained" color="primary" className={classes.button2} onClick={this.loadData}>
+                        Загрузить
+                    </Button>
+                </FormControl>
+                <FormControl variant="outlined" className={classes.formControl}>
+                    <Button variant="contained" color="primary" className={classes.button2}
+                            onClick={() =>
+
+                                this.exportToExcel()
+                            }>
+                        Выгрузить в xlsx
+                    </Button>
+                </FormControl>
+            </div>
             {this.props.highPriorityIssuesData.fetching ?
                 <LinearProgress/> : this.props.highPriorityIssuesData.issues.map((item, index) => {
                     return <HighPriorityIssueView issue={item} key={`hpiv-${index}`}/>;
@@ -128,11 +197,13 @@ HighPriorityIssuesDisplay.propTypes = {
 function mapStateToProps(state) {
     return {
         appBarState: state.appBarState,
+        reportFilters: state.reportFilters,
         highPriorityIssuesData: state.highPriorityIssuesData
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(HighPriorityIssuesDisplay));
+export default withStyles(styles)(connect(mapStateToProps, null)(HighPriorityIssuesDisplay));
+
 
 function HighPriorityIssueView(props) {
     const classes = useStyles();

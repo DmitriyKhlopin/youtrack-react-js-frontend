@@ -10,6 +10,7 @@ export default function reducer(state = {
     projSelected: [],
     dateFrom: moment().subtract(8, 'weeks').format('YYYY-MM-DD'),
     dateTo: moment().format('YYYY-MM-DD'),
+    partnerCustomers: [],
 }, action) {
     switch (action.type) {
         case 'FETCH_PROJECTS_PENDING': {
@@ -122,6 +123,14 @@ export default function reducer(state = {
                 }
 
             }
+            break;
+        }
+        case 'FETCH_PARTNER_CUSTOMERS_FULFILLED': {
+            state = {
+                ...state,
+                partnerCustomers: action.payload
+            };
+            break;
         }
     }
     return state;

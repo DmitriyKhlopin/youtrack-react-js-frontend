@@ -30,6 +30,32 @@ export function fetchProjects() {
     }
 }
 
+export function fetchPartnerCustomers() {
+    return function (dispatch) {
+        dispatch({type: "FETCH_PARTNER_CUSTOMERS_PENDING"});
+        const obj = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        };
+
+        const url = `${ENDPOINT}/api/partner_customers`;
+        fetch(url, obj)
+            .then(res => res.json())
+            .then(json => {
+                dispatch({
+                    type: "FETCH_PARTNER_CUSTOMERS_FULFILLED",
+                    payload: json,
+                });
+            })
+            .catch(err => dispatch({
+                type: "FETCH_PARTNER_CUSTOMERS_REJECTED",
+                payload: err
+            }));
+    }
+}
+
 const stringSort = function (a, b) {
     if (a.name > b.name) {
         return 1;
