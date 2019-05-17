@@ -57,14 +57,11 @@ export function fetchPartnerCustomers() {
 }
 
 const stringSort = function (a, b) {
-    if (a.name > b.name) {
+    if (a.shortName > b.shortName) {
         return 1;
-    }
-    if (a.name < b.name) {
+    } else {
         return -1;
     }
-    // a должно быть равным b
-    return 0;
 };
 
 export function addProjectToSelected(id) {

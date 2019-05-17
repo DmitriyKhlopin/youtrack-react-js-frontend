@@ -12,7 +12,9 @@ import Button from "@material-ui/core/Button/Button";
 import TimeAccountingFilterDialog from "./TimeAccountingFilterDialog";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
 import RefreshIcon from '@material-ui/icons/Refresh';
-import {PAGES} from "../Const";
+import DownloadIcon from '@material-ui/icons/CloudDownload';
+import {PAGES, Workbook} from "../Const";
+import * as XLSX from "xlsx";
 
 //TODO style={classes.content} causes crashes in firefox
 
@@ -52,15 +54,53 @@ class TimeAccountingDisplay extends Component {
         store.dispatch(fetchTimeAccountingData());
     }
 
+
+    download = (url, name) => {
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = name;
+        a.click();
+        window.URL.revokeObjectURL(url)
+    };
+
+    static s2ab(s) {
+        const buf = new ArrayBuffer(s.length);
+        const view = new Uint8Array(buf);
+        for (let i = 0; i !== s.length; ++i)
+            view[i] = s.charCodeAt(i) & 0xFF;
+        return buf
+    }
+
+    exportToExcel = () => {
+        const issues = this.props.timeAccountingData.timeData.map((item) => {
+            return {
+                id: item.id,
+                agent: item.agent,
+                created: moment.unix(item.crDate / 1000).format("DD.MM.YYYY"),
+                changed: moment.unix(item.changedDate / 1000).format("DD.MM.YYYY"),
+                discipline: item.discipline,
+                iterationPath: item.iterationPath,
+                person: item.person,
+                priority: item.priority,
+                projects: item.projects,
+                role: item.role,
+                server: item.server,
+                teamProject: item.teamProject,
+                title: item.title,
+                units: item.units,
+                wit: item.wit,
+            }
+        });
+
+        const wb = new Workbook();
+        let ws = XLSX.utils.json_to_sheet(issues);
+        XLSX.utils.book_append_sheet(wb, ws, "issues");
+        XLSX.writeFile(wb, "export.xlsx");
+    };
+
     render() {
         const {classes} = this.props;
         const items = this.props.timeAccountingData.timeData;
-        /*if (items === null) return <div>Loading</div>;
-        if (items.length === 0) return <div>No items to display</div>;*/
-        /*const i = items.map(item => item.id).reduce(
-            (a, b, i, arr) =>
-                (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
-            null);*/
         const columns = [{
             Header: 'ID',
             accessor: 'id',
@@ -119,9 +159,35 @@ class TimeAccountingDisplay extends Component {
             }];
 
         return <div style={{minWidth: '100%'}}>
+            <div style={{
+                float: 'right',
+                top: 72,
+                right: 16,
+                position: 'fixed',
+                display: 'flex',
+                zIndex: 3,
+                alignItems: 'flex-end'
+            }}>
+                <div style={{margin: 16, flex: 1}}>
+                    <Button variant="fab" mini className={classes.fabLoad} color={'secondary'}
+                            onClick={this.requestData}>
+                        <RefreshIcon/>
+                    </Button>
+                </div>
+                <div style={{margin: 16, flex: 1}}>
+                    <Button variant="fab" mini className={classes.fab} color={'primary'}
+                            onClick={this.handleClickOpen('paper')}>
+                        <FilterIcon/>
+                    </Button>
+                </div>
+                <div style={{margin: 16, flex: 1, float: 'right'}}>
+                    <Button variant="fab" mini className={classes.fab} color={'primary'}
+                            onClick={this.exportToExcel}>
+                        <DownloadIcon/>
+                    </Button>
+                </div>
+            </div>
             <ReactTable
-
-                /*style={classes.content}*/
                 data={items}
                 filterable
                 defaultFilterMethod={(filter, row) =>
@@ -131,14 +197,7 @@ class TimeAccountingDisplay extends Component {
             <TimeAccountingFilterDialog open={this.state.open}
                                         handleClose={this.handleClose}
                                         aria-labelledby="scroll-dialog-title"/>
-            <Button variant="fab" mini className={classes.fabLoad} color={'secondary'}
-                    onClick={this.requestData}>
-                <RefreshIcon/>
-            </Button>
-            <Button variant="fab" mini className={classes.fab} color={'primary'}
-                    onClick={this.handleClickOpen('paper')}>
-                <FilterIcon/>
-            </Button>
+
         </div>
     }
 }
@@ -149,8 +208,6 @@ TimeAccountingDisplay.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        /*reportFilters: state.reportFilters,
-        reports: state.reports,*/
         appBarState: state.appBarState,
         timeAccountingData: state.timeAccountingData,
     }

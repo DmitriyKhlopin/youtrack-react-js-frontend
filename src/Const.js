@@ -107,7 +107,12 @@ export const PAGES = [
     }
 ];
 
-
+export function Workbook() {
+    if (!(this instanceof Workbook))
+        return new Workbook();
+    this.SheetNames = [];
+    this.Sheets = {}
+}
 export const YT_ENDPOINT = 'http://support.fsight.ru/api/';
 export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://10.9.172.76:8080' : 'http://10.30.207.22:8080';
 export const drawerWidth = 240;

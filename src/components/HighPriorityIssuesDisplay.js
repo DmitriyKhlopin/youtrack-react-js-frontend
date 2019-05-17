@@ -7,13 +7,10 @@ import {styles} from "../Styles";
 import connect from "react-redux/es/connect/connect";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
 import {PAGES} from "../Const";
-import ImportExportIcon from '@material-ui/icons/CloudDownload';
-import clsx from 'clsx';
 import * as XLSX from 'xlsx';
 
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {getHighPriorityIssues} from "../redux/actions/highPriorityIssuesActions";
-import {Fab} from "@material-ui/core";
 import * as moment from "moment";
 import {now} from "moment";
 import {makeStyles} from "@material-ui/styles";
@@ -21,8 +18,6 @@ import {red} from "@material-ui/core/colors";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-import IconButton from "@material-ui/core/IconButton";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Collapse from "@material-ui/core/Collapse";
 import Typography from "@material-ui/core/Typography";
 import FormControl from "@material-ui/core/FormControl";
@@ -49,7 +44,10 @@ class HighPriorityIssuesDisplay extends Component {
         this.state = {
             open: false,
             scroll: 'paper',
-            projects: []
+            projects: [],
+            customers: [],
+            defaultPriorities: ['Major', 'Normal', 'Minor'],
+            priorities: ['Major', 'Normal', 'Minor'],
         }
     }
 
@@ -58,15 +56,17 @@ class HighPriorityIssuesDisplay extends Component {
     };
 
     componentDidMount() {
-        console.log(this.props.location);
         store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
-        /*store.dispatch(getHighPriorityIssues());*/
         if (this.props.reportFilters.proj.length === 0) {
             store.dispatch(fetchProjects());
+        }
+        if (this.props.reportFilters.partnerCustomers.length === 0) {
             store.dispatch(fetchPartnerCustomers());
         }
         this.setState({
-            labelWidth: ReactDOM.findDOMNode(this.InputLabelRef2).offsetWidth,
+            labelWidth1: ReactDOM.findDOMNode(this.InputLabelRef1).offsetWidth,
+            labelWidth2: ReactDOM.findDOMNode(this.InputLabelRef2).offsetWidth,
+            labelWidth3: ReactDOM.findDOMNode(this.InputLabelRef3).offsetWidth,
         });
     }
 
@@ -75,7 +75,7 @@ class HighPriorityIssuesDisplay extends Component {
     };
 
     loadData = () => {
-        store.dispatch(getHighPriorityIssues(this.state.projects));
+        store.dispatch(getHighPriorityIssues(this.state.projects, this.state.customers, this.state.priorities));
     };
 
     download = (url, name) => {
@@ -86,7 +86,6 @@ class HighPriorityIssuesDisplay extends Component {
         window.URL.revokeObjectURL(url)
     };
 
-
     static s2ab(s) {
         const buf = new ArrayBuffer(s.length);
         const view = new Uint8Array(buf);
@@ -95,7 +94,7 @@ class HighPriorityIssuesDisplay extends Component {
         return buf
     }
 
-    exportToExcel() {
+    exportToExcel = () => {
         const issues = this.props.highPriorityIssuesData.issues.map((item) => {
             return {
                 id: item.id,
@@ -122,23 +121,26 @@ class HighPriorityIssuesDisplay extends Component {
         let ws = XLSX.utils.json_to_sheet(issues);
         XLSX.utils.book_append_sheet(wb, ws, "issues");
         XLSX.writeFile(wb, "export.xlsx");
-    }
+    };
 
     render() {
         const {classes} = this.props;
-        return <div style={{minWidth: '100%', position: 'relative'}}>
+        return <div style={{minWidth: '100%', position: 'absolute'}}>
             <div style={{
+                minWidth: '100%',
+                position: 'fixed',
                 display: 'flex',
-                /*flexWrap: 'wrap',*/
+                backgroundColor: '#ddd',
+                zIndex: 3
             }}>
-                <FormControl variant="outlined" /*className={classes.formControl}*/ style={{minWidth: 150, margin: 8}}>
+                <FormControl variant="outlined" style={{minWidth: 150, margin: 8}}>
                     <InputLabel
                         ref={ref => {
-                            this.InputLabelRef2 = ref;
+                            this.InputLabelRef1 = ref;
                         }}
                         htmlFor="outlined-projects-simple"
                     >
-                        Projects
+                        Проекты
                     </InputLabel>
                     <Select
                         value={this.state.projects}
@@ -146,45 +148,99 @@ class HighPriorityIssuesDisplay extends Component {
                         multiple={true}
                         input={
                             <OutlinedInput
-                                labelWidth={this.state.labelWidth}
+                                labelWidth={this.state.labelWidth1}
                                 name="Projects"
                                 id="outlined-projects-simple"
                             />
                         }
                     >
-                        {<MenuItem value="">
-                            <em>Select project</em>
-                        </MenuItem>}
+                        {<MenuItem value=""> <em>Выберите проекты</em> </MenuItem>}
                         {this.props.reportFilters.proj.map((item, index) => (
                             <MenuItem key={`projects-list-item-${index}`} value={item}>{item.shortName}</MenuItem>
                         ))}
 
                     </Select>
                 </FormControl>
-                <FormControl variant="outlined"
-                             style={{minWidth: 150, margin: 8, height: '100vh', verticalAlign: "bottom"}}>
-                    <Button variant="contained" color="primary" className={classes.button2} onClick={this.loadData}>
-                        Загрузить
-                    </Button>
-                </FormControl>
-                <FormControl variant="outlined" className={classes.formControl}>
-                    <Button variant="contained" color="primary" className={classes.button2}
-                            onClick={() =>
+                <FormControl variant="outlined" style={{minWidth: 150, margin: 8}}>
+                    <InputLabel
+                        ref={ref => {
+                            this.InputLabelRef3 = ref;
+                        }}
+                        htmlFor="outlined-customers-simple"
+                    >
+                        Заказчики
+                    </InputLabel>
+                    <Select
+                        value={this.state.customers}
+                        onChange={this.handleChange}
+                        multiple={true}
+                        input={
+                            <OutlinedInput
+                                labelWidth={this.state.labelWidth3}
+                                name="Customers"
+                                id="outlined-customers-simple"
+                            />
+                        }
+                    >
+                        {<MenuItem value="">
+                            <em>{this.state.projects.length === 0 ? 'Сначала выберите проекты' : 'Выберите заказчика'}</em>
+                        </MenuItem>}
+                        {this.props.reportFilters.partnerCustomers.filter((item) => this.state.projects.map((p) => p.shortName).includes(item.project)).map((item, index) => (
+                            <MenuItem key={`customers-list-item-${index}`} value={item}>{item.customer}</MenuItem>
+                        ))}
 
-                                this.exportToExcel()
-                            }>
-                        Выгрузить в xlsx
-                    </Button>
+                    </Select>
                 </FormControl>
+                <FormControl variant="outlined" style={{minWidth: 150, margin: 8}}>
+                    <InputLabel
+                        ref={ref => {
+                            this.InputLabelRef2 = ref;
+                        }}
+                        htmlFor="outlined-priorities-simple"
+                    >
+                        Приоритеты
+                    </InputLabel>
+                    <Select
+                        value={this.state.priorities}
+                        onChange={this.handleChange}
+                        multiple={true}
+                        input={
+                            <OutlinedInput
+                                labelWidth={this.state.labelWidth2}
+                                name="Priorities"
+                                id="outlined-priorities-simple"
+                            />
+                        }
+                    >
+                        {<MenuItem value=""> <em>Выберите приоритеты</em> </MenuItem>}
+                        {this.state.defaultPriorities.map((item, index) => (
+                            <MenuItem key={`priorities-list-item-${index}`} value={item}>{item}</MenuItem>
+                        ))}
+
+                    </Select>
+                </FormControl>
+                <Button variant="contained" color="primary" style={{minWidth: 150, margin: 8}}
+                        className={classes.formControl} onClick={this.loadData}>
+                    Загрузить
+                </Button>
+                <Button variant="contained" color="primary" style={{minWidth: 150, margin: 8}}
+                        onClick={this.exportToExcel}>
+                    Выгрузить в Excel
+                </Button>
             </div>
-            {this.props.highPriorityIssuesData.fetching ?
-                <LinearProgress/> : this.props.highPriorityIssuesData.issues.map((item, index) => {
-                    return <HighPriorityIssueView issue={item} key={`hpiv-${index}`}/>;
-                })}
-            <Fab style={{position: 'absolute', top: 80, right: 16}} color={'secondary'}
-                 onClick={() => this.exportToExcel()}>
-                <ImportExportIcon/>
-            </Fab>
+            <div style={{
+                minWidth: '100%',
+                zIndex: 2,
+                position: 'relative',
+                top: 72,
+            }}>
+                {this.props.highPriorityIssuesData.fetching ?
+                    <LinearProgress/> : this.props.highPriorityIssuesData.issues.map((item, index) => {
+                        return <HighPriorityIssueView issue={item} key={`hpiv-${index}`}/>;
+                    })}
+                {!this.props.highPriorityIssuesData.fetching && this.props.highPriorityIssuesData.issues.length === 0 ?
+                    <div>Нет данных</div> : <div/>}
+            </div>
         </div>;
     }
 }
@@ -216,16 +272,10 @@ function HighPriorityIssueView(props) {
 
     return (<Card className={classes.card}>
         <CardHeader
-            title={issue.id + " " + issue.summary}
-            action={
-                <IconButton className={clsx(classes.expand, {[classes.expandOpen]: expanded,})}
-                            onClick={handleExpandClick}
-                            aria-expanded={expanded}
-                            aria-label="Show more">
-                    <ExpandMoreIcon/>
-                </IconButton>
-            }
-        />
+            title={
+                <a href={`https://support.fsight.ru/issue/${issue.id}`}
+                   target="_blank" style={{textDecoration: 'none'}}>{issue.id + " " + issue.summary}</a>
+            }/>
         <CardContent className={classes.content} onClick={handleExpandClick}>
             <Typography>{issue.state}</Typography>
             <Typography>{issue.comment === null ? 'Нет комментария' : issue.comment}</Typography>
@@ -237,9 +287,7 @@ function HighPriorityIssueView(props) {
                 {issue.tfsData.map((item, index) => <TFSIssueView key={`hpivas-${index}`} data={item}/>)}
             </CardContent>
         </Collapse>
-
     </Card>);
-
 }
 
 const useStyles = makeStyles(theme => ({
@@ -271,6 +319,10 @@ const useStyles = makeStyles(theme => ({
     },
     avatar: {
         backgroundColor: red[500],
+    },
+    formControl: {
+        margin: 8,
+        minWidth: 150,
     },
 }));
 
@@ -318,12 +370,16 @@ function TFSIssueView(props) {
 
     return (
         <div style={{color: color, padding: 0}}>
-            <div>Issue {tfsIssue.issueId} {tfsIssue.issueState}</div>
+            <div>
+                Issue <a href={`https://tfsprod.fsight.ru/Prognoz/P7/_workitems?_a=edit&id=${tfsIssue.issueId}`}
+                         target="_blank"
+                         style={{textDecoration: 'none', color: color}}>{tfsIssue.issueId}</a> {tfsIssue.issueState}
+            </div>
             <div>{stateSuffix}</div>
             {tfsIssue.defects.map((item, index) => <TFSDefectView key={`hpi-tfs-defect-${index}`} data={item}/>)}
         </div>
     );
-};
+}
 
 class TFSDefectView extends Component {
     render() {
@@ -372,16 +428,14 @@ class TFSDefectView extends Component {
                                                                                   data={item}/>)}
         </div>);
     }
-};
+}
 
-class TFSChangeRequestsView extends Component {
-    render() {
-        const tfsChangeRequest = this.props.data;
-        return (<div style={{marginLeft: 32, marginTop: 8}}>
-            <div>Change request {tfsChangeRequest.changeRequestId}</div>
-            <div>{tfsChangeRequest.changeRequestMergedIn}</div>
-            <div>{tfsChangeRequest.changeRequestReason}</div>
-            <div>{tfsChangeRequest.iterationPath}</div>
-        </div>);
-    }
-};
+function TFSChangeRequestsView(props) {
+    const tfsChangeRequest = props.data;
+    return (<div style={{marginLeft: 32, marginTop: 8}}>
+        <div>Change request {tfsChangeRequest.changeRequestId}</div>
+        <div>{tfsChangeRequest.changeRequestMergedIn}</div>
+        <div>{tfsChangeRequest.changeRequestReason}</div>
+        <div>{tfsChangeRequest.iterationPath}</div>
+    </div>);
+}

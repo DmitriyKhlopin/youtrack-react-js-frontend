@@ -1,20 +1,19 @@
 import {ENDPOINT} from "../../Const";
 
-export function getHighPriorityIssues(projects) {
+export function getHighPriorityIssues(projects, customers, priorities) {
     return function (dispatch) {
         dispatch({type: 'FETCH_HIGH_PRIORITY_ISSUES_PENDING'});
-        const p = projects.map(item => item.shortName).join(',');
-        console.log(p);
+        const projectsString = projects.map(item => item.shortName).join(',');
+        const customersString = customers.map(item => item.customer).join(',');
+        const prioritiesString = priorities.join(',');
         const obj = {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'
             }
         };
-
-        const url = `${ENDPOINT}/api/issues/high_priority?projects=${p}`;
-        console.log(url);
-        fetch(url, obj)
+        const url = `${ENDPOINT}/api/issues/high_priority?projects=${projectsString}&customers=${customersString}&priorities=${prioritiesString}`;
+        fetch(encodeURI(url), obj)
             .then(res => res.json())
             .then(json => {
                 dispatch({

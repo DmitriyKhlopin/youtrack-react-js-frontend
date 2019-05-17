@@ -1,6 +1,7 @@
 import {drawerWidth} from './Const'
+import {createStyles} from "@material-ui/styles";
 
-export const styles = theme => ({
+export const styles = theme => createStyles({
     root: {
         minHeight: '100vh',
         maxHeight: '100vh',
@@ -52,8 +53,8 @@ export const styles = theme => ({
         zIndex: theme.zIndex.appBar + 1,
         overflow: 'auto',
         flexGrow: 1,
-        padding: '64px 0px 0px 0px',
-        margin: 0,
+        padding: 0,
+        margin: '64px 0px 0px 0px',
         position: 'relative',
         display: 'flex',
     },
@@ -77,8 +78,8 @@ export const styles = theme => ({
         /*marginTop: theme.spacing.unit * 2,
         marginLeft: theme.spacing.unit * 2,
         marginRight: theme.spacing.unit * 2,*/
-        margin: theme.spacing.unit * 2,
-        padding: theme.spacing.unit * 2,
+        margin: 8,
+        /*padding: theme.spacing.unit * 2,*/
         minWidth: 120,
     },
     formControlMultiSelect: {
