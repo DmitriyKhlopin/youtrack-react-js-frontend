@@ -37,7 +37,7 @@ export const styles = theme => createStyles({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        width: theme.spacing.unit * 9,
+        width: theme.spacing(9),
     },
     toolbar: {
         display: 'flex',
@@ -59,31 +59,23 @@ export const styles = theme => createStyles({
         display: 'flex',
     },
     button: {
-        margin: theme.spacing.unit,
-        /*height: '100%'*/
-        /*height: '100vh'*/
+        margin: theme.spacing,
     },
     button2: {
-        /*margin: theme.spacing.unit,*/
-        /*padding: 0,*/
         height: '100%'
     },
     input: {
         display: 'none',
     },
     textField: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing,
     },
     formControl: {
-        /*marginTop: theme.spacing.unit * 2,
-        marginLeft: theme.spacing.unit * 2,
-        marginRight: theme.spacing.unit * 2,*/
         margin: 8,
-        /*padding: theme.spacing.unit * 2,*/
         minWidth: 120,
     },
     formControlMultiSelect: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing,
         maxWidth: 300,
         minWidth: 300,
         minHeight: 48,
@@ -96,21 +88,21 @@ export const styles = theme => createStyles({
         display: 'flex',
         justifyContent: 'center',
         flexWrap: 'wrap',
-        paddingLeft: theme.spacing.unit * 3,
-        paddingRight: theme.spacing.unit * 3,
+        paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3),
     },
     chip: {
-        margin: theme.spacing.unit / 2,
+        margin: theme.spacing(0.5),
     },
     fab: {
         position: 'absolute',
-        top: theme.spacing.unit * 2 + 64,
-        right: theme.spacing.unit * 2,
+        top: theme.spacing(2),
+        right: theme.spacing(2),
     },
     fabLoad: {
         position: 'absolute',
-        top: theme.spacing.unit * 2 + 64,
-        right: theme.spacing.unit * 2 + 48,
+        top: theme.spacing(2),
+        right: theme.spacing(2),
     },
     componentRoot: {
         ...theme.mixins.gutters(),

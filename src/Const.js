@@ -1,6 +1,6 @@
 import PossibleErrorsDisplay from "./components/PossibleErrorsDisplay";
 import KPIContainer from "./components/KPIContainer";
-import HighPriorityIssuesDisplay from "./components/HighPriorityIssuesDisplay";
+import HighPriorityIssuesDisplay from "./components/IssuesWithTFSDetailsDisplay";
 import ReportContainer from "./components/ReportContainer";
 import TimeAccountingDisplay from "./components/TimeAccountingDisplay";
 import AccountedTimeDisplay from "./components/AccountedTimeDisplay";
@@ -93,8 +93,8 @@ export const PAGES = [
     },
     {
         id: 13,
-        name: 'Запросы с высоким приоритетом',
-        path: '/high_priority_issues',
+        name: 'Детализация по запросам',
+        path: '/issues_with_tfs_details',
         component: HighPriorityIssuesDisplay,
         availableInDrawer: true
     },
@@ -113,6 +113,7 @@ export function Workbook() {
     this.SheetNames = [];
     this.Sheets = {}
 }
+
 export const YT_ENDPOINT = 'http://support.fsight.ru/api/';
 export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://10.9.172.76:8080' : 'http://10.30.207.22:8080';
 export const drawerWidth = 240;

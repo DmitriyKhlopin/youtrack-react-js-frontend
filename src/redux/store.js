@@ -4,4 +4,4 @@ import thunk from "redux-thunk";
 import {createLogger} from "redux-logger";
 import reducers from "./index";
 
-export default createStore(reducers, applyMiddleware(promise(), thunk, createLogger()));
+export default createStore(reducers, applyMiddleware(promise, thunk, createLogger()));

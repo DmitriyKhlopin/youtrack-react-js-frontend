@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import Button from "../../node_modules/@material-ui/core/Button/Button";
 import * as PropTypes from "prop-types";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
 import FilterIcon from '@material-ui/icons/Settings';
@@ -64,7 +63,7 @@ class ReportContainer extends Component {
         const {classes} = this.props;
         return (
             <div>
-                <Grid container spacing={24} className={classes.componentRoot}>
+                <Grid container spacing={10} className={classes.componentRoot}>
                     <LineChartByWeeks/>
                     <PieChartByPartners/>
                     <ScatterChartSigma/>
@@ -83,7 +82,7 @@ class ReportContainer extends Component {
                     <RefreshIcon/>
                 </Fab>
                 <Fab className={classes.fab} color={'primary'}
-                        onClick={this.handleClickOpen('paper')}>
+                     onClick={this.handleClickOpen('paper')}>
                     <FilterIcon/>
                 </Fab>
             </div>

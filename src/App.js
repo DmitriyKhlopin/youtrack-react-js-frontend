@@ -13,7 +13,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import * as PropTypes from "prop-types";
 import {styles} from "./Styles";
 import MuiThemeProvider from "@material-ui/styles/ThemeProvider";
-import createBrowserHistory from 'history/createBrowserHistory'
+import { createBrowserHistory } from 'history';
 import ListItemIcon from "../node_modules/@material-ui/core/ListItemIcon/ListItemIcon";
 import ListItemText from "../node_modules/@material-ui/core/ListItemText/ListItemText";
 import ListItem from "../node_modules/@material-ui/core/ListItem/ListItem";
@@ -32,10 +32,11 @@ const theme = createMuiTheme({
     palette: {
         primary: blue,
     },
-    typography: {
+    /*typography: {
         useNextVariants: true,
-    },
+    },*/
 });
+
 class App extends React.Component {
     handleClose = () => {
         store.dispatch(closeMainDialog());
@@ -44,8 +45,9 @@ class App extends React.Component {
     render() {
         const {classes} = this.props;
         return (
-            <Router history={history}>
-                <MuiThemeProvider theme={theme}>
+            <MuiThemeProvider theme={theme}>
+                <Router history={history}>
+
                     <div className={classes.root}>
                         <MainAppBar/>
                         <Drawer
@@ -86,8 +88,9 @@ class App extends React.Component {
                                     handleClose={this.handleClose}
                                     aria-labelledby="scroll-dialog-title"/>
                     </div>
-                </MuiThemeProvider>
-            </Router>
+                </Router>
+            </MuiThemeProvider>
+
         );
     }
 }
