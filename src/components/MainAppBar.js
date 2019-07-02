@@ -42,6 +42,8 @@ class MainAppBar extends Component {
                         </IconButton>
                     </div>
                     <div className={classes.grow}/>
+                    {this.props.appBarState.currentPage && this.props.appBarState.currentPage.appBarActions ? this.props.appBarState.currentPage.appBarActions :
+                        <div/>}
                     <IconButton className={classes.menuButton} color="inherit" component={Link} to="/login">
                         <AccountCircle/>
                     </IconButton>

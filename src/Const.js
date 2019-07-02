@@ -11,6 +11,8 @@ import AuthDisplay from "./components/AuthDisplay";
 import RepositoriesDisplay from "./components/RepositoriesDisplay";
 import FixedDefectsDisplay from "./components/FixedDefectsDisplay";
 import DurationDisplay from "./components/DurationDisplay";
+import TimeAccountingAppBarActions from "./components/app_bar/actions/TimeAccountingAppBarActions";
+import React from "react";
 
 
 export const PAGES = [
@@ -19,91 +21,105 @@ export const PAGES = [
         name: 'Отчёты',
         path: '/',
         component: ReportContainer,
-        availableInDrawer: true
+        availableInDrawer: true,
+        appBarActions: null
+
     },
     {
         id: 1,
         name: 'Трудозатраты',
         path: '/time_accounting',
         component: TimeAccountingDisplay,
-        availableInDrawer: true
+        availableInDrawer: true,
+        appBarActions: <TimeAccountingAppBarActions/>
     },
     {
         id: 2,
         name: 'Отработанное время',
         path: '/accounted_time',
         component: AccountedTimeDisplay,
-        availableInDrawer: true
+        availableInDrawer: true,
+        appBarActions: null
     },
     {
         id: 3,
         name: 'ETL',
         path: '/etl',
         component: ETLDisplay,
-        availableInDrawer: true
+        availableInDrawer: true,
+        appBarActions: null
     },
     {
         id: 4,
         name: 'Запросы в YT',
         path: '/issues',
         component: IssuesDisplay,
-        availableInDrawer: true
+        availableInDrawer: true,
+        appBarActions: null
     },
     {
         id: 5,
         name: 'Получить лицензию',
         path: '/license',
         component: LicenseRequest,
-        availableInDrawer: true
+        availableInDrawer: false,
+        appBarActions: null
     },
     {
         id: 8,
         name: 'Возможные ошибки',
         path: '/possible_errors',
         component: PossibleErrorsDisplay,
-        availableInDrawer: true
+        availableInDrawer: true,
+        appBarActions: null
     },
     {
         id: 9,
         name: 'KPI',
         path: '/kpi',
         component: KPIContainer,
-        availableInDrawer: true
+        availableInDrawer: true,
+        appBarActions: null
     },
     {
         id: 10,
         name: 'Репозитории',
         path: '/repositories',
         component: RepositoriesDisplay,
-        availableInDrawer: true
+        availableInDrawer: true,
+        appBarActions: null
     },
     {
         id: 11,
         name: 'Исправленные дефекты',
         path: '/fixed_defects',
         component: FixedDefectsDisplay,
-        availableInDrawer: true
+        availableInDrawer: true,
+        appBarActions: null
     },
     {
         id: 12,
         name: 'Продолжительность работ',
         path: '/duration',
         component: DurationDisplay,
-        availableInDrawer: true
+        availableInDrawer: true,
+        appBarActions: null
     },
     {
         id: 13,
         name: 'Детализация по запросам',
         path: '/issues_with_tfs_details',
         component: HighPriorityIssuesDisplay,
-        availableInDrawer: true
+        availableInDrawer: true,
+        appBarActions: null
     },
     {
         id: 14,
         name: 'Авторизация',
         path: '/login',
         component: AuthDisplay,
-        availableInDrawer: false
+        availableInDrawer: false,
+        appBarActions: null
     }
 ];
 

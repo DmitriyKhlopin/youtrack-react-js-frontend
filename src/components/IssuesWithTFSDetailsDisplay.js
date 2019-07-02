@@ -143,13 +143,15 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
         }
 
         exportToExcel = () => {
-            const issues = this.props.highPriorityIssuesData.issues.map((item) => {
+            const issues = this.props.highPriorityIssuesData.issues.map((item, index) => {
                 return {
+                    index: index + 1,
                     id: item.id,
                     summary: item.summary,
                     created: moment.unix(item.created / 1000).format("MM/DD/YYYY"),
-                    priority: item.priority,
                     state: item.state,
+                    priority: item.priority,
+                    type: item.type,
                     comment: item.comment,
                     issues: item.tfsData
                         .map((item) => `${item.issueId} - ${item.issueState} ${item.issueMergedIn === null ? '' : ` - ${item.issueMergedIn}`}`)
@@ -161,7 +163,10 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                         .flatMap((item) => item.defects)
                         .flatMap((item) => item.changeRequests)
                         .map((item) => `${item.changeRequestId} - ${item.changeRequestMergedIn} - ${item.iterationPath}`)
-                        .join(', ')
+                        .join(', '),
+                    timeUser: item.timeUser,
+                    timeAgent: item.timeAgent,
+                    timeDeveloper: item.timeDeveloper,
                 }
             });
 
