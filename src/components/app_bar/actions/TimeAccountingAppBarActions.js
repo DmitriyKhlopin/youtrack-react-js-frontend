@@ -16,8 +16,7 @@ class TimeAccountingAppBarActions extends React.Component {
         super(props);
         this.state = {
             open: false,
-            scroll: 'paper',
-            items: []
+            /*scroll: 'paper',*/
         }
     }
 
@@ -26,8 +25,8 @@ class TimeAccountingAppBarActions extends React.Component {
         console.log(1);
     }
 
-    handleClickOpen = scroll => () => {
-        this.setState({open: true, scroll});
+    handleClickOpen = () => () => {
+        this.setState({open: true, scroll: 'paper'});
     };
 
     handleClose = () => {

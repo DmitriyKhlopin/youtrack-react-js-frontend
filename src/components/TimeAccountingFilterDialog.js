@@ -1,55 +1,73 @@
 import React, {Component} from "react";
-import DialogTitle from "../../node_modules/@material-ui/core/DialogTitle/DialogTitle";
 import DialogContent from "../../node_modules/@material-ui/core/DialogContent/DialogContent";
 import DialogActions from "../../node_modules/@material-ui/core/DialogActions/DialogActions";
 import Button from "../../node_modules/@material-ui/core/Button/Button";
 import Dialog from "../../node_modules/@material-ui/core/Dialog/Dialog";
-import PropTypes from "prop-types";
+
 import {withStyles} from "@material-ui/core/styles";
-import TextField from "../../node_modules/@material-ui/core/TextField/TextField";
 import connect from "react-redux/es/connect/connect";
 import store from "../redux/store";
 import {styles} from "../Styles";
 import {setTimeAccountingDateFrom, setTimeAccountingDateTo} from "../redux/actions/timeAccountingFiltersActions";
+import DatePicker from "react-datepicker";
+import {format, parseISO} from 'date-fns'
+import "react-datepicker/dist/react-datepicker.css";
+
 
 class TimeAccountingFilterDialog extends Component {
     state = {df: this.props.filters.dateFrom, dt: this.props.filters.dateTo};
     handleClose = update => () => {
-        if (update === true) {
+        /*if (update === true) {
             store.dispatch(setTimeAccountingDateFrom(this.state.df));
             store.dispatch(setTimeAccountingDateTo(this.state.dt));
-        }
+        }*/
         this.props.handleClose(false, null, null, [])
     };
 
     render() {
         const {classes} = this.props;
+        console.log(this.props.filters.dateFrom);
         return <Dialog
             open={this.props.open}
             scroll={'paper'}
+            fullWidth={true}
             aria-labelledby="scroll-dialog-title">
-            <DialogTitle id="scroll-dialog-title">Параметры отчёта</DialogTitle>
+            {/*<DialogTitle id="scroll-dialog-title">Параметры отчёта</DialogTitle>*/}
             <DialogContent className={classes.dialog}>
-                <TextField
-                    variant="outlined"
-                    id="date"
-                    label="Date from"
-                    type="date"
-                    defaultValue={this.props.filters.dateFrom}
-                    onChange={field => this.setState({df: field.target.value})}
-                    className={classes.textField}
-                    InputLabelProps={{shrink: true,}}
-                />
-                <TextField
-                    variant="outlined"
-                    id="date"
-                    label="Date to"
-                    type="date"
-                    defaultValue={this.props.filters.dateTo}
-                    onChange={field => this.setState({dt: field.target.value})}
-                    className={classes.textField}
-                    InputLabelProps={{shrink: true,}}
-                />
+                <div style={{
+                    width: '100%',
+                    minWidth: '160px',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    backgroundColor: 'transparent',
+                }}>
+                    <div style={{padding: 4}}>
+                        <div style={{textAlign: 'center'}}>Начало периода</div>
+                        <DatePicker
+                            inline
+                            selected={parseISO(this.props.filters.dateFrom)}
+                            selectsStart
+                            startDate={parseISO(this.props.filters.dateFrom)}
+                            endDate={parseISO(this.props.filters.dateTo)}
+                            maxDate={parseISO(this.props.filters.dateTo)}
+                            onChange={date => store.dispatch(setTimeAccountingDateFrom(format(date, 'yyyy-MM-dd')))}
+                        />
+                    </div>
+                    <div style={{padding: 4}}>
+                        <div style={{textAlign: 'center'}}>Конец периода</div>
+                        <DatePicker
+                            inline
+                            selected={parseISO(this.props.filters.dateTo)}
+                            selectsEnd
+                            startDate={parseISO(this.props.filters.dateFrom)}
+                            endDate={parseISO(this.props.filters.dateTo)}
+                            onChange={date => store.dispatch(setTimeAccountingDateTo(format(date, 'yyyy-MM-dd')))}
+                            minDate={parseISO(this.props.filters.dateFrom)}
+                        />
+                    </div>
+                </div>
             </DialogContent>
             <DialogActions>
                 <Button onClick={this.handleClose(true)} color="primary">
@@ -62,10 +80,6 @@ class TimeAccountingFilterDialog extends Component {
         </Dialog>
     }
 }
-
-TimeAccountingFilterDialog.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
 
 function mapStateToProps(state) {
     return {

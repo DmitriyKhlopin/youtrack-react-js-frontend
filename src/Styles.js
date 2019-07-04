@@ -88,8 +88,9 @@ export const styles = theme => createStyles({
         display: 'flex',
         justifyContent: 'center',
         flexWrap: 'wrap',
-        paddingLeft: theme.spacing(3),
-        paddingRight: theme.spacing(3),
+        flexDirection: 'row',
+        /*paddingLeft: theme.spacing(3),
+        paddingRight: theme.spacing(3),*/
     },
     chip: {
         margin: theme.spacing(0.5),
