@@ -8,7 +8,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {styles} from "../Styles";
 import connect from "react-redux/es/connect/connect";
 import Button from "@material-ui/core/Button/Button";
-import TimeAccountingFilterDialog from "./TimeAccountingFilterDialog";
+import TimeAccountingFilterDialog from "./dialogs/TimeAccountingFilterDialog";
 import {fetchTimeAccountingDictionaryData} from "../redux/actions/timeAccountingActions";
 import RefreshIcon from '@material-ui/icons/Refresh';
 

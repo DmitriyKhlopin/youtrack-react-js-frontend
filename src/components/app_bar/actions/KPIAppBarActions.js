@@ -5,18 +5,14 @@ import DownloadIcon from '@material-ui/icons/CloudDownload';
 import FilterIcon from '@material-ui/icons/Settings';
 import IconButton from '@material-ui/core/IconButton';
 import store from "../../../redux/store";
-import {fetchTimeAccountingData} from "../../../redux/actions/timeAccountingActions";
-import moment from "moment";
-import {Workbook} from "../../../Const";
-import * as XLSX from "xlsx";
-import TimeAccountingFilterDialog from "../../dialogs/TimeAccountingFilterDialog";
+import KPIFilterDialog from "../../dialogs/KPIFilterDialog";
+import {fetchKpiReportData} from "../../../redux/actions/kpiActions";
 
-class TimeAccountingAppBarActions extends React.Component {
+class KPIAppBarActions extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
-            /*scroll: 'paper',*/
         }
     }
 
@@ -26,7 +22,7 @@ class TimeAccountingAppBarActions extends React.Component {
     }
 
     handleClickOpen = () => () => {
-        this.setState({open: true, scroll: 'paper'});
+        this.setState({open: true});
     };
 
     handleClose = () => {
@@ -35,7 +31,7 @@ class TimeAccountingAppBarActions extends React.Component {
     };
 
     requestData = () => {
-        store.dispatch(fetchTimeAccountingData());
+        store.dispatch(fetchKpiReportData());
     };
 
     download = (url, name) => {
@@ -55,7 +51,8 @@ class TimeAccountingAppBarActions extends React.Component {
     }
 
     exportToExcel = () => {
-        const issues = this.props.timeAccountingData.timeData.map((item) => {
+        window.alert('Not implemented');
+        /*const issues = this.props.timeAccountingData.timeData.map((item) => {
             return {
                 id: item.id,
                 agent: item.agent,
@@ -78,7 +75,7 @@ class TimeAccountingAppBarActions extends React.Component {
         const wb = new Workbook();
         let ws = XLSX.utils.json_to_sheet(issues);
         XLSX.utils.book_append_sheet(wb, ws, "issues");
-        XLSX.writeFile(wb, "export.xlsx");
+        XLSX.writeFile(wb, "export.xlsx");*/
     };
 
     render() {
@@ -104,14 +101,14 @@ class TimeAccountingAppBarActions extends React.Component {
                     </IconButton>
                 </div>
                 <div style={{margin: 0, flex: 1, float: 'right'}}>
-                    <IconButton color='inherit'  /*color={'primary'}*/
+                    <IconButton color='inherit'
                                 onClick={this.exportToExcel}>
                         <DownloadIcon/>
                     </IconButton>
                 </div>
-                <TimeAccountingFilterDialog open={this.state.open}
-                                            handleClose={this.handleClose}
-                                            aria-labelledby="scroll-dialog-title"/>
+                <KPIFilterDialog open={this.state.open}
+                                 handleClose={this.handleClose}
+                                 aria-labelledby="scroll-dialog-title"/>
             </div>
         )
     }
@@ -124,4 +121,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, null)(TimeAccountingAppBarActions);
+export default connect(mapStateToProps, null)(KPIAppBarActions);

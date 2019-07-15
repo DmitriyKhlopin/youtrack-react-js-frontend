@@ -6,12 +6,13 @@ import Button from "../../../node_modules/@material-ui/core/Button/Button";
 import Dialog from "../../../node_modules/@material-ui/core/Dialog/Dialog";
 import {withStyles} from "@material-ui/core/styles";
 import ChipsArray from "../ChipArray";
-import TextField from "../../../node_modules/@material-ui/core/TextField/TextField";
 import connect from "react-redux/es/connect/connect";
 import store from "../../redux/store";
-import {selectProjectsByMode, setDateFrom, setDateTo} from "../../redux/actions/reportFiltersActions";
+import {selectProjectsByMode} from "../../redux/actions/reportFiltersActions";
 import {styles} from "../../Styles";
-import * as PropTypes from "prop-types";
+import DatePicker from "react-datepicker";
+import {format, parseISO} from "date-fns";
+import {setTimeAccountingDateFrom, setTimeAccountingDateTo} from "../../redux/actions/timeAccountingFiltersActions";
 
 class KPIFilterDialog extends Component {
     handleClose = () => {
@@ -47,26 +48,41 @@ class KPIFilterDialog extends Component {
                         onClick={() => store.dispatch(selectProjectsByMode('NONE'))}>
                     Снять отметку
                 </Button>
-                <TextField
-                    variant="outlined"
-                    id="date"
-                    label="Date from"
-                    type="date"
-                    defaultValue={this.props.reportFilters.dateFrom}
-                    onChange={field => store.dispatch(setDateFrom(field.target.value)) /*this.setState({dateFrom: field.target.value})*/}
-                    className={classes.textField}
-                    InputLabelProps={{shrink: true,}}
-                />
-                <TextField
-                    variant="outlined"
-                    id="date"
-                    label="Date to"
-                    type="date"
-                    defaultValue={this.props.reportFilters.dateTo}
-                    onChange={field => store.dispatch(setDateTo(field.target.value)) /*this.setState({dateTo: field.target.value})*/}
-                    className={classes.textField}
-                    InputLabelProps={{shrink: true,}}
-                />
+                <div style={{
+                    width: '100%',
+                    minWidth: '160px',
+                    height: '100%',
+                    minHeight: '300px',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    backgroundColor: 'transparent',
+                }}>
+                    <div style={{padding: 4}}>
+                        <div style={{textAlign: 'center'}}>Начало периода</div>
+                        <DatePicker
+                            inline
+                            selected={parseISO(this.props.filters.dateFrom)}
+                            selectsStart
+                            startDate={parseISO(this.props.filters.dateFrom)}
+                            endDate={parseISO(this.props.filters.dateTo)}
+                            maxDate={parseISO(this.props.filters.dateTo)}
+                            onChange={date => store.dispatch(setTimeAccountingDateFrom(format(date, 'yyyy-MM-dd')))}
+                        />
+                    </div>
+                    <div style={{padding: 4}}>
+                        <div style={{textAlign: 'center'}}>Конец периода</div>
+                        <DatePicker
+                            inline
+                            selected={parseISO(this.props.filters.dateTo)}
+                            selectsEnd
+                            startDate={parseISO(this.props.filters.dateFrom)}
+                            endDate={parseISO(this.props.filters.dateTo)}
+                            onChange={date => store.dispatch(setTimeAccountingDateTo(format(date, 'yyyy-MM-dd')))}
+                            minDate={parseISO(this.props.filters.dateFrom)}
+                        />
+                    </div>
+                </div>
             </DialogContent>
             <DialogActions>
                 <Button onClick={this.handleClose} color="primary">
@@ -77,13 +93,9 @@ class KPIFilterDialog extends Component {
     }
 }
 
-KPIFilterDialog.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
-
 function mapStateToProps(state) {
     return {
-        reportFilters: state.reportFilters
+        filters: state.reportFilters
     }
 }
 

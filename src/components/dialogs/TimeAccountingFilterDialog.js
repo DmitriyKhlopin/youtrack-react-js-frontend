@@ -1,14 +1,14 @@
 import React, {Component} from "react";
-import DialogContent from "../../node_modules/@material-ui/core/DialogContent/DialogContent";
-import DialogActions from "../../node_modules/@material-ui/core/DialogActions/DialogActions";
-import Button from "../../node_modules/@material-ui/core/Button/Button";
-import Dialog from "../../node_modules/@material-ui/core/Dialog/Dialog";
+import DialogContent from "@material-ui/core/DialogContent/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions/DialogActions";
+import Button from "@material-ui/core/Button/Button";
+import Dialog from "@material-ui/core/Dialog/Dialog";
 
 import {withStyles} from "@material-ui/core/styles";
 import connect from "react-redux/es/connect/connect";
-import store from "../redux/store";
-import {styles} from "../Styles";
-import {setTimeAccountingDateFrom, setTimeAccountingDateTo} from "../redux/actions/timeAccountingFiltersActions";
+import store from "../../redux/store";
+import {styles} from "../../Styles";
+import {setTimeAccountingDateFrom, setTimeAccountingDateTo} from "../../redux/actions/timeAccountingFiltersActions";
 import DatePicker from "react-datepicker";
 import {format, parseISO} from 'date-fns'
 import "react-datepicker/dist/react-datepicker.css";
@@ -38,6 +38,7 @@ class TimeAccountingFilterDialog extends Component {
                     width: '100%',
                     minWidth: '160px',
                     height: '100%',
+                    minHeight: '300px',
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'center',

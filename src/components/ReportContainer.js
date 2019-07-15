@@ -1,8 +1,6 @@
 import React, {Component} from "react";
 import * as PropTypes from "prop-types";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
-import FilterIcon from '@material-ui/icons/Settings';
-import RefreshIcon from '@material-ui/icons/Refresh';
 import ReportFilterDialog from "./dialogs/ReportFilterDialog";
 import Grid from "../../node_modules/@material-ui/core/Grid/Grid";
 import {connect} from "react-redux";
@@ -19,7 +17,6 @@ import ScatterChartSigma from "./charts/ScatterChartSigma";
 import DrillDownDialog from "./dialogs/DrillDownDialog";
 import ChartTemplate from "./charts/ChartTemplate";
 import {PAGES} from "../Const";
-import {Fab} from "@material-ui/core";
 
 /**http://materialuicolors.co/?utm_source=launchers*/
 
@@ -77,14 +74,6 @@ class ReportContainer extends Component {
                                      handleClose={this.handleClose}
                                      aria-labelledby="scroll-dialog-title"/>
                 </Grid>
-                <Fab className={classes.fabLoad} color={'secondary'}
-                     onClick={() => store.dispatch(fetchReportData())}>
-                    <RefreshIcon/>
-                </Fab>
-                <Fab className={classes.fab} color={'primary'}
-                     onClick={this.handleClickOpen('paper')}>
-                    <FilterIcon/>
-                </Fab>
             </div>
         );
     }

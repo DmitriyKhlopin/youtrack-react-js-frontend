@@ -13,6 +13,8 @@ import FixedDefectsDisplay from "./components/FixedDefectsDisplay";
 import DurationDisplay from "./components/DurationDisplay";
 import TimeAccountingAppBarActions from "./components/app_bar/actions/TimeAccountingAppBarActions";
 import React from "react";
+import KPIAppBarActions from "./components/app_bar/actions/KPIAppBarActions";
+import ReportsAppBarActions from "./components/app_bar/actions/ReportsAppBarActions";
 
 
 export const PAGES = [
@@ -22,7 +24,7 @@ export const PAGES = [
         path: '/',
         component: ReportContainer,
         availableInDrawer: true,
-        appBarActions: null
+        appBarActions: <ReportsAppBarActions/>
 
     },
     {
@@ -79,7 +81,7 @@ export const PAGES = [
         path: '/kpi',
         component: KPIContainer,
         availableInDrawer: true,
-        appBarActions: null
+        appBarActions: <KPIAppBarActions/>
     },
     {
         id: 10,

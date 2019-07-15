@@ -145,14 +145,14 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
         exportToExcel = () => {
             const issues = this.props.highPriorityIssuesData.issues.map((item, index) => {
                 return {
-                    index: index + 1,
-                    id: item.id,
-                    summary: item.summary,
-                    created: moment.unix(item.created / 1000).format("MM/DD/YYYY"),
-                    state: item.state,
-                    priority: item.priority,
-                    type: item.type,
-                    comment: item.comment,
+                    '': index + 1,
+                    'ID задачи': item.id,
+                    'Заголовок': item.summary,
+                    'Создана': moment.unix(item.created / 1000).format("MM/DD/YYYY"),
+                    'Состояние': item.state,
+                    'Приоритет': item.priority,
+                    'Тип': item.type,
+                    'Комментарий': item.comment,
                     issues: item.tfsData
                         .map((item) => `${item.issueId} - ${item.issueState} ${item.issueMergedIn === null ? '' : ` - ${item.issueMergedIn}`}`)
                         .join(', '),
@@ -169,11 +169,12 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                     timeDeveloper: item.timeDeveloper,
                 }
             });
-
+            const i = [...new Set(this.props.highPriorityIssuesData.issues.map((item) => item.id.substring(0, item.id.indexOf('-'))))];
+            console.log(i.length);
             const wb = new Workbook();
             let ws = XLSX.utils.json_to_sheet(issues);
             XLSX.utils.book_append_sheet(wb, ws, "issues");
-            XLSX.writeFile(wb, "export.xlsx");
+            XLSX.writeFile(wb, `Статус запросов ${i.length === 1 ? `по проекту ${i[0] }`: `по ${i.length} проектам`}.xlsx`);
         };
 
         render() {
