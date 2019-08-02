@@ -76,12 +76,13 @@ class TimeAccountingDisplay extends Component {
                     row[filter.id].endsWith(filter.value)
             }];
 
-        return (<ReactTable style={{width: '100%'}} data={items}
-                            filterable
-                            defaultFilterMethod={(filter, row) =>
-                                String(row[filter.id]) === filter.value}
-                            columns={columns}
-        />)
+        return (<div style={{width: '100%'}}>
+            <ReactTable data={items}
+                        filterable
+                        defaultFilterMethod={(filter, row) =>
+                            String(row[filter.id]) === filter.value}
+                        columns={columns}
+            /></div>)
     }
 }
 
