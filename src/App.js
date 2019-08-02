@@ -47,7 +47,6 @@ class App extends React.Component {
         return (
             <MuiThemeProvider theme={theme}>
                 <Router history={history}>
-
                     <div className={classes.root}>
                         <MainAppBar/>
                         <Drawer

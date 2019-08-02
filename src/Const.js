@@ -15,6 +15,7 @@ import TimeAccountingAppBarActions from "./components/app_bar/actions/TimeAccoun
 import React from "react";
 import KPIAppBarActions from "./components/app_bar/actions/KPIAppBarActions";
 import ReportsAppBarActions from "./components/app_bar/actions/ReportsAppBarActions";
+import TimeAccountingDictionaryDisplay from "./components/TimeAccountingDictionaryDisplay";
 
 
 export const PAGES = [
@@ -121,6 +122,14 @@ export const PAGES = [
         path: '/login',
         component: AuthDisplay,
         availableInDrawer: false,
+        appBarActions: null
+    },
+    {
+        id: 15,
+        name: 'Привязка проектов',
+        path: '/time_accounting_dictionary',
+        component: TimeAccountingDictionaryDisplay,
+        availableInDrawer: true,
         appBarActions: null
     }
 ];

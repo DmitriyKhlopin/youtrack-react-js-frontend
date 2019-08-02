@@ -26,8 +26,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import {fetchPartnerCustomers, fetchProjects} from "../redux/actions/reportFiltersActions";
 import * as ReactDOM from "react-dom";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-
 
 const styles = createStyles({
     content: {
@@ -44,13 +44,6 @@ const styles = createStyles({
     },
 
 });
-
-/*function Workbook() {
-    if (!(this instanceof Workbook))
-        return new Workbook();
-    this.SheetNames = [];
-    this.Sheets = {}
-}*/
 
 //TODO style={classes.content} causes crashes in firefox
 const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
@@ -72,6 +65,7 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                 labelWidth2: 0,
                 labelWidth3: 0,
                 labelWidth4: 0,
+                primaryColumnsOnly: true
             }
         }
 
@@ -103,7 +97,7 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                         t = this.state.selectedAllProjects ? [] : this.props.reportFilters.proj;
                         break;
                     case 'Customers':
-                        t = this.state.selectedAllCustomers ? [] : this.props.reportFilters.partnerCustomers.filter((item) => this.state.projects.map((p) => p.shortName).includes(item.project));
+                        t = this.state.selectedAllCustomers ? [] : Array.from([...new Set(this.props.reportFilters.partnerCustomers.filter((item) => this.state.projects.map((p) => p.shortName).includes(item.project)))]);
                         break;
                     case 'Priorities':
                         t = this.state.selectedAllPriorities ? [] : this.state.defaultPriorities;
@@ -142,16 +136,85 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
             return buf
         }
 
+        applyTranslations(item) {
+            let t;
+            switch (item) {
+                case 'Submitted': {
+                    t = 'Зарегистрирована';
+                    break;
+                }
+                case 'Open': {
+                    t = 'Открыта';
+                    break;
+                }
+                case 'Bug': {
+                    t = 'Ошибка';
+                    break;
+                }
+                case 'Major': {
+                    t = 'Высокий';
+                    break;
+                }
+                case 'Normal': {
+                    t = 'Обычный';
+                    break;
+                }
+                case 'Minor': {
+                    t = 'Низкий';
+                    break;
+                }
+                default : {
+                    t = item;
+                    break;
+                }
+
+            }
+            return t
+        }
+
+        exportDefects = () => {
+            const issues = this.props.highPriorityIssuesData.issues.flatMap((item, index) => {
+                return item.tfsData
+                    .flatMap((a) => a.defects).map((b) => {
+                        return {
+                            tl: b.developmentManager,
+                            defect: b.defectId,
+                            state: b.defectState,
+                            reason: b.defectReason,
+                            deadline: b.defectDeadline,
+                            id: item.id,
+                            comment: item.comment
+                        }
+                    });
+
+            });
+            const i = [...new Set(this.props.highPriorityIssuesData.issues.map((item) => item.id.substring(0, item.id.indexOf('-'))))];
+            console.log(issues);
+            const wb = new Workbook();
+            let ws = XLSX.utils.json_to_sheet(issues);
+            XLSX.utils.book_append_sheet(wb, ws, "issues");
+            XLSX.writeFile(wb, `Статус запросов ${i.length === 1 ? `по проекту ${i[0]}` : `по ${i.length} проектам`}.xlsx`);
+        };
+
         exportToExcel = () => {
             const issues = this.props.highPriorityIssuesData.issues.map((item, index) => {
-                return {
+                return this.state.primaryColumnsOnly ? {
                     '': index + 1,
                     'ID задачи': item.id,
                     'Заголовок': item.summary,
                     'Создана': moment.unix(item.created / 1000).format("MM/DD/YYYY"),
-                    'Состояние': item.state,
-                    'Приоритет': item.priority,
-                    'Тип': item.type,
+                    'Состояние': this.applyTranslations(item.state),
+                    'Приоритет': this.applyTranslations(item.priority),
+                    'Тип': this.applyTranslations(item.type),
+                    'Комментарий': item.comment,
+                } : {
+                    '': index + 1,
+                    'ID задачи': item.id,
+                    'Заголовок': item.summary,
+                    'Создана': moment.unix(item.created / 1000).format("MM/DD/YYYY"),
+                    'Состояние': this.applyTranslations(item.state),
+                    'Приоритет': this.applyTranslations(item.priority),
+                    'Тип': this.applyTranslations(item.type),
                     'Комментарий': item.comment,
                     issues: item.tfsData
                         .map((item) => `${item.issueId} - ${item.issueState} ${item.issueMergedIn === null ? '' : ` - ${item.issueMergedIn}`}`)
@@ -174,11 +237,12 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
             const wb = new Workbook();
             let ws = XLSX.utils.json_to_sheet(issues);
             XLSX.utils.book_append_sheet(wb, ws, "issues");
-            XLSX.writeFile(wb, `Статус запросов ${i.length === 1 ? `по проекту ${i[0] }`: `по ${i.length} проектам`}.xlsx`);
+            XLSX.writeFile(wb, `Статус запросов ${i.length === 1 ? `по проекту ${i[0]}` : `по ${i.length} проектам`}.xlsx`);
         };
 
         render() {
             const {classes} = this.props;
+            console.log(this.styledDataSet);
             return <div style={{minWidth: '100%', position: 'absolute'}}>
                 <div style={{
                     minWidth: '100%',
@@ -311,6 +375,13 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                     <Button variant="contained" color="primary" style={{minWidth: 150, margin: 8}}
                             onClick={this.exportToExcel}>
                         Выгрузить в Excel
+                    </Button>
+                    <FormControlLabel control={<Checkbox checked={this.state.primaryColumnsOnly}
+                                                         onChange={() => this.setState({primaryColumnsOnly: !this.state.primaryColumnsOnly})}/>}
+                                      label="Только основные столбцы"/>
+                    <Button variant="contained" color="primary" style={{minWidth: 150, margin: 8}}
+                            onClick={this.exportDefects}>
+                        Выгрузить дефекты для рассылки
                     </Button>
                 </div>
                 <div style={{
@@ -462,64 +533,69 @@ function TFSIssueView(props) {
     );
 }
 
-class TFSDefectView extends Component {
-    render() {
-        const tfsDefect = this.props.data;
-        let color;
-        switch (tfsDefect.defectReason.toLowerCase()) {
-            case 'test passed': {
-                color = '#43a047';
-                break;
-            }
-            case 'not a bug': {
-                color = '#43a047';
-                break;
-            }
-            case 'duplicate': {
-                color = '#43a047';
-                break;
-            }
-            case 'assigned': {
-                color = '#c0ca33';
-                break;
-            }
-            case 'cannot reproduce': {
-                color = '#fb8c00';
-                break;
-            }
-            case 'fixed': {
-                color = '#e53935';
-                break;
-            }
-            case 'not fixed': {
-                color = '#e53935';
-                break;
-            }
-            default: {
-                color = 'grey';
-                break;
-            }
+function TFSDefectView(props) {
+    const tfsDefect = props.data;
+    let color;
+    switch (tfsDefect.defectReason.toLowerCase()) {
+        case 'test passed': {
+            color = '#43a047';
+            break;
         }
-
-        return (<div style={{marginLeft: 16, marginTop: 8, color: color}}>
-            <div>Defect {tfsDefect.defectId} - {tfsDefect.defectReason}</div>
-            <div>{tfsDefect.developmentManager}</div>
-            <div>{tfsDefect.iterationPath}</div>
-            {tfsDefect.changeRequests.map((item, index) => <TFSChangeRequestsView key={`hpi-tfs-defect-${index}`}
-                                                                                  data={item}/>)}
-        </div>);
+        case 'not a bug': {
+            color = '#43a047';
+            break;
+        }
+        case 'duplicate': {
+            color = '#43a047';
+            break;
+        }
+        case 'assigned': {
+            color = '#c0ca33';
+            break;
+        }
+        case 'cannot reproduce': {
+            color = '#fb8c00';
+            break;
+        }
+        case 'fixed': {
+            color = '#e53935';
+            break;
+        }
+        case 'not fixed': {
+            color = '#e53935';
+            break;
+        }
+        default: {
+            color = 'grey';
+            break;
+        }
     }
+
+    return (<div style={{marginLeft: 16, marginTop: 8, color: color}}>
+        <div>Defect <a href={`https://tfsprod.fsight.ru/Prognoz/P7/_workitems?_a=edit&id=${tfsDefect.defectId}`}
+                       target="_blank"
+                       style={{
+                           textDecoration: 'none',
+                           color: color
+                       }}>{tfsDefect.defectId}</a> - {tfsDefect.defectState} - {tfsDefect.defectReason}</div>
+        <div>{tfsDefect.defectDeadline}</div>
+        <div>{tfsDefect.developmentManager}</div>
+        <div>{tfsDefect.iterationPath}</div>
+        {tfsDefect.changeRequests.map((item, index) => <TFSChangeRequestsView key={`hpi-tfs-defect-${index}`}
+                                                                              data={item} color={color}/>)}
+    </div>);
+
 }
 
 function TFSChangeRequestsView(props) {
     const tfsChangeRequest = props.data;
     return (<div style={{marginLeft: 32, marginTop: 8}}>
-        <div>Change request {tfsChangeRequest.changeRequestId}</div>
+        <div>Change request <a
+            href={`https://tfsprod.fsight.ru/Prognoz/P7/_workitems?_a=edit&id=${tfsChangeRequest.changeRequestId}`}
+            target="_blank"
+            style={{textDecoration: 'none', color: props.color}}>{tfsChangeRequest.changeRequestId}</a></div>
         <div>{tfsChangeRequest.changeRequestMergedIn}</div>
         <div>{tfsChangeRequest.changeRequestReason}</div>
         <div>{tfsChangeRequest.iterationPath}</div>
     </div>);
 }
-
-
-
