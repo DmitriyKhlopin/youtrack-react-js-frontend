@@ -1,7 +1,7 @@
 export default function reducer(state = {
     currentPage: null,
     selectedId: 0,
-    drawerOpened: true,
+    drawerOpened: false,
     dialogOpened: false,
 }, action) {
     switch (action.type) {
