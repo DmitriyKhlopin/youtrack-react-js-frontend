@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import * as PropTypes from "prop-types";
-import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
 import connect from "react-redux/es/connect/connect";
 import classNames from "classnames";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -8,7 +7,6 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "../../node_modules/@material-ui/icons/Menu";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
-import {styles} from "../Styles";
 import store from "../redux/store";
 import {openMainDialog, toggleAppBar} from "../redux/actions/appBarActions";
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -63,4 +61,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(MainAppBar));
+export default connect(mapStateToProps, null)(MainAppBar);

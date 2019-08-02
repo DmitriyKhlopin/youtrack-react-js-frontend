@@ -1,37 +1,65 @@
-import React, {Component} from "react";
+import React, {useEffect} from "react";
 import moment from "moment";
 import ReactTable from "react-table";
 import store from "../redux/store";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import * as PropTypes from "prop-types";
-import withStyles from "@material-ui/core/styles/withStyles";
-import {styles} from "../Styles";
 import connect from "react-redux/es/connect/connect";
-import Button from "@material-ui/core/Button/Button";
-import TimeAccountingFilterDialog from "./dialogs/TimeAccountingFilterDialog";
 import {fetchTimeAccountingDictionaryData} from "../redux/actions/timeAccountingActions";
-import RefreshIcon from '@material-ui/icons/Refresh';
+import {PAGES} from "../Const";
+import {withRouter} from "react-router-dom";
 
-class TimeAccountingDictionaryDisplay extends Component {
-    requestData = () => {
+function TimeAccountingDictionaryDisplay(props) {
+    useEffect(() => {
+        console.log(props);
+        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === props.location.pathname)[0]));
+        requestData();
+    }, []);
+
+    const requestData = () => {
         store.dispatch(fetchTimeAccountingDictionaryData());
     };
+    const items = props.timeAccountingData.timeData;
+    let table;
+    let columns;
 
-    componentDidMount() {
-        store.dispatch(setSelectedNavItem({title: 'Справочник проектов', selectedId: 5}));
-        this.requestData();
-    }
-
-    render() {
-        const {classes} = this.props;
-        const items = this.props.timeAccountingData.timeData;
-        if (items === null) return <div>Loading</div>;
-        if (items.length === 0) return <div>No items to display</div>;
-        const columns = [{
-            Header: 'ID',
-            accessor: 'id',
+    if (items === null) table = <div>Loading</div>;
+    if (items && items.length === 0) table = <div>No items to display</div>;
+    if (items && items.length !== 0) columns = [{
+        Header: 'ID',
+        accessor: 'id',
+        Footer: (
+            <span><strong>Popular: </strong>{" "} {items.map(item => item.id).reduce(
+                (a, b, i, arr) =>
+                    (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
+                null)}</span>
+        ),
+        filterMethod: (filter, row) =>
+            row[filter.id].startsWith(filter.value) ||
+            row[filter.id].endsWith(filter.value)
+    },
+        {
+            Header: 'User', accessor: 'agent', filterMethod: (filter, row) =>
+                row[filter.id].startsWith(filter.value) ||
+                row[filter.id].endsWith(filter.value)
+        },
+        {Header: 'Трудозатраты', accessor: 'units',},
+        {id: 'crDate', Header: 'Дата', accessor: d => moment(d.changedDate).format('YYYY-MM-DD')},
+        {
+            Header: 'Проект',
+            accessor: 'projects',
             Footer: (
-                <span><strong>Popular: </strong>{" "} {items.map(item => item.id).reduce(
+                <span><strong>Popular: </strong>{" "} {items.map(item => item.projects).reduce(
+                    (a, b, i, arr) =>
+                        (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
+                    null)}</span>
+            )
+        },
+        {
+            Header: 'Этап',
+            accessor: 'iterationPath',
+            Footer: (
+                <span><strong>Popular: </strong>{" "} {items.map(item => item.iterationPath).reduce(
                     (a, b, i, arr) =>
                         (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
                     null)}</span>
@@ -39,56 +67,19 @@ class TimeAccountingDictionaryDisplay extends Component {
             filterMethod: (filter, row) =>
                 row[filter.id].startsWith(filter.value) ||
                 row[filter.id].endsWith(filter.value)
-        },
-            {
-                Header: 'User', accessor: 'agent', filterMethod: (filter, row) =>
-                    row[filter.id].startsWith(filter.value) ||
-                    row[filter.id].endsWith(filter.value)
-            },
-            {Header: 'Трудозатраты', accessor: 'units',},
-            {id: 'crDate', Header: 'Дата', accessor: d => moment(d.changedDate).format('YYYY-MM-DD')},
-            {
-                Header: 'Проект',
-                accessor: 'projects',
-                Footer: (
-                    <span><strong>Popular: </strong>{" "} {items.map(item => item.projects).reduce(
-                        (a, b, i, arr) =>
-                            (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
-                        null)}</span>
-                )
-            },
-            {
-                Header: 'Этап',
-                accessor: 'iterationPath',
-                Footer: (
-                    <span><strong>Popular: </strong>{" "} {items.map(item => item.iterationPath).reduce(
-                        (a, b, i, arr) =>
-                            (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
-                        null)}</span>
-                ),
-                filterMethod: (filter, row) =>
-                    row[filter.id].startsWith(filter.value) ||
-                    row[filter.id].endsWith(filter.value)
-            }];
+        }];
 
-        return <div>
-            <ReactTable
-                style={{width: '100vw'}}
-                data={items}
-                filterable
-                defaultFilterMethod={(filter, row) =>
-                    String(row[filter.id]) === filter.value}
-                columns={columns}
-            />
-            <TimeAccountingFilterDialog open={this.state.open}
-                                        handleClose={this.handleClose}
-                                        aria-labelledby="scroll-dialog-title"/>
-            <Button variant="fab" mini className={classes.fabLoad} color={'secondary'}
-                    onClick={this.requestData}>
-                <RefreshIcon/>
-            </Button>
-        </div>
+    if (columns) {
+        table = <ReactTable
+            style={{width: '100vw'}}
+            data={items}
+            filterable
+            defaultFilterMethod={(filter, row) =>
+                String(row[filter.id]) === filter.value}
+            columns={columns}
+        />
     }
+    return (<div>{table}</div>)
 }
 
 TimeAccountingDictionaryDisplay.propTypes = {
@@ -102,4 +93,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(TimeAccountingDictionaryDisplay));
+export default withRouter(connect(mapStateToProps, null)(TimeAccountingDictionaryDisplay));
