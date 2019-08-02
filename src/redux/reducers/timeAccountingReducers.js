@@ -22,7 +22,7 @@ export default function reducer(state = {
         case 'FETCH_TIME_ACCOUNTING_DICTIONARY_FULFILLED': {
             state = {
                 ...state,
-                action: action.payload
+                dictionaryData: action.payload
             };
             break;
         }
