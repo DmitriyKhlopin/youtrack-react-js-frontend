@@ -17,10 +17,6 @@ import "react-datepicker/dist/react-datepicker.css";
 class TimeAccountingFilterDialog extends Component {
     state = {df: this.props.filters.dateFrom, dt: this.props.filters.dateTo};
     handleClose = update => () => {
-        /*if (update === true) {
-            store.dispatch(setTimeAccountingDateFrom(this.state.df));
-            store.dispatch(setTimeAccountingDateTo(this.state.dt));
-        }*/
         this.props.handleClose(false, null, null, [])
     };
 
@@ -32,7 +28,6 @@ class TimeAccountingFilterDialog extends Component {
             scroll={'paper'}
             fullWidth={true}
             aria-labelledby="scroll-dialog-title">
-            {/*<DialogTitle id="scroll-dialog-title">Параметры отчёта</DialogTitle>*/}
             <DialogContent className={classes.dialog}>
                 <div style={{
                     width: '100%',

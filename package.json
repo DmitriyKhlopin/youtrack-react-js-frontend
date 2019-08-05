@@ -10,7 +10,7 @@
     "@vx/shape": "0.0.189",
     "classnames": "^2.2.6",
     "clsx": "latest",
-    "date-fns": "latest",
+    "date-fns": "next",
     "devextreme": "^19.1.5",
     "devextreme-react": "^19.1.5",
     "eslint-plugin-react-hooks": "^1.6.1",
