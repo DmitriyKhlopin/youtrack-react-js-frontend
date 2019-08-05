@@ -22,19 +22,20 @@ function TimeAccountingDictionaryDisplay({location, timeAccountingData}) {
     let columns;
     if (items === null) table = <div>Loading</div>;
     if (items && items.length === 0) table = <div>No items to display</div>;
-    if (items && items.length !== 0) columns = [{
-        Header: 'PROJECT',
-        accessor: 'projectShortName',
-        Footer: (
-            <span><strong>Popular: </strong>{" "} {items.map(item => item.id).reduce(
-                (a, b, i, arr) =>
-                    (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
-                null)}</span>
-        ),
-        filterMethod: (filter, row) =>
-            row[filter.id].startsWith(filter.value) ||
-            row[filter.id].endsWith(filter.value)
-    },
+    if (items && items.length !== 0) columns = [
+        {
+            Header: 'PROJECT',
+            accessor: 'projectShortName',
+            Footer: (
+                <span><strong>Popular: </strong>{" "} {items.map(item => item.id).reduce(
+                    (a, b, i, arr) =>
+                        (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b),
+                    null)}</span>
+            ),
+            filterMethod: (filter, row) =>
+                row[filter.id].startsWith(filter.value) ||
+                row[filter.id].endsWith(filter.value)
+        },
         {
             Header: 'Customer', accessor: 'customer', filterMethod: (filter, row) =>
                 row[filter.id].startsWith(filter.value) ||
