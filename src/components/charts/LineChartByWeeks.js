@@ -31,7 +31,7 @@ class LineChartByWeeks extends Component {
 
     render() {
         const dynamics = this.props.reports.dynamicsData;
-        return <div style={{width: 'calc(50% - 32px)'}}>
+        return <div>
             <Typography align={'center'} variant="h5">
                 Количество поступивших и закрытых запросов
             </Typography>

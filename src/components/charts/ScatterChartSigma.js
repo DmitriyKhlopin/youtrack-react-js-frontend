@@ -18,11 +18,6 @@ class ScatterChartSigma extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         const prevFilters = prevProps.reportFilters;
-        /*if ((prevFilters.proj && prevFilters.proj.length === 0 && this.props.reportFilters.proj !== prevFilters.proj) ||
-            (prevFilters.dateFrom && this.props.reportFilters.dateFrom !== prevFilters.dateFrom) ||
-            (prevFilters.dateTo && this.props.reportFilters.dateTo !== prevFilters.dateTo)) {
-            store.dispatch(fetchSigmaData());
-        }*/
         if (prevFilters && prevFilters !== this.props.reportFilters) {
             store.dispatch(fetchSigmaData());
         }
@@ -30,7 +25,7 @@ class ScatterChartSigma extends Component {
 
     render() {
         const sigma2 = this.props.reports.sigmaData;
-        return <div style={{width: 'calc(50% - 32px)'}}>
+        return <div >
             <Typography
                 align={'center'}
                 variant="h5">Продолжительность работ по запросам</Typography>

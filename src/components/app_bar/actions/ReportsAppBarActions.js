@@ -6,7 +6,6 @@ import FilterIcon from '@material-ui/icons/Settings';
 import IconButton from '@material-ui/core/IconButton';
 import store from "../../../redux/store";
 import KPIFilterDialog from "../../dialogs/KPIFilterDialog";
-import {fetchKpiReportData} from "../../../redux/actions/kpiActions";
 import {fetchReportData} from "../../../redux/actions/reportsActions";
 
 class ReportsAppBarActions extends React.Component {
@@ -15,11 +14,6 @@ class ReportsAppBarActions extends React.Component {
         this.state = {
             open: false,
         }
-    }
-
-
-    componentDidMount() {
-        console.log(1);
     }
 
     handleClickOpen = () => () => {
@@ -118,7 +112,6 @@ class ReportsAppBarActions extends React.Component {
 function mapStateToProps(state) {
     return {
         appBarState: state.appBarState,
-        timeAccountingData: state.timeAccountingData,
     }
 }
 

@@ -25,10 +25,10 @@ function ReportContainer({location}) {
             alignItems: 'stretch',
             width: '100%'
         }}>
-            <LineChartByWeeks/>
-            <PieChartByPartners/>
-            <ScatterChartSigma/>
-            <PieChartByPartners/>
+            <div style={{width: 'calc(50% - 32px)'}}><LineChartByWeeks/></div>
+            <div style={{width: 'calc(50% - 32px)'}}><PieChartByPartners/></div>
+            <div style={{width: 'calc(50% - 32px)'}}><ScatterChartSigma/></div>
+            <div style={{width: 'calc(50% - 32px)'}}><PieChartByPartners/></div>
             <ChartTemplate templateName='Запросы от партнёров за год'/>
         </div>
     );
