@@ -18,7 +18,7 @@ function TimeAccountingDisplay({location, timeAccountingData}) {
     let table;
     let columns;
     if (items === null) table = <div>Error</div>;
-    if (items && timeAccountingData.timeLoading === true) table = <LinearProgress style={{marginTop: 8}}/>;
+    if (items && timeAccountingData.timeLoading === true) table = <LinearProgress/>;
     if (items && timeAccountingData.timeLoading === false && items.length === 0) table = <div>No items to display</div>;
     if (items && items.length !== 0) columns = [
         {

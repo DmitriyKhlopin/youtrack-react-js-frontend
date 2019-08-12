@@ -37,7 +37,7 @@ class ChartTemplate extends Component {
     }*/
 
     render() {
-        return <Grid item md={12} lg={6}>
+        return <div style={{width: 'calc(50% - 32px)'}}>
             <Typography align={'center'} variant="h5">
                 {this.props.templateName}
             </Typography>
@@ -56,7 +56,7 @@ class ChartTemplate extends Component {
                           name="В работе"/>
                 </LineChart>
             </ResponsiveContainer>
-        </Grid>
+        </div>
     }
 }
 

@@ -31,14 +31,14 @@ class LineChartByWeeks extends Component {
 
     render() {
         const dynamics = this.props.reports.dynamicsData;
-        return <Grid item md={12} lg={6}>
+        return <div style={{width: 'calc(50% - 32px)'}}>
             <Typography align={'center'} variant="h5">
                 Количество поступивших и закрытых запросов
             </Typography>
             <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
                 <LineChart
                     data={dynamics}
-                    margin={{top: 30, right: 0, left: 0, bottom: 30}}
+                    margin={{top: 30, right: 10, left: 0, bottom: 30}}
                     onClick={this.handleClick}
                 >
                     <XAxis dataKey="week"/>
@@ -54,7 +54,7 @@ class LineChartByWeeks extends Component {
                           name="Решено"/>
                 </LineChart>
             </ResponsiveContainer>
-        </Grid>
+        </div>
     }
 }
 

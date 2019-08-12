@@ -46,7 +46,7 @@ class PieChartByPartners extends Component {
 
     render() {
         const aggregatedIssuesByPartner = this.props.reports.aggregatedIssuesByPartner;
-        return <Grid item md={12} lg={6}>
+        return <div style={{width: 'calc(50% - 32px)'}}>
             <Typography align={'center'} variant="h5">
                 Количество запросов от партнёров
             </Typography>
@@ -72,7 +72,7 @@ class PieChartByPartners extends Component {
                     <Legend/>
                 </PieChart>
             </ResponsiveContainer>
-        </Grid>
+        </div>
     }
 }
 

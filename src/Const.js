@@ -37,6 +37,14 @@ export const PAGES = [
         appBarActions: <TimeAccountingAppBarActions/>
     },
     {
+        id: 15,
+        name: 'Привязка проектов',
+        path: '/time_accounting_dictionary',
+        component: TimeAccountingDictionaryDisplay,
+        availableInDrawer: true,
+        appBarActions: null
+    },
+    {
         id: 2,
         name: 'Отработанное время',
         path: '/accounted_time',
@@ -73,7 +81,7 @@ export const PAGES = [
         name: 'Возможные ошибки',
         path: '/possible_errors',
         component: PossibleErrorsDisplay,
-        availableInDrawer: true,
+        availableInDrawer: false,
         appBarActions: null
     },
     {
@@ -97,7 +105,7 @@ export const PAGES = [
         name: 'Исправленные дефекты',
         path: '/fixed_defects',
         component: FixedDefectsDisplay,
-        availableInDrawer: true,
+        availableInDrawer: false,
         appBarActions: null
     },
     {
@@ -122,14 +130,6 @@ export const PAGES = [
         path: '/login',
         component: AuthDisplay,
         availableInDrawer: false,
-        appBarActions: null
-    },
-    {
-        id: 15,
-        name: 'Привязка проектов',
-        path: '/time_accounting_dictionary',
-        component: TimeAccountingDictionaryDisplay,
-        availableInDrawer: true,
         appBarActions: null
     }
 ];

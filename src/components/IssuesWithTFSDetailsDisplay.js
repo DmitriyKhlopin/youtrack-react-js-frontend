@@ -172,6 +172,10 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
             return t
         }
 
+        exportedProjects = (array) => {
+            return [...new Set(array.map((item) => item.id.substring(0, item.id.indexOf('-'))))];
+        };
+
         exportDefects = () => {
             const issues = this.props.highPriorityIssuesData.issues.flatMap((item, index) => {
                 return item.tfsData
@@ -188,7 +192,7 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                     });
 
             });
-            const i = [...new Set(this.props.highPriorityIssuesData.issues.map((item) => item.id.substring(0, item.id.indexOf('-'))))];
+            const i = this.exportedProjects(this.props.highPriorityIssuesData.issues);
             console.log(issues);
             const wb = new Workbook();
             let ws = XLSX.utils.json_to_sheet(issues);
@@ -196,13 +200,13 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
             XLSX.writeFile(wb, `Статус запросов ${i.length === 1 ? `по проекту ${i[0]}` : `по ${i.length} проектам`}.xlsx`);
         };
 
+
         exportToExcel = () => {
             const issues = this.props.highPriorityIssuesData.issues.map((item, index) => {
                 return this.state.primaryColumnsOnly ? {
                     '': index + 1,
                     'ID задачи': item.id,
                     'Заголовок': item.summary,
-                    'Создана': moment.unix(item.created / 1000).format("MM/DD/YYYY"),
                     'Состояние': this.applyTranslations(item.state),
                     'Приоритет': this.applyTranslations(item.priority),
                     'Тип': this.applyTranslations(item.type),
@@ -210,12 +214,15 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                 } : {
                     '': index + 1,
                     'ID задачи': item.id,
+                    'Проект': item.project,
+                    'Заказчик': item.customer,
                     'Заголовок': item.summary,
                     'Создана': moment.unix(item.created / 1000).format("MM/DD/YYYY"),
                     'Состояние': this.applyTranslations(item.state),
                     'Приоритет': this.applyTranslations(item.priority),
                     'Тип': this.applyTranslations(item.type),
                     'Комментарий': item.comment,
+                    'Поле Issue': item.issue,
                     issues: item.tfsData
                         .map((item) => `${item.issueId} - ${item.issueState} ${item.issueMergedIn === null ? '' : ` - ${item.issueMergedIn}`}`)
                         .join(', '),
@@ -232,8 +239,7 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                     timeDeveloper: item.timeDeveloper,
                 }
             });
-            const i = [...new Set(this.props.highPriorityIssuesData.issues.map((item) => item.id.substring(0, item.id.indexOf('-'))))];
-            console.log(i.length);
+            const i = this.exportedProjects(this.props.highPriorityIssuesData.issues);
             const wb = new Workbook();
             let ws = XLSX.utils.json_to_sheet(issues);
             XLSX.utils.book_append_sheet(wb, ws, "issues");
@@ -242,8 +248,7 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
 
         render() {
             const {classes} = this.props;
-            console.log(this.styledDataSet);
-            return <div style={{minWidth: '100%', position: 'absolute'}}>
+            return <div style={{display: 'flex', padding: 0, margin: 0}}>
                 <div style={{
                     minWidth: '100%',
                     position: 'fixed',
@@ -392,7 +397,7 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                 }}>
                     {this.props.highPriorityIssuesData.fetching ?
                         <LinearProgress/> : this.props.highPriorityIssuesData.issues.map((item, index) => {
-                            return <HighPriorityIssueView issue={item} key={`hpiv-${index}`}/>;
+                            return <HighPriorityIssueView issue={item} key={`hpiv-${index}`} style={{minWidth: '100%'}}/>;
                         })}
                     {!this.props.highPriorityIssuesData.fetching && this.props.highPriorityIssuesData.issues.length === 0 ?
                         <div>Нет данных</div> : <div/>}

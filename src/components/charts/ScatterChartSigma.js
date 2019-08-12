@@ -30,7 +30,7 @@ class ScatterChartSigma extends Component {
 
     render() {
         const sigma2 = this.props.reports.sigmaData;
-        return <Grid item md={12} lg={6}>
+        return <div style={{width: 'calc(50% - 32px)'}}>
             <Typography
                 align={'center'}
                 variant="h5">Продолжительность работ по запросам</Typography>
@@ -74,7 +74,7 @@ class ScatterChartSigma extends Component {
                         ]}/>
                 </ScatterChart>
             </ResponsiveContainer>
-        </Grid>
+        </div>
     }
 }
 

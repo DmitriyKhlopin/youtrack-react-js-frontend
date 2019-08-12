@@ -2,21 +2,18 @@ import React, {Component} from "react";
 import * as PropTypes from "prop-types";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
 import ReportFilterDialog from "./dialogs/ReportFilterDialog";
-import Grid from "../../node_modules/@material-ui/core/Grid/Grid";
 import {connect} from "react-redux";
 import store from "../redux/store";
 import {fetchProjects} from "../redux/actions/reportFiltersActions";
 import {fetchReportData} from "../redux/actions/reportsActions";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import {styles} from "../Styles";
-
-import PieChartByProjectTypes from "./charts/SpentTimeByProjectTypesPieChart";
 import LineChartByWeeks from "./charts/LineChartByWeeks";
+import DrillDownDialog from "./dialogs/DrillDownDialog";
+import {PAGES} from "../Const";
 import PieChartByPartners from "./charts/PieChartByPartners";
 import ScatterChartSigma from "./charts/ScatterChartSigma";
-import DrillDownDialog from "./dialogs/DrillDownDialog";
 import ChartTemplate from "./charts/ChartTemplate";
-import {PAGES} from "../Const";
 
 /**http://materialuicolors.co/?utm_source=launchers*/
 
@@ -57,23 +54,27 @@ class ReportContainer extends Component {
     };
 
     render() {
-        const {classes} = this.props;
         return (
-            <div>
-                <Grid container spacing={10} className={classes.componentRoot}>
-                    <LineChartByWeeks/>
-                    <PieChartByPartners/>
-                    <ScatterChartSigma/>
-                    <PieChartByProjectTypes/>
-                    <ChartTemplate templateName='Запросы от партнёров за год'/>
+            <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                flexDirection: 'row',
+                justifyContent: 'flexStart',
+                alignItems: 'stretch',
+                width: '100%'
+            }}>
+                <LineChartByWeeks/>
+                <PieChartByPartners/>
+                <ScatterChartSigma/>
+                <PieChartByPartners/>
+                <ChartTemplate templateName='Запросы от партнёров за год'/>
+                <ReportFilterDialog open={this.state.filtersOpen}
+                                    handleClose={this.handleClose}
+                                    aria-labelledby="scroll-dialog-title"/>
+                <DrillDownDialog open={this.props.drillDown.drillDownOpen}
+                                 handleClose={this.handleClose}
+                                 aria-labelledby="scroll-dialog-title"/>
 
-                    <ReportFilterDialog open={this.state.filtersOpen}
-                                        handleClose={this.handleClose}
-                                        aria-labelledby="scroll-dialog-title"/>
-                    <DrillDownDialog open={this.props.drillDown.drillDownOpen}
-                                     handleClose={this.handleClose}
-                                     aria-labelledby="scroll-dialog-title"/>
-                </Grid>
             </div>
         );
     }
