@@ -1,6 +1,6 @@
 import PossibleErrorsDisplay from "./components/PossibleErrorsDisplay";
 import KPIContainer from "./components/KPIContainer";
-import HighPriorityIssuesDisplay from "./components/IssuesWithTFSDetailsDisplay";
+import HighPriorityIssuesDisplay from "./components/high_priority_issues/IssuesWithTFSDetailsDisplay";
 import ReportContainer from "./components/ReportContainer";
 import TimeAccountingDisplay from "./components/TimeAccountingDisplay";
 import AccountedTimeDisplay from "./components/AccountedTimeDisplay";

@@ -1,33 +1,27 @@
 import React, {Component} from "react";
-import store from "../redux/store";
-import {setSelectedNavItem} from "../redux/actions/appBarActions";
+import store from "../../redux/store";
+import {setSelectedNavItem} from "../../redux/actions/appBarActions";
 import withStyles from "@material-ui/core/styles/withStyles";
 import connect from "react-redux/es/connect/connect";
-import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
-import {PAGES, Workbook} from "../Const";
+import {fetchTimeAccountingData} from "../../redux/actions/timeAccountingActions";
+import {PAGES, Workbook} from "../../Const";
 import * as XLSX from 'xlsx';
 
 import LinearProgress from "@material-ui/core/LinearProgress";
-import {getHighPriorityIssues} from "../redux/actions/highPriorityIssuesActions";
+import {getHighPriorityIssues} from "../../redux/actions/highPriorityIssuesActions";
 import * as moment from "moment";
-import {now} from "moment";
-import {createStyles, makeStyles} from "@material-ui/styles";
-import {red} from "@material-ui/core/colors";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Collapse from "@material-ui/core/Collapse";
-import Typography from "@material-ui/core/Typography";
+import {createStyles} from "@material-ui/styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
-import {fetchPartnerCustomers} from "../redux/actions/reportFiltersActions";
+import {fetchPartnerCustomers} from "../../redux/actions/reportFiltersActions";
 import * as ReactDOM from "react-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import HighPriorityIssueView from "./HighPriorityIssueView";
 
 const styles = createStyles({
     content: {
@@ -427,7 +421,6 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
 
 function mapStateToProps(state) {
     return {
-        appBarState: state.appBarState,
         reportFilters: state.reportFilters,
         highPriorityIssuesData: state.highPriorityIssuesData
     }
@@ -436,189 +429,7 @@ function mapStateToProps(state) {
 export default (connect(mapStateToProps, null)(IssuesWithTFSDetailsDisplay));
 
 
-function HighPriorityIssueView(props) {
-    const classes = useStyles();
-    const issue = props.issue;
-    const [expanded, setExpanded] = React.useState(false);
-
-    function handleExpandClick() {
-        setExpanded(!expanded);
-    }
-
-    return (<Card className={classes.card}>
-        <CardHeader
-            title={
-                <a href={`https://support.fsight.ru/issue/${issue.id}`}
-                   target="_blank" style={{textDecoration: 'none'}}>{issue.id + " " + issue.summary}</a>
-            }/>
-        <CardContent className={classes.content} onClick={handleExpandClick}>
-            <Typography>{issue.state}</Typography>
-            <Typography>{issue.comment === null ? 'Нет комментария' : issue.comment}</Typography>
-            <Typography>{issue.tfsData.length === 0 ? 'Нет issue в TFS' : `${issue.tfsData.length} issue в TFS`}</Typography>
-            <Typography>{[...new Set(issue.tfsData.map((e) => e.issueState))].map((e) => e + " " + issue.tfsData.filter((i) => i.issueState === e).length).join('; ')}</Typography>
-        </CardContent>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <CardContent>
-                {issue.tfsData.map((item, index) => <TFSIssueView key={`hpivas-${index}`} data={item}/>)}
-            </CardContent>
-        </Collapse>
-    </Card>);
-}
-
-const useStyles = makeStyles(theme => ({
-    card: {
-        margin: 16,
-        maxWidth: '100%',
-    },
-    content: {
-        paddingTop: 0,
-        paddingBottom: 0,
-    },
-
-    media: {
-        height: 0,
-        paddingTop: '56.25%', // 16:9
-    },
-    actions: {
-        display: 'flex',
-    },
-    expand: {
-        transform: 'rotate(0deg)',
-        marginLeft: 'auto',
-        /*transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),*/
-    },
-    expandOpen: {
-        transform: 'rotate(180deg)',
-    },
-    avatar: {
-        backgroundColor: red[500],
-    },
-    formControl: {
-        margin: 8,
-        minWidth: 150,
-    },
-}));
-
-function TFSIssueView(props) {
-    const tfsIssue = props.data;
-    const now = moment(now);
-    const then = moment(tfsIssue.issueLastUpdate, 'YYYY/MM/DD HH:mm:ss');
-    const duration = now.diff(then, 'days');
-    let color;
-    switch (true) {
-        case duration > 2 && tfsIssue.issueState !== 'Closed': {
-            color = '#e53935';
-            break;
-        }
-        case duration > 1 && tfsIssue.issueState !== 'Closed': {
-            color = '#fb8c00';
-            break;
-        }
-        case tfsIssue.issueState !== 'Closed': {
-            color = '#c0ca33';
-            break;
-        }
-        case tfsIssue.issueState === 'Closed': {
-            color = '#43a047';
-            break;
-        }
-        default: {
-            color = 'grey';
-            break;
-        }
-    }
-
-    let stateSuffix;
-    switch (tfsIssue.issueState) {
-        case 'Closed': {
-            stateSuffix = tfsIssue.issueMergedIn === null ? '' : `Внесено в ${tfsIssue.issueMergedIn}, бранч - ${tfsIssue.iterationPath}`;
-            break;
-        }
-        default: {
-            stateSuffix = `Без изменения с ${tfsIssue.issueLastUpdate}`;
-            break;
-        }
-    }
 
 
-    return (
-        <div style={{color: color, padding: 0}}>
-            <div>
-                Issue <a href={`https://tfsprod.fsight.ru/Prognoz/P7/_workitems?_a=edit&id=${tfsIssue.issueId}`}
-                         target="_blank"
-                         style={{textDecoration: 'none', color: color}}>{tfsIssue.issueId}</a> {tfsIssue.issueState}
-            </div>
-            <div>{stateSuffix}</div>
-            {tfsIssue.defects.map((item, index) => <TFSDefectView key={`hpi-tfs-defect-${index}`} data={item}/>)}
-        </div>
-    );
-}
 
-function TFSDefectView(props) {
-    const tfsDefect = props.data;
-    let color;
-    switch (tfsDefect.defectReason.toLowerCase()) {
-        case 'test passed': {
-            color = '#43a047';
-            break;
-        }
-        case 'not a bug': {
-            color = '#43a047';
-            break;
-        }
-        case 'duplicate': {
-            color = '#43a047';
-            break;
-        }
-        case 'assigned': {
-            color = '#c0ca33';
-            break;
-        }
-        case 'cannot reproduce': {
-            color = '#fb8c00';
-            break;
-        }
-        case 'fixed': {
-            color = '#e53935';
-            break;
-        }
-        case 'not fixed': {
-            color = '#e53935';
-            break;
-        }
-        default: {
-            color = 'grey';
-            break;
-        }
-    }
 
-    return (<div style={{marginLeft: 16, marginTop: 8, color: color}}>
-        <div>Defect <a href={`https://tfsprod.fsight.ru/Prognoz/P7/_workitems?_a=edit&id=${tfsDefect.defectId}`}
-                       target="_blank"
-                       style={{
-                           textDecoration: 'none',
-                           color: color
-                       }}>{tfsDefect.defectId}</a> - {tfsDefect.defectState} - {tfsDefect.defectReason}</div>
-        <div>{tfsDefect.defectDeadline}</div>
-        <div>{tfsDefect.developmentManager}</div>
-        <div>{tfsDefect.iterationPath}</div>
-        {tfsDefect.changeRequests.map((item, index) => <TFSChangeRequestsView key={`hpi-tfs-defect-${index}`}
-                                                                              data={item} color={color}/>)}
-    </div>);
-
-}
-
-function TFSChangeRequestsView(props) {
-    const tfsChangeRequest = props.data;
-    return (<div style={{marginLeft: 32, marginTop: 8}}>
-        <div>Change request <a
-            href={`https://tfsprod.fsight.ru/Prognoz/P7/_workitems?_a=edit&id=${tfsChangeRequest.changeRequestId}`}
-            target="_blank"
-            style={{textDecoration: 'none', color: props.color}}>{tfsChangeRequest.changeRequestId}</a></div>
-        <div>{tfsChangeRequest.changeRequestMergedIn}</div>
-        <div>{tfsChangeRequest.changeRequestReason}</div>
-        <div>{tfsChangeRequest.iterationPath}</div>
-    </div>);
-}
