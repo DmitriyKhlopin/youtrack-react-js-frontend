@@ -3,8 +3,8 @@ import {ENDPOINT} from "../../Const";
 export function getHighPriorityIssues(projects, customers, priorities, states) {
     return function (dispatch) {
         dispatch({type: 'FETCH_HIGH_PRIORITY_ISSUES_PENDING'});
-        const projectsString = projects.map(item => item.shortName).join(',');
-        const customersString = customers.map(item => item.customer).join(',');
+        const projectsString = projects.join(',');
+        const customersString = customers.join(',');
         const prioritiesString = priorities.join(',');
         const statesString = states.join(',');
         const obj = {

@@ -24,7 +24,7 @@ import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
-import {fetchPartnerCustomers, fetchProjects} from "../redux/actions/reportFiltersActions";
+import {fetchPartnerCustomers} from "../redux/actions/reportFiltersActions";
 import * as ReactDOM from "react-dom";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -75,9 +75,6 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
 
         componentDidMount() {
             store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
-            if (this.props.reportFilters.proj.length === 0) {
-                store.dispatch(fetchProjects());
-            }
             if (this.props.reportFilters.partnerCustomers.length === 0) {
                 store.dispatch(fetchPartnerCustomers());
             }
@@ -91,7 +88,8 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
 
         handleChange = event => {
             if (event.target.value.includes('SelectAll')) {
-                let t;
+                window.alert('Not implemented');
+                /*let t;
                 switch (event.target.name) {
                     case 'Projects':
                         t = this.state.selectedAllProjects ? [] : this.props.reportFilters.proj;
@@ -109,7 +107,7 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                 this.setState({
                     [event.target.name.toLowerCase()]: t,
                     [`selectedAll${event.target.name}`]: !this.state[`selectedAll${event.target.name}`],
-                });
+                });*/
             } else {
                 this.setState({[event.target.name.toLowerCase()]: event.target.value.filter((item) => item !== '')});
             }
@@ -193,7 +191,6 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
 
             });
             const i = this.exportedProjects(this.props.highPriorityIssuesData.issues);
-            console.log(issues);
             const wb = new Workbook();
             let ws = XLSX.utils.json_to_sheet(issues);
             XLSX.utils.book_append_sheet(wb, ws, "issues");
@@ -246,8 +243,18 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
             XLSX.writeFile(wb, `Статус запросов ${i.length === 1 ? `по проекту ${i[0]}` : `по ${i.length} проектам`}.xlsx`);
         };
 
+        customSort = function (a, b) {
+            if (a > b) {
+                return 1;
+            } else {
+                return -1;
+            }
+        };
+
         render() {
             const {classes} = this.props;
+            console.log(this.state.projects);
+            console.log(this.state.customers);
             return <div style={{display: 'flex', padding: 0, margin: 0}}>
                 <div style={{
                     minWidth: '100%',
@@ -269,7 +276,7 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                             value={this.state.projects}
                             onChange={this.handleChange}
                             multiple={true}
-                            renderValue={selected => selected.map((item => item.shortName)).join(", ")}
+                            renderValue={selected => selected.join(", ")}
                             input={
                                 <OutlinedInput
                                     labelWidth={this.state.labelWidth1}
@@ -279,10 +286,14 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                             }
                         >
                             {<MenuItem value="SelectAll"> <em>Выбрать все</em> </MenuItem>}
-                            {this.props.reportFilters.proj.map((item, index) => (
-                                <MenuItem key={`projects-list-item-${index}`} value={item}><Checkbox
-                                    checked={this.state.projects.indexOf(item) > -1}/>{item.shortName}</MenuItem>
-                            ))}
+                            {[...new Set(this.props.reportFilters.partnerCustomers.map((item) => item.project))]
+                                .sort(this.customSort)
+                                .map((item, index) => (
+                                    <MenuItem key={`projects-list-item-${index}`} value={item}>
+                                        <Checkbox checked={this.state.projects.indexOf(item) > -1}/>
+                                        {item}
+                                    </MenuItem>
+                                ))}
 
                         </Select>
                     </FormControl>
@@ -299,6 +310,7 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                             value={this.state.customers}
                             onChange={this.handleChange}
                             multiple={true}
+                            renderValue={selected => selected.join(", ")}
                             input={
                                 <OutlinedInput
                                     labelWidth={this.state.labelWidth2}
@@ -308,9 +320,15 @@ const IssuesWithTFSDetailsDisplay = withStyles(styles)(class extends Component {
                             }
                         >
                             {<MenuItem value="SelectAll"> <em>Выбрать все</em> </MenuItem>}
-                            {this.props.reportFilters.partnerCustomers.filter((item) => this.state.projects.map((p) => p.shortName).includes(item.project)).map((item, index) => (
-                                <MenuItem key={`customers-list-item-${index}`} value={item}>{item.customer}</MenuItem>
-                            ))}
+                            {[...new Set(this.props.reportFilters.partnerCustomers
+                                .filter((item) => this.state.projects.includes(item.project) && item.customer !== null)
+                                .map((item) => item.customer))]
+                                .sort(this.customSort)
+                                .map((item, index) =>
+                                    (<MenuItem key={`customers-list-item-${index}`} value={item}>
+                                        <Checkbox checked={this.state.customers.indexOf(item) > -1}/>
+                                        {item}
+                                    </MenuItem>))}
 
                         </Select>
                     </FormControl>
