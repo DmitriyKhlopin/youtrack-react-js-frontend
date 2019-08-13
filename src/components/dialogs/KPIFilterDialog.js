@@ -15,6 +15,10 @@ import {format, parseISO} from "date-fns";
 import {setTimeAccountingDateFrom, setTimeAccountingDateTo} from "../../redux/actions/timeAccountingFiltersActions";
 
 class KPIFilterDialog extends Component {
+    handleCloseAndUpdate = () => {
+        this.props.handleCloseAndUpdate(false, null, null, [])
+    };
+
     handleClose = () => {
         this.props.handleClose(false, null, null, [])
     };
@@ -85,6 +89,9 @@ class KPIFilterDialog extends Component {
                 </div>
             </DialogContent>
             <DialogActions>
+                <Button onClick={this.handleCloseAndUpdate} color="primary">
+                    Закрыть и  вычислить
+                </Button>
                 <Button onClick={this.handleClose} color="primary">
                     Закрыть
                 </Button>

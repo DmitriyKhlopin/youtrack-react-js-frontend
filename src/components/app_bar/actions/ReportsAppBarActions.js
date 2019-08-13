@@ -1,35 +1,33 @@
-import React from 'react';
-import {connect} from 'react-redux';
+import React, {useState} from 'react';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import FilterIcon from '@material-ui/icons/Settings';
 import IconButton from '@material-ui/core/IconButton';
 import store from "../../../redux/store";
-import KPIFilterDialog from "../../dialogs/KPIFilterDialog";
 import {fetchReportData} from "../../../redux/actions/reportsActions";
+import ReportFilterDialog from "../../dialogs/ReportFilterDialog";
 
-class ReportsAppBarActions extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            open: false,
-        }
-    }
+function ReportsAppBarActions() {
+    const [open, setOpen] = useState(false);
 
-    handleClickOpen = () => () => {
-        this.setState({open: true});
+    const handleClickOpen = () => () => {
+        setOpen(true);
     };
 
-    handleClose = () => {
-        this.requestData();
-        this.setState({open: false});
+    const handleClose = () => {
+        setOpen(false);
     };
 
-    requestData = () => {
+    const handleCloseAndUpdate = () => {
+        requestData();
+        setOpen(false);
+    };
+
+    const requestData = () => {
         store.dispatch(fetchReportData());
     };
 
-    download = (url, name) => {
+    const download = (url, name) => {
         let a = document.createElement('a');
         a.href = url;
         a.download = name;
@@ -37,15 +35,15 @@ class ReportsAppBarActions extends React.Component {
         window.URL.revokeObjectURL(url)
     };
 
-    static s2ab(s) {
+    /*static s2ab(s) {
         const buf = new ArrayBuffer(s.length);
         const view = new Uint8Array(buf);
         for (let i = 0; i !== s.length; ++i)
             view[i] = s.charCodeAt(i) & 0xFF;
         return buf
-    }
+    }*/
 
-    exportToExcel = () => {
+    const exportToExcel = () => {
         window.alert('Not implemented');
         /*const issues = this.props.timeAccountingData.timeData.map((item) => {
             return {
@@ -73,46 +71,39 @@ class ReportsAppBarActions extends React.Component {
         XLSX.writeFile(wb, "export.xlsx");*/
     };
 
-    render() {
-        return (
-            <div style={{
-                /*width: '20%',
-                minWidth: '160px',*/
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'row',
-                backgroundColor: 'transparent',
-            }}>
-                <div style={{margin: 0, flex: 1}}>
-                    <IconButton color='inherit'
-                                onClick={this.requestData}>
-                        <RefreshIcon/>
-                    </IconButton>
-                </div>
-                <div style={{margin: 0, flex: 1}}>
-                    <IconButton color='inherit'
-                                onClick={this.handleClickOpen('paper')}>
-                        <FilterIcon/>
-                    </IconButton>
-                </div>
-                <div style={{margin: 0, flex: 1, float: 'right'}}>
-                    <IconButton color='inherit'
-                                onClick={this.exportToExcel}>
-                        <DownloadIcon/>
-                    </IconButton>
-                </div>
-                <KPIFilterDialog open={this.state.open}
-                                 handleClose={this.handleClose}
-                                 aria-labelledby="scroll-dialog-title"/>
+
+    return (
+        <div style={{
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            backgroundColor: 'transparent',
+        }}>
+            <div style={{margin: 0, flex: 1}}>
+                <IconButton color='inherit'
+                            onClick={requestData}>
+                    <RefreshIcon/>
+                </IconButton>
             </div>
-        )
-    }
+            <div style={{margin: 0, flex: 1}}>
+                <IconButton color='inherit'
+                            onClick={handleClickOpen('paper')}>
+                    <FilterIcon/>
+                </IconButton>
+            </div>
+            <div style={{margin: 0, flex: 1, float: 'right'}}>
+                <IconButton color='inherit'
+                            onClick={exportToExcel}>
+                    <DownloadIcon/>
+                </IconButton>
+            </div>
+            <ReportFilterDialog open={open}
+                                handleClose={handleClose}
+                                handleCloseAndUpdate={handleCloseAndUpdate}
+                                aria-labelledby="scroll-dialog-title"/>
+        </div>
+    )
+
 }
 
-function mapStateToProps(state) {
-    return {
-        appBarState: state.appBarState,
-    }
-}
-
-export default connect(mapStateToProps, null)(ReportsAppBarActions);
+export default ReportsAppBarActions;

@@ -8,18 +8,22 @@ import {withStyles} from "@material-ui/core/styles";
 import ChipsArray from "../ChipArray";
 import connect from "react-redux/es/connect/connect";
 import store from "../../redux/store";
-import {selectProjectsByMode} from "../../redux/actions/reportFiltersActions";
+import {selectProjectsByMode, setDateFrom, setDateTo} from "../../redux/actions/reportFiltersActions";
 import {styles} from "../../Styles";
 import DatePicker from "react-datepicker";
 import {format, parseISO} from "date-fns";
-import {setTimeAccountingDateFrom, setTimeAccountingDateTo} from "../../redux/actions/timeAccountingFiltersActions";
 
 class ReportFilterDialog extends Component {
+    handleCloseAndUpdate = () => {
+        this.props.handleCloseAndUpdate(false, null, null, [])
+    };
+
     handleClose = () => {
         this.props.handleClose(false, null, null, [])
     };
 
     render() {
+        console.log(this.props.filters);
         const {classes} = this.props;
         return <Dialog
             open={this.props.open}
@@ -67,7 +71,7 @@ class ReportFilterDialog extends Component {
                             startDate={parseISO(this.props.filters.dateFrom)}
                             endDate={parseISO(this.props.filters.dateTo)}
                             maxDate={parseISO(this.props.filters.dateTo)}
-                            onChange={date => store.dispatch(setTimeAccountingDateFrom(format(date, 'yyyy-MM-dd')))}
+                            onChange={date => store.dispatch(setDateFrom(format(date, 'yyyy-MM-dd')))}
                         />
                     </div>
                     <div style={{padding: 4}}>
@@ -78,13 +82,16 @@ class ReportFilterDialog extends Component {
                             selectsEnd
                             startDate={parseISO(this.props.filters.dateFrom)}
                             endDate={parseISO(this.props.filters.dateTo)}
-                            onChange={date => store.dispatch(setTimeAccountingDateTo(format(date, 'yyyy-MM-dd')))}
+                            onChange={date => store.dispatch(setDateTo(format(date, 'yyyy-MM-dd')))}
                             minDate={parseISO(this.props.filters.dateFrom)}
                         />
                     </div>
                 </div>
             </DialogContent>
             <DialogActions>
+                <Button onClick={this.handleCloseAndUpdate} color="primary">
+                    Закрыть и вычислить
+                </Button>
                 <Button onClick={this.handleClose} color="primary">
                     Закрыть
                 </Button>
