@@ -1,6 +1,6 @@
 import PossibleErrorsDisplay from "./components/PossibleErrorsDisplay";
 import KPIContainer from "./components/KPIContainer";
-import HighPriorityIssuesDisplay from "./components/high_priority_issues/IssuesWithTFSDetailsDisplay";
+import IssuesWithTFSDetailsDisplay from "./components/high_priority_issues/IssuesWithTFSDetailsDisplay";
 import ReportContainer from "./components/ReportContainer";
 import TimeAccountingDisplay from "./components/TimeAccountingDisplay";
 import AccountedTimeDisplay from "./components/AccountedTimeDisplay";
@@ -16,6 +16,7 @@ import React from "react";
 import KPIAppBarActions from "./components/app_bar/actions/KPIAppBarActions";
 import ReportsAppBarActions from "./components/app_bar/actions/ReportsAppBarActions";
 import TimeAccountingDictionaryDisplay from "./components/TimeAccountingDictionaryDisplay";
+import PartnersDisplay from "./components/PartnersDisplay";
 
 
 export const PAGES = [
@@ -120,7 +121,7 @@ export const PAGES = [
         id: 13,
         name: 'Детализация по запросам',
         path: '/issues_with_tfs_details',
-        component: HighPriorityIssuesDisplay,
+        component: IssuesWithTFSDetailsDisplay,
         availableInDrawer: true,
         appBarActions: null
     },
@@ -131,7 +132,15 @@ export const PAGES = [
         component: AuthDisplay,
         availableInDrawer: false,
         appBarActions: null
-    }
+    },
+    {
+        id: 15,
+        name: 'Реестр партнёров',
+        path: '/partners',
+        component: PartnersDisplay,
+        availableInDrawer: true,
+        appBarActions: null
+    },
 ];
 
 

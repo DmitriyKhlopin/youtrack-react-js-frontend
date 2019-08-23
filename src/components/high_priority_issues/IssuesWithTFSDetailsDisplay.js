@@ -18,16 +18,17 @@ import Checkbox from "@material-ui/core/Checkbox";
 import HighPriorityIssueView from "./HighPriorityIssueView";
 import makeStyles from "@material-ui/styles/makeStyles";
 import {setSelectedNavItem} from "../../redux/actions/appBarActions";
+import {customSort} from "../../HelperFunctions";
 
 const useStyles = makeStyles(theme => ({
     content: {display: 'flex', padding: 0, margin: 0},
-    controlsContainer: {minWidth: '100%', position: 'fixed', display: 'flex', backgroundColor: '#ddd', zIndex: 3},
-    issuesContainer: {minWidth: '100%', zIndex: 2, position: 'relative', top: 72},
+    controlsContainer: {width: '100%', position: 'fixed', display: 'flex', backgroundColor: '#ddd', zIndex: 3},
+    issuesContainer: {width: '100%', zIndex: 2, position: 'relative', top: 72},
     multiSelect: {minWidth: 150, maxWidth: 250, margin: 8},
     button: {margin: 8, minWidth: 120},
 }));
 
-const customSort = (a, b) => a > b ? 1 : -1;
+
 
 function IssuesWithTFSDetailsDisplay({location, filters, data}) {
     const styles = useStyles();
