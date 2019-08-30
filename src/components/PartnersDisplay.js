@@ -14,7 +14,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles(theme => ({
-    content: {display: 'flex', padding: 0, margin: 0, flexDirection: 'row', flexWrap: 'wrap', width: '100%'},
+    content: {display: 'flex', padding: 0, margin: 0, flexDirection: 'row', flexWrap: 'no-wrap', width: '100%'},
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),

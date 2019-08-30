@@ -17,8 +17,9 @@ import KPIAppBarActions from "./components/app_bar/actions/KPIAppBarActions";
 import ReportsAppBarActions from "./components/app_bar/actions/ReportsAppBarActions";
 import TimeAccountingDictionaryDisplay from "./components/TimeAccountingDictionaryDisplay";
 import PartnersDisplay from "./components/PartnersDisplay";
+import KeyPartnersReportContainer from "./components/key_partners_report/container";
 
-
+export const [sidebarWidthOpen, sidebarWidthClosed] = ['192px', '60px'];
 export const PAGES = [
     {
         id: 0,
@@ -38,7 +39,7 @@ export const PAGES = [
         appBarActions: <TimeAccountingAppBarActions/>
     },
     {
-        id: 15,
+        id: 6,
         name: 'Привязка проектов',
         path: '/time_accounting_dictionary',
         component: TimeAccountingDictionaryDisplay,
@@ -138,6 +139,14 @@ export const PAGES = [
         name: 'Реестр партнёров',
         path: '/partners',
         component: PartnersDisplay,
+        availableInDrawer: true,
+        appBarActions: null
+    },
+    {
+        id: 16,
+        name: 'Отчёт по ключевым проектам',
+        path: '/key_partners',
+        component: KeyPartnersReportContainer,
         availableInDrawer: true,
         appBarActions: null
     },
