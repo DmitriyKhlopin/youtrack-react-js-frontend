@@ -19,7 +19,7 @@ import TimeAccountingDictionaryDisplay from "./components/TimeAccountingDictiona
 import PartnersDisplay from "./components/PartnersDisplay";
 import KeyPartnersReportContainer from "./components/key_partners_report/container";
 
-export const [sidebarWidthOpen, sidebarWidthClosed] = ['192px', '60px'];
+export const [sidebarWidthOpen, sidebarWidthClosed] = ['320px', '60px'];
 export const PAGES = [
     {
         id: 0,

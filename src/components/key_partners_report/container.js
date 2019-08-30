@@ -8,6 +8,7 @@ import {fetchPartners} from "../../redux/actions/partnersActions";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import {Sidebar} from "./sidebar";
 
 const useStyles = makeStyles(theme => ({
     content: {display: 'flex', padding: 0, margin: 0, flexDirection: 'row', flexWrap: 'no-wrap', width: '100%'},
@@ -59,6 +60,7 @@ function KeyPartnersReportContainer({location, filters, data}) {
             }}>
                 {open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
             </IconButton>
+            {open ? <Sidebar/> : <div/>}
         </div>
     </div>);
 }
