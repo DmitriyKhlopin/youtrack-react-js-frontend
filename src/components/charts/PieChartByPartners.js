@@ -9,7 +9,7 @@ import {MATERIAL_COLORS, RADIAN} from "../../Const";
 import store from "../../redux/store";
 import {fetchCreatedOnWeekData} from "../../redux/actions/reportsActions";
 
-const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index, value, name, fill}) => {
+export const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index, value, name, fill}) => {
     const sin = Math.sin(-RADIAN * midAngle);
     const cos = Math.cos(-RADIAN * midAngle);
     const sx = cx + (outerRadius + 10) * cos;

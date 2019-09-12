@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 
 import {Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
-import Grid from "@material-ui/core/Grid";
 import * as PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {styles} from "../../Styles";

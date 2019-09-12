@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import store from "../../redux/store";
 import connect from "react-redux/es/connect/connect";
-import {PAGES, sidebarWidthClosed, sidebarWidthOpen} from "../../Const";
+import {MATERIAL_COLORS, PAGES, sidebarWidthClosed, sidebarWidthOpen} from "../../Const";
 import {makeStyles} from "@material-ui/core/styles";
 import {setSelectedNavItem} from "../../redux/actions/appBarActions";
 import {fetchPartners} from "../../redux/actions/partnersActions";
@@ -9,6 +9,9 @@ import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import {Sidebar} from "./sidebar";
+import {Canvas, Document, Page, PDFViewer, StyleSheet, Text, View} from "@react-pdf/renderer";
+import {Cell, Legend, Pie, PieChart, ResponsiveContainer} from "recharts";
+import {renderCustomizedLabel} from "../charts/PieChartByPartners";
 
 const useStyles = makeStyles(theme => ({
     content: {display: 'flex', padding: 0, margin: 0, flexDirection: 'row', flexWrap: 'no-wrap', width: '100%'},
@@ -17,7 +20,62 @@ const useStyles = makeStyles(theme => ({
         marginRight: theme.spacing(1),
         width: `calc(192px - ${theme.spacing(2)})`,
     },
+    page: {
+        flexDirection: 'row',
+        backgroundColor: '#E4E4E4'
+    },
+    section: {
+        margin: 10,
+        padding: 10,
+        flexGrow: 1
+    }
 }));
+
+const styles = StyleSheet.create({
+    page: {
+        flexDirection: 'row',
+        backgroundColor: '#E4E4E4'
+    },
+    section: {
+        margin: 10,
+        padding: 10,
+        flexGrow: 1
+    }
+});
+
+const MyDocument = () => (
+
+    <Document>
+        <Page size="A4" style={styles.page}>
+            <Canvas style={styles.section}>
+                <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
+                    <PieChart margin={{top: 30, right: 0, left: 0, bottom: 30}}>
+                        <Pie data={ [{name: 'a', value: 1}, {name: 'b', value: 2}]}
+                             nameKey={'name'}
+                             dataKey={'value'}
+                             labelLine={true}
+                             label={renderCustomizedLabel}
+                             fill="#8884d8"
+                             startAngle={450}
+                             endAngle={90}
+                             paddingAngle={1}
+                             legendType={'none'}
+                        >
+                            {
+                                [{name: 'a', value: 1}, {name: 'b', value: 2}].map((entry, index) => <Cell key={`cell-${index}`}
+                                                                                      fill={MATERIAL_COLORS[index % MATERIAL_COLORS.length]}/>)
+                            }
+                        </Pie>
+                        <Legend/>
+                    </PieChart>
+                </ResponsiveContainer>
+            </Canvas>
+            <View style={styles.section}>
+                <Text>Section #2</Text>
+            </View>
+        </Page>
+    </Document>
+);
 
 
 function KeyPartnersReportContainer({location, filters, data}) {
@@ -39,6 +97,9 @@ function KeyPartnersReportContainer({location, filters, data}) {
             /*flexDirection: 'row',
             flexWrap: 'no-wrap',*/
         }}>
+
+                <MyDocument/>
+
             content
         </div>
 

@@ -1,5 +1,5 @@
 import PossibleErrorsDisplay from "./components/PossibleErrorsDisplay";
-import KPIContainer from "./components/KPIContainer";
+import KPIContainer from "./components/kpi/KPIContainer";
 import IssuesWithTFSDetailsDisplay from "./components/high_priority_issues/IssuesWithTFSDetailsDisplay";
 import ReportContainer from "./components/ReportContainer";
 import TimeAccountingDisplay from "./components/TimeAccountingDisplay";
@@ -18,8 +18,10 @@ import ReportsAppBarActions from "./components/app_bar/actions/ReportsAppBarActi
 import TimeAccountingDictionaryDisplay from "./components/TimeAccountingDictionaryDisplay";
 import PartnersDisplay from "./components/PartnersDisplay";
 import KeyPartnersReportContainer from "./components/key_partners_report/container";
+import {Workbook} from "./helper_functions/export_to_excel";
+import * as XLSX from "xlsx";
 
-export const [sidebarWidthOpen, sidebarWidthClosed] = ['320px', '60px'];
+export const [sidebarWidthOpen, sidebarWidthOpenWide, sidebarWidthClosed] = ['320px', '640px', '60px'];
 export const PAGES = [
     {
         id: 0,
@@ -153,13 +155,6 @@ export const PAGES = [
 ];
 
 
-export function Workbook() {
-    if (!(this instanceof Workbook))
-        return new Workbook();
-    this.SheetNames = [];
-    this.Sheets = {}
-}
-
 export const YT_ENDPOINT = 'http://support.fsight.ru/api/';
 export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://10.9.172.76:8080' : 'http://10.30.207.22:8080';
 export const drawerWidth = 240;
@@ -189,3 +184,5 @@ export const MATERIAL_COLORS = [/*'#F44336',
     '#607D8B'];
 export const MATERIAL_LINE_CHART_COLORS = ['#2196F3', '#FFC107', '#4CAF50'];
 export const MATERIAL_SIGMA_COLORS = ['#34495e', '#4CAF50', '#FFEB3B', '#FF9800'];
+
+

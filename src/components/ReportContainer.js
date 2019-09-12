@@ -1,9 +1,7 @@
 import React, {useEffect} from "react";
-import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
 import store from "../redux/store";
 import {fetchProjects} from "../redux/actions/reportFiltersActions";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
-import {styles} from "../Styles";
 import LineChartByWeeks from "./charts/LineChartByWeeks";
 import {PAGES} from "../Const";
 import PieChartByPartners from "./charts/PieChartByPartners";
@@ -36,4 +34,4 @@ function ReportContainer({location}) {
 }
 
 
-export default withStyles(styles)(ReportContainer);
+export default ReportContainer;

@@ -60,14 +60,14 @@ export default function reducer(state = {
             };
             break;
         }
-        case 'REPORT_FILTERS_SET_DATE_FROM': {
+        case 'KPI_FILTERS_SET_DATE_FROM': {
             state = {
                 ...state,
                 dateFrom: action.payload
             };
             break;
         }
-        case 'REPORT_FILTERS_SET_DATE_TO': {
+        case 'KPI_FILTERS_SET_DATE_TO': {
             state = {
                 ...state,
                 dateTo: action.payload

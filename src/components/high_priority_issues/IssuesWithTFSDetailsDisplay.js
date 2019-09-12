@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import store from "../../redux/store";
 import connect from "react-redux/es/connect/connect";
-import {PAGES, Workbook} from "../../Const";
+import {PAGES} from "../../Const";
 import * as XLSX from 'xlsx';
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {getHighPriorityIssues} from "../../redux/actions/highPriorityIssuesActions";
@@ -19,6 +19,7 @@ import HighPriorityIssueView from "./HighPriorityIssueView";
 import makeStyles from "@material-ui/styles/makeStyles";
 import {setSelectedNavItem} from "../../redux/actions/appBarActions";
 import {customSort} from "../../HelperFunctions";
+import {Workbook} from "../../helper_functions/export_to_excel";
 
 const useStyles = makeStyles(theme => ({
     content: {display: 'flex', padding: 0, margin: 0},
@@ -27,7 +28,6 @@ const useStyles = makeStyles(theme => ({
     multiSelect: {minWidth: 150, maxWidth: 250, margin: 8},
     button: {margin: 8, minWidth: 120},
 }));
-
 
 
 function IssuesWithTFSDetailsDisplay({location, filters, data}) {
@@ -163,7 +163,9 @@ function IssuesWithTFSDetailsDisplay({location, filters, data}) {
                 'Состояние': applyTranslations(item.state),
                 'Приоритет': applyTranslations(item.priority),
                 'Тип': applyTranslations(item.type),
+                'Исполнитель': item.assignee,
                 'Комментарий': item.comment,
+                'Автор комментария': item.commentAuthor,
             } : {
                 '': index + 1,
                 'ID задачи': item.id,
@@ -174,7 +176,9 @@ function IssuesWithTFSDetailsDisplay({location, filters, data}) {
                 'Состояние': applyTranslations(item.state),
                 'Приоритет': applyTranslations(item.priority),
                 'Тип': applyTranslations(item.type),
+                'Исполнитель': item.assignee,
                 'Комментарий': item.comment,
+                'Автор комментария': item.commentAuthor,
                 'Поле Issue': item.issue,
                 issues: item.tfsData
                     .map((item) => `${item.issueId} - ${item.issueState} ${item.issueMergedIn === null ? '' : ` - ${item.issueMergedIn}`}`)

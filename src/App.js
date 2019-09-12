@@ -169,13 +169,16 @@ function App({appBarState}) {
                     [classes.contentShift]: appBarState.drawerOpened,
                 })}>
                     <div className={classes.drawerHeader}/>
-                    <Switch>
-                        {PAGES.map((item, index) =>
-                            <Route exact path={item.path}
-                                   component={item.component}
-                                   key={`key-route-${index}`}/>
-                        )}
-                    </Switch>
+                    <div style={{width: '100%'}}>
+                        <Switch>
+                            {PAGES.map((item, index) =>
+                                <Route exact path={item.path}
+                                       component={item.component}
+                                       key={`key-route-${index}`}/>
+                            )}
+                        </Switch>
+                    </div>
+
                 </main>
                 <HelpDialog open={appBarState.dialogOpened}
                             handleClose={handleClose}

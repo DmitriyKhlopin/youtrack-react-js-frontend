@@ -7,9 +7,9 @@ import IconButton from '@material-ui/core/IconButton';
 import store from "../../../redux/store";
 import {fetchTimeAccountingData} from "../../../redux/actions/timeAccountingActions";
 import moment from "moment";
-import {Workbook} from "../../../Const";
 import * as XLSX from "xlsx";
 import TimeAccountingFilterDialog from "../../dialogs/TimeAccountingFilterDialog";
+import {Workbook} from "../../../helper_functions/export_to_excel";
 
 class TimeAccountingAppBarActions extends React.Component {
     constructor(props) {
