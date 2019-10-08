@@ -3,7 +3,7 @@ import React from "react";
 
 export function ChartContainerWide(props) {
     return (
-        <div style={{width: 'calc(100% - 32px)', padding: '8px',}}>
+        <div style={{width: 'calc(100% - 32px)', margin: '8px',}}>
             <ResponsiveContainer aspect={4.0}>
                 {props.children}
             </ResponsiveContainer>

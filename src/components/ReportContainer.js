@@ -6,9 +6,22 @@ import LineChartByWeeks from "./charts/LineChartByWeeks";
 import {PAGES} from "../Const";
 import PieChartByPartners from "./charts/PieChartByPartners";
 import ScatterChartSigma from "./charts/ScatterChartSigma";
-import ChartTemplate from "./charts/ChartTemplate";
+import useWindowDimensions from "../helper_functions/dimensions";
 
 function ReportContainer({location}) {
+    const size = useWindowDimensions();
+    let percentage;
+    switch (true) {
+        case (size.width >= 1600):
+            percentage = 33;
+            break;
+        case (size.width >= 900):
+            percentage = 50;
+            break;
+        default:
+            percentage = 100;
+            break;
+    }
     useEffect(() => {
         store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));
         store.dispatch(fetchProjects());
@@ -23,11 +36,9 @@ function ReportContainer({location}) {
             alignItems: 'stretch',
             width: '100%'
         }}>
-            <div style={{width: 'calc(50% - 32px)'}}><LineChartByWeeks/></div>
-            <div style={{width: 'calc(50% - 32px)'}}><PieChartByPartners/></div>
-            <div style={{width: 'calc(50% - 32px)'}}><ScatterChartSigma/></div>
-            <div style={{width: 'calc(50% - 32px)'}}><PieChartByPartners/></div>
-            <ChartTemplate templateName='Запросы от партнёров за год'/>
+            <div style={{width: `calc(${percentage}% - 32px)`}}><LineChartByWeeks/></div>
+            <div style={{width: `calc(${percentage}% - 32px)`}}><PieChartByPartners/></div>
+            <div style={{width: `calc(${percentage}% - 32px)`}}><ScatterChartSigma/></div>
         </div>
     );
 

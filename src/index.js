@@ -5,9 +5,7 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import store from './redux/store'
 import {Provider} from 'react-redux'
-/*import { install } from '@material-ui/styles';*/
 
-/*install();*/
 ReactDOM.render(<Provider store={store}>
     <App/>
 </Provider>, document.getElementById('root'));

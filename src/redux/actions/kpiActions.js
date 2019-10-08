@@ -10,7 +10,7 @@ export function fetchKpiReportData() {
             }
         };
         const state = getState();
-        const baseUrl = `${ENDPOINT}/api/kpi?dateFrom=${state.kpiFilters.dateFrom}&dateTo=${state.kpiFilters.dateTo}`;
+        const baseUrl = `${ENDPOINT}/api/kpi?mode=result2&dateFrom=${state.kpiFilters.dateFrom}&dateTo=${state.kpiFilters.dateTo}`;
         fetch(baseUrl, obj)
             .then(res => res.json())
             .then(json => {

@@ -38,6 +38,7 @@ const useStyles = makeStyles(theme => ({
         padding: 0,
         position: 'relative',
         display: 'flex',
+        overflow: 'visible\!important',
     },
     appBar: {
         transition: theme.transitions.create(['margin', 'width'], {
