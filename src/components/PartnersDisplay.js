@@ -69,11 +69,11 @@ function PartnersDisplay({location, filters, data}) {
                     <div>{item.sort(dynamicSort('-issuesCount'))
                         .filter((e) => project === '' || e['customerName'].toLowerCase().includes(project.toLowerCase()))
                         .map((item2, index2) => {
-                                const i = project !== '' && item2['customerName'].toLowerCase().includes(project.toLowerCase());
-                                return <div key={`customer-${index2}`}
-                                    /*style={{background: i ? 'red' : 'transparent'}}*/>
-                                    {item2['customerName'] + ' ' + item2['issuesCount']}</div>
-                            }
+                            const i = project !== '' && item2['customerName'].toLowerCase().includes(project.toLowerCase());
+                            return <div key={`customer-${index2}`}
+                                        /*style={{background: item2.important ? 'red' : 'transparent'}}*/>
+                                {item2['customerName'] + ' ' + item2['issuesCount']}</div>
+                        }
                         )}
                     </div>
                 </div>)}
