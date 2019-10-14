@@ -2,112 +2,150 @@ import React, {useEffect, useState} from "react";
 import store from "../redux/store";
 import connect from "react-redux/es/connect/connect";
 import {PAGES} from "../Const";
-import {getHighPriorityIssues} from "../redux/actions/highPriorityIssuesActions";
-import {makeStyles} from "@material-ui/core/styles";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import {fetchPartners} from "../redux/actions/partnersActions";
 import {dynamicSort, groupBy} from "../HelperFunctions";
-import {useTheme} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TextField from "@material-ui/core/TextField";
+import {styles} from "../Styles";
+import styled from 'styled-components';
 
-const useStyles = makeStyles(theme => ({
-    content: {display: 'flex', padding: 0, margin: 0, flexDirection: 'row', flexWrap: 'no-wrap', width: '100%'},
-    textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: `calc(192px - ${theme.spacing(2)})`,
-    },
-}));
+const ContainerWithSidebar = styled.div`
+    display: flex;
+    padding: 0;
+    margin: 0;
+    flex-direction: row; 
+    flex-wrap: no-wrap;
+    width: 100%;
+    justify-content: center;
+`;
+
+const FlexContent = styled.div`
+    display: flex;
+    padding: 0px;
+    margin: 0px;
+    flex-flow: row wrap;
+    justify-content: start;
+    height:auto;
+`;
+
+const CustomCard = styled.div`
+    min-width: calc(100% / 8);
+    display: flex;
+    flex-direction: column;
+    margin: 8px;
+    padding: 8px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    &:hover {
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    }
+`;
+
+const HoverButton = styled.button`
+    width: calc(100% - 16px);
+    height: 48px
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 12px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 8px 8px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    &:hover {
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    }        
+`;
+
+const CustomSidebar = styled.div`
+    margin: 8px;
+    padding: 0px;
+    height: auto;
+    boxShadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    &:hover {
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    }    
+`;
 
 function PartnersDisplay({location, filters, data}) {
-    const [sidebarWidthOpen, sidebarWidthClosed] = ['192px', '60px'];
-    const theme = useTheme();
-    const styles = useStyles();
-
+    const {textField, iconButton} = styles;
+    const [sidebarWidthOpen, sidebarWidthClosed] = ['100%', '60px'];
+    const [selected, setSelected] = useState([]);
     const [priorities, setPriorities] = useState(['Major', 'Normal', 'Minor']);
     const [open, setOpen] = useState(false);
     const [project, setProject] = useState('');
+    const [mode, setMode] = useState(false);
 
     useEffect(() => {
         store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));
         store.dispatch(fetchPartners());
     }, []);
 
-    const loadData = () => store.dispatch(getHighPriorityIssues(priorities));
-    const i = groupBy(data.data, 'partnerName');
-    console.log(Object.values(i));
+    const groupedData = groupBy(data.data, 'partnerName');
 
-    return (<div className={styles.content}>
-        <div style={{
-            width: `calc(100% - ${open ? sidebarWidthOpen : sidebarWidthClosed} - 16px)`,
-            display: 'flex',
-            padding: '0px',
-            margin: '0px',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
+    const onChange = (e, item) => {
+        const index = selected.findIndex(a => a.project === item.projectId && a.ets === item.etsProject && a.customer === item.customerName);
+        let j = selected.slice();
+        if (index !== -1) j.splice(index, 1); else j.push({project: item.projectId, ets: item.etsProject, customer: item.customerName});
+        setSelected(j);
+    };
 
-        }}>
-            {Object.values(i).filter((pr) => project === '' || pr.filter((e2) => e2['customerName'].toLowerCase().includes(project.toLowerCase())).length > 0).map((item, index) =>
-                <div
-                    key={`partner-${index}`}
-                    style={{
-                        minWidth: 'calc(100% / 9)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        margin: '8px',
-                        padding: '8px',
-                        boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
-                        transition: '0.3s',
-                        ':hover': {
-                            boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)'
-                        },
-                    }}>
-                    <div style={{textAlign: 'center'}}>{item.find(Boolean)['partnerName']}</div>
-                    <div>{item.sort(dynamicSort('-issuesCount'))
-                        .filter((e) => project === '' || e['customerName'].toLowerCase().includes(project.toLowerCase()))
-                        .map((item2, index2) => {
-                            const i = project !== '' && item2['customerName'].toLowerCase().includes(project.toLowerCase());
-                            return <div key={`customer-${index2}`}
-                                        /*style={{background: item2.important ? 'red' : 'transparent'}}*/>
-                                {item2['customerName'] + ' ' + item2['issuesCount']}</div>
-                        }
-                        )}
-                    </div>
-                </div>)}
-        </div>
+    const toggleMode = () => setMode(!mode);
 
-        <div style={{
-            width: open ? sidebarWidthOpen : sidebarWidthClosed,
-            margin: '8px',
-            padding: '0px',
-            height: 'auto',
-            boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
-            transition: '0.3s',
-            ':hover': {
-                boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)'
-            },
-        }}>
-            <IconButton onClick={() => setOpen(!open)} style={{
-                display: 'block',
-                marginLeft: 'auto',
-                marginRight: 'auto'
-            }}>
+    console.log(Object.values(groupedData));
+    return (<ContainerWithSidebar>
+        <FlexContent style={{width: `calc(100% - ${open ? sidebarWidthOpen : sidebarWidthClosed} - 16px)`, display: open ? '' : 'hidden'}}>
+            {mode ? <div style={{margin: '0px', maxHeight: '18px', height: 'auto'}}>Отчёт</div> : <div/>}
+            {selected.length > 0 ? <HoverButton onClick={toggleMode}>Сформировать отчёт</HoverButton> : <div/>}
+        </FlexContent>
+        <CustomSidebar style={{width: open ? sidebarWidthOpen : sidebarWidthClosed}}>
+            <IconButton onClick={() => setOpen(!open)} style={iconButton}>
                 {open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
             </IconButton>
-            <TextField
-                id="standard-name"
-                label="Проект"
-                className={styles.textField}
-                value={project}
-                onChange={(event) => setProject(event.target.value)}
-                margin="normal"
-                style={{visibility: open ? 'visible' : 'hidden'}}
-            />
-        </div>
-    </div>);
+            <div style={{visibility: open ? 'visible' : 'hidden'}}>
+                {open ? <TextField
+                    id="standard-name"
+                    label="Проект"
+                    value={project}
+                    onChange={(event) => setProject(event.target.value)}
+                    margin="normal"
+                    style={{...textField}}
+                /> : <div/>}
+                <FlexContent>
+                    {open && Object.values(groupedData)
+                        .filter((pr) => project === '' || pr.filter((e2) => e2['customerName'].toLowerCase().includes(project.toLowerCase())).length > 0)
+                        .map((item, index) =>
+                            <CustomCard key={`partner-${index}`}>
+                                <div style={{textAlign: 'center'}}>{item.find(Boolean)['partnerName']}</div>
+                                <div>{item.sort(dynamicSort('-issuesCount'))
+                                    .filter((e) => project === '' || e['customerName'].toLowerCase().includes(project.toLowerCase()))
+                                    .map((item2, index2) => {
+                                            return <div key={`customer-${index2}`} style={{background: item2.important ? 'red' : 'transparent'}}>
+                                                <label className="container">
+                                                    <input type="checkbox"
+                                                           checked={selected.some(e => e.project === item2.projectId && e.ets === item2.etsProject && e.customer === item2.customerName)}
+                                                           onChange={(e) => onChange(e, item2)}/>
+
+                                                </label>
+                                                {`${item2['etsProject']} ${item2['customerName']} ${item2['issuesCount']}`}
+                                            </div>
+                                        }
+                                    )}
+                                </div>
+                            </CustomCard>)}
+                </FlexContent>
+            </div>
+        </CustomSidebar>
+    </ContainerWithSidebar>);
 }
 
 function mapStateToProps(state) {
@@ -118,4 +156,3 @@ function mapStateToProps(state) {
 }
 
 export default (connect(mapStateToProps, null)(PartnersDisplay))
-

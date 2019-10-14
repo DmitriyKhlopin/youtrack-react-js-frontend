@@ -39,6 +39,7 @@
     "redux-promise-middleware": "^6.1.1",
     "redux-thunk": "^2.3.0",
     "source-map-explorer": "^1.8.0",
+    "styled-components": "^4.4.0",
     "xlsx": "^0.14.4"
   },
   "scripts": {
