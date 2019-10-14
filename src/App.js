@@ -16,7 +16,7 @@ import {Link, Route, Router, Switch} from "react-router-dom";
 import connect from "react-redux/es/connect/connect";
 import {closeMainDialog, openMainDialog, toggleAppBar} from "./redux/actions/appBarActions";
 import HelpDialog from "./components/HelpDialog";
-import {PAGES} from "./Const";
+import {drawerWidth, PAGES} from "./Const";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
@@ -27,7 +27,7 @@ import clsx from 'clsx';
 
 export const history = createBrowserHistory();
 
-const drawerWidth = 300;
+
 const useStyles = makeStyles(theme => ({
     root: {
         minHeight: '100vh',

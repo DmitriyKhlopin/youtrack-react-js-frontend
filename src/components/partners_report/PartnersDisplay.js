@@ -1,16 +1,18 @@
 import React, {useEffect, useState} from "react";
-import store from "../redux/store";
+import store from "../../redux/store";
 import connect from "react-redux/es/connect/connect";
-import {PAGES} from "../Const";
-import {setSelectedNavItem} from "../redux/actions/appBarActions";
-import {fetchPartners} from "../redux/actions/partnersActions";
-import {dynamicSort, groupBy} from "../HelperFunctions";
+import {drawerWidth, PAGES} from "../../Const";
+import {setSelectedNavItem} from "../../redux/actions/appBarActions";
+import {fetchPartners} from "../../redux/actions/partnersActions";
+import {dynamicSort, groupBy} from "../../HelperFunctions";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TextField from "@material-ui/core/TextField";
-import {styles} from "../Styles";
+import {styles} from "../../Styles";
 import styled from 'styled-components';
+import Report from "./Report";
+import useWindowDimensions from "../../helper_functions/dimensions";
 
 const ContainerWithSidebar = styled.div`
     display: flex;
@@ -63,10 +65,30 @@ const HoverButton = styled.button`
     }        
 `;
 
+const HoverButtonSmall = styled.button`
+    height: 48px
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 12px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    &:hover {
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    }        
+`;
+
 const CustomSidebar = styled.div`
     margin: 8px;
     padding: 0px;
-    height: auto;
     boxShadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     -webkit-transition-duration: 0.4s;
     transition-duration: 0.4s;
@@ -76,7 +98,7 @@ const CustomSidebar = styled.div`
     }    
 `;
 
-function PartnersDisplay({location, filters, data}) {
+function PartnersDisplay({location, filters, data, appBarState}) {
     const {textField, iconButton} = styles;
     const [sidebarWidthOpen, sidebarWidthClosed] = ['100%', '60px'];
     const [selected, setSelected] = useState([]);
@@ -84,6 +106,7 @@ function PartnersDisplay({location, filters, data}) {
     const [open, setOpen] = useState(false);
     const [project, setProject] = useState('');
     const [mode, setMode] = useState(false);
+    const size = useWindowDimensions();
 
     useEffect(() => {
         store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));
@@ -101,25 +124,44 @@ function PartnersDisplay({location, filters, data}) {
 
     const toggleMode = () => setMode(!mode);
 
-    console.log(Object.values(groupedData));
+    const selectCurrent = () => {
+        let j = selected.slice();
+        data.data.filter((pr) => pr['customerName'].toLowerCase().includes(project.toLowerCase()))
+            .forEach((item) => j.push({project: item.projectId, ets: item.etsProject, customer: item.customerName}));
+        console.log(j);
+        setSelected(j);
+    };
+
+    const w = size.width - (appBarState ? drawerWidth : 0) - 60 - 17 - 16; //ширина окна - ширина боковика - ширина меню - вертикальный сролл - margin меню
+
     return (<ContainerWithSidebar>
         <FlexContent style={{width: `calc(100% - ${open ? sidebarWidthOpen : sidebarWidthClosed} - 16px)`, display: open ? '' : 'hidden'}}>
-            {mode ? <div style={{margin: '0px', maxHeight: '18px', height: 'auto'}}>Отчёт</div> : <div/>}
-            {selected.length > 0 ? <HoverButton onClick={toggleMode}>Сформировать отчёт</HoverButton> : <div/>}
+            {mode && !open ?
+                <FlexContent>
+                    <Report w={w}/>
+                    <Report w={w}/>
+                    <Report w={w}/>
+                    <Report w={w}/>
+                </FlexContent>
+                : <div/>}
+            {!open && selected.length > 0 ? <HoverButton onClick={toggleMode}>Сформировать отчёт</HoverButton> : <div/>}
         </FlexContent>
-        <CustomSidebar style={{width: open ? sidebarWidthOpen : sidebarWidthClosed}}>
+        <CustomSidebar style={{width: open ? sidebarWidthOpen : sidebarWidthClosed, height: open ? 'auto' : '60px'}}>
             <IconButton onClick={() => setOpen(!open)} style={iconButton}>
                 {open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
             </IconButton>
             <div style={{visibility: open ? 'visible' : 'hidden'}}>
-                {open ? <TextField
-                    id="standard-name"
-                    label="Проект"
-                    value={project}
-                    onChange={(event) => setProject(event.target.value)}
-                    margin="normal"
-                    style={{...textField}}
-                /> : <div/>}
+                {open ? <div style={{display: 'flex', flexDirection: 'row'}}>
+                    <TextField
+                        id="standard-name"
+                        label="Проект"
+                        value={project}
+                        onChange={(event) => setProject(event.target.value)}
+                        margin="normal"
+                        style={{...textField}}
+                    />
+                    <HoverButtonSmall onClick={selectCurrent}>Отметить</HoverButtonSmall>
+                </div> : <div/>}
                 <FlexContent>
                     {open && Object.values(groupedData)
                         .filter((pr) => project === '' || pr.filter((e2) => e2['customerName'].toLowerCase().includes(project.toLowerCase())).length > 0)
@@ -152,6 +194,7 @@ function mapStateToProps(state) {
     return {
         filters: state.reportFilters,
         data: state.partnersData,
+        appBarState: state.appBarState.drawerOpened,
     }
 }
 

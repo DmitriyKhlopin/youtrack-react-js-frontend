@@ -16,11 +16,11 @@ import React from "react";
 import KPIAppBarActions from "./components/app_bar/actions/KPIAppBarActions";
 import ReportsAppBarActions from "./components/app_bar/actions/ReportsAppBarActions";
 import TimeAccountingDictionaryDisplay from "./components/TimeAccountingDictionaryDisplay";
-import PartnersDisplay from "./components/PartnersDisplay";
+import PartnersDisplay from "./components/partners_report/PartnersDisplay";
 import KeyPartnersReportContainer from "./components/key_partners_report/container";
 import {Workbook} from "./helper_functions/export_to_excel";
 import * as XLSX from "xlsx";
-
+export const drawerWidth = 300;
 export const [sidebarWidthOpen, sidebarWidthOpenWide, sidebarWidthClosed] = ['320px', '640px', '60px'];
 export const PAGES = [
     {
@@ -157,7 +157,6 @@ export const PAGES = [
 
 export const YT_ENDPOINT = 'http://support.fsight.ru/api/';
 export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://10.9.172.76:8080' : 'http://10.30.207.22:8080';
-export const drawerWidth = 240;
 export const RADIAN = Math.PI / 180;
 export const innerProjects = ['PP_Lic', 'FMP_LIC', 'SD', 'PDP', 'W', 'P_PROJ1', 'T', 'TEST', 'SPAM', 'TC', 'RELEASE', 'PO', 'P'];
 export const licProjects = ['PP_Lic',];
