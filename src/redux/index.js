@@ -17,6 +17,7 @@ import fixedDefectsReducers from "./reducers/fixedDefectsReducers";
 import workDurationReducers from "./reducers/workDurationReducers";
 import highPriorityIssuesReducers from "./reducers/highPriorityIssuesReducers";
 import partnersReducers from "./reducers/partnersReducers";
+import abstractReportReducers from "./reducers/abstractReportReducer";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
@@ -37,4 +38,5 @@ export default combineReducers({
     workDurationData: workDurationReducers,
     highPriorityIssuesData: highPriorityIssuesReducers,
     partnersData: partnersReducers,
+    abstractReportData: abstractReportReducers,
 });

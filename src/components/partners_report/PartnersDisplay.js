@@ -6,13 +6,17 @@ import {setSelectedNavItem} from "../../redux/actions/appBarActions";
 import {fetchPartners} from "../../redux/actions/partnersActions";
 import {dynamicSort, groupBy} from "../../HelperFunctions";
 import IconButton from "@material-ui/core/IconButton";
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronLeftIcon from '@material-ui/icons/Settings';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TextField from "@material-ui/core/TextField";
 import {styles} from "../../Styles";
 import styled from 'styled-components';
 import Report from "./Report";
 import useWindowDimensions from "../../helper_functions/dimensions";
+import {setDateFrom, setDateTo} from "../../redux/actions/kpiFiltersActions";
+import {format} from "date-fns";
+import {fetchKpiReportData} from "../../redux/actions/kpiActions";
+import {fetchAbstractReportData} from "../../redux/actions/abstractReportsActions";
 
 const ContainerWithSidebar = styled.div`
     display: flex;
@@ -66,8 +70,7 @@ const HoverButton = styled.button`
 `;
 
 const HoverButtonSmall = styled.button`
-    height: 48px
-    background-color: #4CAF50;
+    height: 48px;
     border: none;
     color: white;
     padding: 12px 32px;
@@ -78,6 +81,9 @@ const HoverButtonSmall = styled.button`
     margin-right: 8px;
     margin-top: 16px;
     margin-bottom: 16px;
+    border-radius: 8px;
+    border-color: rgba(0,0,0,0);
+    outline: 0;
     cursor: pointer;
     -webkit-transition-duration: 0.4s;
     transition-duration: 0.4s;
@@ -98,9 +104,9 @@ const CustomSidebar = styled.div`
     }    
 `;
 
-function PartnersDisplay({location, filters, data, appBarState}) {
+function PartnersDisplay({location, filters, data, appBarState, loadData, reportData}) {
     const {textField, iconButton} = styles;
-    const [sidebarWidthOpen, sidebarWidthClosed] = ['100%', '60px'];
+    const [sidebarWidthOpen, sidebarWidthClosed] = ['100%', '64px'];
     const [selected, setSelected] = useState([]);
     const [priorities, setPriorities] = useState(['Major', 'Normal', 'Minor']);
     const [open, setOpen] = useState(false);
@@ -122,46 +128,66 @@ function PartnersDisplay({location, filters, data, appBarState}) {
         setSelected(j);
     };
 
-    const toggleMode = () => setMode(!mode);
+    const toggleMode = () => {
+        if (!mode) loadData('state', selected);
+        if (!mode) loadData('type', selected);
+        if (!mode) loadData('priority', selected);
+        if (!mode) loadData('customer', selected);
+        if (!mode) loadData('product', selected);
+        setMode(!mode);
+    };
 
     const selectCurrent = () => {
         let j = selected.slice();
+
         data.data.filter((pr) => pr['customerName'].toLowerCase().includes(project.toLowerCase()))
-            .forEach((item) => j.push({project: item.projectId, ets: item.etsProject, customer: item.customerName}));
+            .forEach((item) => {
+                const index = j.findIndex(a => a.project === item.projectId && a.ets === item.etsProject && a.customer === item.customerName);
+                if (index === -1) {
+                    j.push({project: item.projectId, ets: item.etsProject, customer: item.customerName})
+                }
+            });
         console.log(j);
-        setSelected(j);
+        setSelected([...new Set(j)]);
     };
 
-    const w = size.width - (appBarState ? drawerWidth : 0) - 60 - 17 - 16; //ширина окна - ширина боковика - ширина меню - вертикальный сролл - margin меню
+    const clearSelection = () => setSelected([]);
+
+    const w = size.width - (appBarState ? drawerWidth : 0) - 64 - 17 - 16; //ширина окна - ширина боковика - ширина меню - вертикальный сролл - margin меню
+
+    console.log(reportData);
 
     return (<ContainerWithSidebar>
         <FlexContent style={{width: `calc(100% - ${open ? sidebarWidthOpen : sidebarWidthClosed} - 16px)`, display: open ? '' : 'hidden'}}>
             {mode && !open ?
                 <FlexContent>
-                    <Report w={w}/>
-                    <Report w={w}/>
-                    <Report w={w}/>
-                    <Report w={w}/>
+                    <Report w={w} itemsInRow={3} data={reportData} indicator={'state'}/>
+                    <Report w={w} itemsInRow={3} data={reportData} indicator={'type'}/>
+                    <Report w={w} itemsInRow={3} data={reportData} indicator={'priority'}/>
+                    <Report w={w} itemsInRow={2} data={reportData} indicator={'customer'}/>
+                    <Report w={w} itemsInRow={2} data={reportData} indicator={'product'}/>
                 </FlexContent>
                 : <div/>}
             {!open && selected.length > 0 ? <HoverButton onClick={toggleMode}>Сформировать отчёт</HoverButton> : <div/>}
         </FlexContent>
-        <CustomSidebar style={{width: open ? sidebarWidthOpen : sidebarWidthClosed, height: open ? 'auto' : '60px'}}>
-            <IconButton onClick={() => setOpen(!open)} style={iconButton}>
+        <CustomSidebar style={{width: open ? sidebarWidthOpen : sidebarWidthClosed, height: open ? 'auto' : '64px', borderRadius: open ? '4px' : '32px'}}>
+            <IconButton onClick={() => setOpen(!open)} style={{...iconButton, color: '#C2185B'}}>
                 {open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
             </IconButton>
             <div style={{visibility: open ? 'visible' : 'hidden'}}>
-                {open ? <div style={{display: 'flex', flexDirection: 'row'}}>
-                    <TextField
+                <div style={{display: 'flex', flexDirection: 'row'}}>
+                    {open ? <TextField
                         id="standard-name"
                         label="Проект"
                         value={project}
                         onChange={(event) => setProject(event.target.value)}
                         margin="normal"
                         style={{...textField}}
-                    />
-                    <HoverButtonSmall onClick={selectCurrent}>Отметить</HoverButtonSmall>
-                </div> : <div/>}
+                    /> : <div/>}
+                    {open ? <HoverButtonSmall onClick={selectCurrent} style={{backgroundColor: '#4CAF50'}}>Отметить</HoverButtonSmall> : <div/>}
+                    {open && (selected.length > 0) ? <HoverButtonSmall onClick={clearSelection} style={{backgroundColor: '#4CAF50'}}>Снять отметку ({selected.length})</HoverButtonSmall> : <div/>}
+                </div>
+
                 <FlexContent>
                     {open && Object.values(groupedData)
                         .filter((pr) => project === '' || pr.filter((e2) => e2['customerName'].toLowerCase().includes(project.toLowerCase())).length > 0)
@@ -190,12 +216,19 @@ function PartnersDisplay({location, filters, data, appBarState}) {
     </ContainerWithSidebar>);
 }
 
+function mapDispatchToProps(dispatch) {
+    return {
+        loadData: (id, filters) => dispatch(fetchAbstractReportData(id, filters))
+    }
+}
+
 function mapStateToProps(state) {
     return {
         filters: state.reportFilters,
         data: state.partnersData,
         appBarState: state.appBarState.drawerOpened,
+        reportData: state.abstractReportData,
     }
 }
 
-export default (connect(mapStateToProps, null)(PartnersDisplay))
+export default (connect(mapStateToProps, mapDispatchToProps)(PartnersDisplay))
