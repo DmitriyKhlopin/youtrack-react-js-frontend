@@ -66,12 +66,18 @@ export default function Report({w, itemsInRow, data, indicator}) {
     /*const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];*/
     const COLORS = MATERIAL_COLORS;
 
-    return (<div><PieChart width={w / itemsInRow} height={w / 5}>
+    const pieWidth = w / itemsInRow;
+    const pieHeight = w / (itemsInRow > 5 ? itemsInRow : 5);
+    const innerRadius = w/24;
+    const outerRadius = w/16;
+
+
+    return (<div><PieChart width={pieWidth} height={pieHeight}>
         <Pie
             onClick={(a, b, c) => console.log([a, b, c])}
             data={data1}
-            innerRadius={w / 24}
-            outerRadius={w / 16}
+            innerRadius={innerRadius}
+            outerRadius={outerRadius}
             fill="#8884d8"
             paddingAngle={0.5}
             dataKey="value"

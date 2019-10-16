@@ -17,6 +17,7 @@ import {setDateFrom, setDateTo} from "../../redux/actions/kpiFiltersActions";
 import {format} from "date-fns";
 import {fetchKpiReportData} from "../../redux/actions/kpiActions";
 import {fetchAbstractReportData} from "../../redux/actions/abstractReportsActions";
+import {CustomCard} from "../../styles/StyledComponents";
 
 const ContainerWithSidebar = styled.div`
     display: flex;
@@ -37,18 +38,7 @@ const FlexContent = styled.div`
     height:auto;
 `;
 
-const CustomCard = styled.div`
-    min-width: calc(100% / 8);
-    display: flex;
-    flex-direction: column;
-    margin: 8px;
-    padding: 8px;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    &:hover {
-        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
-    }
-`;
+
 
 const HoverButton = styled.button`
     width: calc(100% - 16px);
