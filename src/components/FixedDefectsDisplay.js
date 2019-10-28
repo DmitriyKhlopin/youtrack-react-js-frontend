@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import Button from "@material-ui/core/Button";
-import store from "../redux/store";
+import {store} from "../redux/store";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
 import connect from "react-redux/es/connect/connect";
 import * as PropTypes from "prop-types";

@@ -3,7 +3,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import FilterIcon from '@material-ui/icons/Settings';
 import IconButton from '@material-ui/core/IconButton';
-import store from "../../../redux/store";
+import {store} from "../../../redux/store";
 import {fetchReportData} from "../../../redux/actions/reportsActions";
 import ReportFilterDialog from "../../dialogs/ReportFilterDialog";
 

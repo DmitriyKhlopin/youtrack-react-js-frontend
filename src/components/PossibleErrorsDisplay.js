@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import store from "../redux/store";
+import {store} from "../redux/store";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import withStyles from "@material-ui/styles/withStyles";
 import connect from "react-redux/es/connect/connect";

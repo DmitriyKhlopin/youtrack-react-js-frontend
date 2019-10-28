@@ -7,7 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "../../node_modules/@material-ui/icons/Menu";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
-import store from "../redux/store";
+import {store} from "../redux/store";
 import {openMainDialog, toggleAppBar} from "../redux/actions/appBarActions";
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import {Link} from "react-router-dom";

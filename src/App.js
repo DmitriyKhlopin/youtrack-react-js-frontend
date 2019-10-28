@@ -20,7 +20,7 @@ import {drawerWidth, PAGES} from "./Const";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
-import store from "./redux/store";
+import {store} from "./redux/store";
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Help';
 import clsx from 'clsx';

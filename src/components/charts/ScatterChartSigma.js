@@ -7,7 +7,7 @@ import * as PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {styles} from "../../Styles";
 import connect from "react-redux/es/connect/connect";
-import store from "../../redux/store";
+import {store} from "../../redux/store";
 import {fetchSigmaData} from "../../redux/actions/reportsActions";
 
 class ScatterChartSigma extends Component {

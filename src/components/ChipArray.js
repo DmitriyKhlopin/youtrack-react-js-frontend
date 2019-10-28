@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import DoneIcon from '@material-ui/icons/Done';
-import store from "../redux/store";
+import {store} from "../redux/store";
 import {addProjectToSelected, removeProjectFromSelected} from "../redux/actions/reportFiltersActions";
 import connect from "react-redux/es/connect/connect";
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import store from "../../redux/store";
+import {store} from "../../redux/store";
 import connect from "react-redux/es/connect/connect";
 import {MATERIAL_COLORS, PAGES, sidebarWidthClosed, sidebarWidthOpen} from "../../Const";
 import {makeStyles} from "@material-ui/core/styles";

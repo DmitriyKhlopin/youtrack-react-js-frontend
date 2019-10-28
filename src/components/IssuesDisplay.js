@@ -6,7 +6,7 @@ import {PAGES, YT_ENDPOINT} from "../Const";
 import * as PropTypes from "prop-types";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
 import {styles} from "../Styles";
-import store from "../redux/store";
+import {store} from "../redux/store";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 
 class IssuesDisplay extends Component {

@@ -6,7 +6,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {styles} from "../../Styles";
 import connect from "react-redux/es/connect/connect";
 import {openDrillDown} from "../../redux/actions/drillDownActions";
-import store from "../../redux/store";
+import {store} from "../../redux/store";
 import {MATERIAL_LINE_CHART_COLORS} from "../../Const";
 import Typography from '@material-ui/core/Typography';
 

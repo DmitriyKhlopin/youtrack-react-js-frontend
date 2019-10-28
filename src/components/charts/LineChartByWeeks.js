@@ -6,7 +6,7 @@ import {styles} from "../../Styles";
 import connect from "react-redux/es/connect/connect";
 import {MATERIAL_LINE_CHART_COLORS} from "../../Const";
 import {openDrillDown} from "../../redux/actions/drillDownActions";
-import store from "../../redux/store";
+import {store} from "../../redux/store";
 import {fetchDynamicsData} from "../../redux/actions/reportsActions";
 
 

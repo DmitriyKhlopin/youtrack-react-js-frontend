@@ -7,7 +7,7 @@ import Dialog from "../../../node_modules/@material-ui/core/Dialog/Dialog";
 import {makeStyles} from "@material-ui/core/styles";
 import ChipsArray from "../ChipArray";
 import connect from "react-redux/es/connect/connect";
-import store from "../../redux/store";
+import {store} from "../../redux/store";
 import {selectProjectsByMode} from "../../redux/actions/reportFiltersActions";
 import DatePicker from "react-datepicker";
 import {format, parseISO} from "date-fns";

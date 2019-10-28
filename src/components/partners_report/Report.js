@@ -71,10 +71,15 @@ export default function Report({w, itemsInRow, data, indicator}) {
     const innerRadius = w/24;
     const outerRadius = w/16;
 
+    const onClick = (a,b,c) => {
+        console.log([a, b, c])
+        var win = window.open("http://localhost:3000/partners?indicator=1&value=2", '_blank');
+        win.focus();
+    };
 
     return (<div><PieChart width={pieWidth} height={pieHeight}>
         <Pie
-            onClick={(a, b, c) => console.log([a, b, c])}
+            onClick={onClick}
             data={data1}
             innerRadius={innerRadius}
             outerRadius={outerRadius}

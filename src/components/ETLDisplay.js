@@ -4,7 +4,7 @@ import FormControlLabel from "../../node_modules/@material-ui/core/FormControlLa
 import FormGroup from "../../node_modules/@material-ui/core/FormGroup/FormGroup";
 import Button from "@material-ui/core/Button";
 import TextField from "../../node_modules/@material-ui/core/TextField/TextField";
-import store from "../redux/store";
+import {store} from "../redux/store";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
 import connect from "react-redux/es/connect/connect";
 import * as PropTypes from "prop-types";

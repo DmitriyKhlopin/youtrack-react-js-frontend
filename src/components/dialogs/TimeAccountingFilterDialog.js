@@ -6,7 +6,7 @@ import Dialog from "@material-ui/core/Dialog/Dialog";
 
 import {withStyles} from "@material-ui/core/styles";
 import connect from "react-redux/es/connect/connect";
-import store from "../../redux/store";
+import {store} from "../../redux/store";
 import {styles} from "../../Styles";
 import {setTimeAccountingDateFrom, setTimeAccountingDateTo} from "../../redux/actions/timeAccountingFiltersActions";
 import DatePicker from "react-datepicker";

@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core/styles";
 import ChipsArray from "../ChipArray";
 import connect from "react-redux/es/connect/connect";
-import store from "../../redux/store";
+import {store} from "../../redux/store";
 import {selectProjectsByMode} from "../../redux/actions/reportFiltersActions";
 import {styles} from "../../Styles";
 import {closeDrillDown} from "../../redux/actions/drillDownActions";

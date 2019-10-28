@@ -20,6 +20,7 @@ import PartnersDisplay from "./components/partners_report/PartnersDisplay";
 import KeyPartnersReportContainer from "./components/key_partners_report/container";
 import {Workbook} from "./helper_functions/export_to_excel";
 import * as XLSX from "xlsx";
+
 export const drawerWidth = 300;
 export const [sidebarWidthOpen, sidebarWidthOpenWide, sidebarWidthClosed] = ['320px', '640px', '60px'];
 export const PAGES = [
@@ -185,3 +186,99 @@ export const MATERIAL_LINE_CHART_COLORS = ['#2196F3', '#FFC107', '#4CAF50'];
 export const MATERIAL_SIGMA_COLORS = ['#34495e', '#4CAF50', '#FFEB3B', '#FF9800'];
 
 
+export const kpiCharts = [
+    {
+        id: 't1',
+        title: 't',
+        dataKey: 'agent',
+        paletteOffset: 0,
+        y: {
+            left: {id: 'left', orientation: 'left', stroke: '#8884d8', strokeWidth: 3},
+            right: {id: 'right', orientation: 'right', stroke: '#82ca9d', strokeWidth: 3}
+        },
+        bars: [
+            {yAxisId: 'left', name: 'Рейтинг/Количество задач', dataKey: 'totalAvg', legendType: 'circle',},
+            {yAxisId: 'right', name: 'Рейтинг', dataKey: 'totalWithViolations', legendType: 'circle',},
+            {yAxisId: 'right', name: 'Рейтинг без учёта SLA', dataKey: 'total', legendType: 'circle',}
+        ]
+    },
+    {
+        id: 't2',
+        title: 't2',
+        dataKey: 'agent',
+        paletteOffset: 2,
+        y: {
+            left: {id: 'left', orientation: 'left',},
+            right: {id: 'right', orientation: 'right', stroke: 'rgba(0,0,0,0)'},
+        },
+        bars: [
+            {yAxisId: 'left', name: 'Решения', dataKey: 'solutionSum', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Уточнения', dataKey: 'clarificationSum', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Переносы сроков решения', dataKey: 'postponementSum', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Оценки', dataKey: 'evaluationSum', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Типы задач', dataKey: 'issueTypeSum', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Приоритеты', dataKey: 'prioritySum', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Уровни решения', dataKey: 'levelSum', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Нарушено SLA', dataKey: 'violations', legendType: 'circle',},
+        ]
+    },
+    {
+        id: 't3',
+        title: 't3',
+        dataKey: 'agent',
+        paletteOffset: 2,
+        y: {
+            left: {id: 'left', orientation: 'left',},
+            right: {id: 'right', orientation: 'right', stroke: 'rgba(0,0,0,0)'},
+        },
+        bars: [
+            {yAxisId: 'left', name: 'Решения (avg)', dataKey: 'solutionAvg', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Уточнения (avg)', dataKey: 'clarificationAvg', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Переносы сроков решения (avg)', dataKey: 'postponementAvg', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Оценки (avg)', dataKey: 'evaluationAvg', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Типы задач (avg)', dataKey: 'issueTypeAvg', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Приоритеты (avg)', dataKey: 'priorityAvg', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Уровни решения (avg)', dataKey: 'levelAvg', legendType: 'circle',},
+        ]
+    },
+    {
+        id: 't4',
+        title: 't4',
+        dataKey: 'agent',
+        paletteOffset: 2,
+        y: {
+            left: {id: 'left', orientation: 'left',},
+            right: {id: 'right', orientation: 'right', stroke: 'rgba(0,0,0,0)'},
+        },
+        bars: [
+            {yAxisId: 'left', name: 'Решения (count)', dataKey: 'solutionCount', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Уточнения (count)', dataKey: 'clarificationCount', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Переносы сроков решения (count)', dataKey: 'postponementCount', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Оценки (count)', dataKey: 'evaluationCount', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Типы задач (count)', dataKey: 'issueTypeCount', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Приоритеты (count)', dataKey: 'priorityCount', legendType: 'circle',},
+            {yAxisId: 'left', name: 'Уровни решения (count)', dataKey: 'levelCount', legendType: 'circle',},
+        ]
+    }
+];
+
+export const renderLegend = (props) => {
+    const {payload} = props;
+    return (
+        <ul style={{textAlign: 'center'}}>
+            {
+                payload.map((entry, index) => (
+                    <li key={`item-${index}`} style={{fontSize: 14, display: 'inline-block', marginRight: '8px'}}>
+                        <svg className="recharts-surface" width="14" height="14" viewBox="0 0 32 32" version="1.1"
+                             style={{
+                                 display: 'inline-block', verticalAlign: 'middle', marginRight: '4px'
+                             }}>
+                            <path fill={entry.color} className="recharts-symbols" transform="translate(16, 16)"
+                                  d="M16,0A16,16,0,1,1,-16,0A16,16,0,1,1,16,0"/>
+                        </svg>
+                        {entry.value}</li>
+                ))
+            }
+        </ul>
+    );
+};

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import store from "../../redux/store";
+import {store} from "../../redux/store";
 import connect from "react-redux/es/connect/connect";
 import {drawerWidth, PAGES} from "../../Const";
 import {setSelectedNavItem} from "../../redux/actions/appBarActions";
@@ -10,89 +10,11 @@ import ChevronLeftIcon from '@material-ui/icons/Settings';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TextField from "@material-ui/core/TextField";
 import {styles} from "../../Styles";
-import styled from 'styled-components';
 import Report from "./Report";
 import useWindowDimensions from "../../helper_functions/dimensions";
-import {setDateFrom, setDateTo} from "../../redux/actions/kpiFiltersActions";
-import {format} from "date-fns";
-import {fetchKpiReportData} from "../../redux/actions/kpiActions";
 import {fetchAbstractReportData} from "../../redux/actions/abstractReportsActions";
-import {CustomCard} from "../../styles/StyledComponents";
+import {ContainerWithSidebar, CustomCard, CustomSidebar, FlexContent, HoverButton, HoverButtonSmall} from "../../styles/StyledComponents";
 
-const ContainerWithSidebar = styled.div`
-    display: flex;
-    padding: 0;
-    margin: 0;
-    flex-direction: row; 
-    flex-wrap: no-wrap;
-    width: 100%;
-    justify-content: center;
-`;
-
-const FlexContent = styled.div`
-    display: flex;
-    padding: 0px;
-    margin: 0px;
-    flex-flow: row wrap;
-    justify-content: start;
-    height:auto;
-`;
-
-
-
-const HoverButton = styled.button`
-    width: calc(100% - 16px);
-    height: 48px
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 12px 32px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    margin: 8px 8px;
-    cursor: pointer;
-    -webkit-transition-duration: 0.4s;
-    transition-duration: 0.4s;
-    &:hover {
-        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
-    }        
-`;
-
-const HoverButtonSmall = styled.button`
-    height: 48px;
-    border: none;
-    color: white;
-    padding: 12px 32px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    margin-left: 8px;
-    margin-right: 8px;
-    margin-top: 16px;
-    margin-bottom: 16px;
-    border-radius: 8px;
-    border-color: rgba(0,0,0,0);
-    outline: 0;
-    cursor: pointer;
-    -webkit-transition-duration: 0.4s;
-    transition-duration: 0.4s;
-    &:hover {
-        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
-    }        
-`;
-
-const CustomSidebar = styled.div`
-    margin: 8px;
-    padding: 0px;
-    boxShadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    -webkit-transition-duration: 0.4s;
-    transition-duration: 0.4s;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    &:hover {
-        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
-    }    
-`;
 
 function PartnersDisplay({location, filters, data, appBarState, loadData, reportData}) {
     const {textField, iconButton} = styles;
@@ -142,20 +64,16 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
     };
 
     const clearSelection = () => setSelected([]);
-
     const w = size.width - (appBarState ? drawerWidth : 0) - 64 - 17 - 16; //ширина окна - ширина боковика - ширина меню - вертикальный сролл - margin меню
-
-    console.log(reportData);
-
+    const indicators = ['state', 'type', 'priority', 'customer', 'product'];
     return (<ContainerWithSidebar>
         <FlexContent style={{width: `calc(100% - ${open ? sidebarWidthOpen : sidebarWidthClosed} - 16px)`, display: open ? '' : 'hidden'}}>
             {mode && !open ?
                 <FlexContent>
-                    <Report w={w} itemsInRow={3} data={reportData} indicator={'state'}/>
-                    <Report w={w} itemsInRow={3} data={reportData} indicator={'type'}/>
-                    <Report w={w} itemsInRow={3} data={reportData} indicator={'priority'}/>
-                    <Report w={w} itemsInRow={2} data={reportData} indicator={'customer'}/>
-                    <Report w={w} itemsInRow={2} data={reportData} indicator={'product'}/>
+                    {indicators.map((item, index) => <Report key={`report-${item}-${index}`}
+                                                             w={w}
+                                                             itemsInRow={(indicators.length - 1 - 3 * ~~(index / 3)) < 3 ? indicators.length % 3 : 3}
+                                                             data={reportData} indicator={item}/>)}
                 </FlexContent>
                 : <div/>}
             {!open && selected.length > 0 ? <HoverButton onClick={toggleMode}>Сформировать отчёт</HoverButton> : <div/>}

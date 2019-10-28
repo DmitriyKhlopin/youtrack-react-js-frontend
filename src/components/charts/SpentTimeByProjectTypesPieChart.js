@@ -9,7 +9,7 @@ import connect from "react-redux/es/connect/connect";
 import {MATERIAL_COLORS, RADIAN} from "../../Const";
 import * as moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
-import store from "../../redux/store";
+import {store} from "../../redux/store";
 import {fetchSpentTimeData} from "../../redux/actions/reportsActions";
 
 momentDurationFormatSetup(moment);

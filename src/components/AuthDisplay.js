@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import * as PropTypes from "prop-types";
 import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
 import {styles} from "../Styles";
-import store from "../redux/store";
+import {store} from "../redux/store";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import connect from "react-redux/es/connect/connect";
 import FormControl from "../../node_modules/@material-ui/core/FormControl/FormControl";

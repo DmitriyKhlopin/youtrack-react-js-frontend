@@ -6,7 +6,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import {styles} from "../../Styles";
 import connect from "react-redux/es/connect/connect";
 import {MATERIAL_COLORS, RADIAN} from "../../Const";
-import store from "../../redux/store";
+import {store} from "../../redux/store";
 import {fetchCreatedOnWeekData} from "../../redux/actions/reportsActions";
 
 export const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index, value, name, fill}) => {

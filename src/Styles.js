@@ -1,5 +1,5 @@
 export const styles = {
-    containerWithSidebar: {display: 'flex', padding: 0, margin: 0, flexDirection: 'row', flexWrap: 'no-wrap', width: '100%',},
+    /*containerWithSidebar: {display: 'flex', padding: 0, margin: 0, flexDirection: 'row', flexWrap: 'no-wrap', width: '100%',},*/
     content: {
         display: 'flex',
         padding: '0px',

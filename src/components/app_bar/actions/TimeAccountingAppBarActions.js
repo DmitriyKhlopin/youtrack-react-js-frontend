@@ -4,7 +4,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import FilterIcon from '@material-ui/icons/Settings';
 import IconButton from '@material-ui/core/IconButton';
-import store from "../../../redux/store";
+import {store} from "../../../redux/store";
 import {fetchTimeAccountingData} from "../../../redux/actions/timeAccountingActions";
 import moment from "moment";
 import * as XLSX from "xlsx";

@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import ReactTable from "react-table";
-import store from "../redux/store";
+import {store} from "../redux/store";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import * as PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";

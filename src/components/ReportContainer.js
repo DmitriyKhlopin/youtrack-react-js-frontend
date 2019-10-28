@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import store from "../redux/store";
+import {store} from "../redux/store";
 import {fetchProjects} from "../redux/actions/reportFiltersActions";
 import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import LineChartByWeeks from "./charts/LineChartByWeeks";
