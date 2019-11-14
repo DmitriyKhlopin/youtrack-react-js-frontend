@@ -30,7 +30,7 @@ export const PAGES = [
         path: '/',
         component: ReportContainer,
         availableInDrawer: true,
-        appBarActions: <ReportsAppBarActions/>
+        appBarActions: <ReportsAppBarActions  key={'asdfasdfasd'} />
 
     },
     {

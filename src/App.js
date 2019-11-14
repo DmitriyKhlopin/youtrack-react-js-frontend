@@ -24,6 +24,7 @@ import {store} from "./redux/store";
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import NotificationsIcon from '@material-ui/icons/Help';
 import clsx from 'clsx';
+import {ETLState} from "./components/app_state/ETLState";
 
 export const history = createBrowserHistory();
 
@@ -110,7 +111,7 @@ function App({appBarState}) {
     const toggle = () => {
         store.dispatch(toggleAppBar())
     };
-
+    console.log(appBarState.currentPage);
     return (
         <Router history={history}>
             <div className={classes.root}>
@@ -134,8 +135,9 @@ function App({appBarState}) {
                                 <NotificationsIcon/>
                             </IconButton>
                         </div>
+                        <ETLState/>
                         <div className={classes.grow}/>
-                        {appBarState.currentPage && appBarState.currentPage.appBarActions ? appBarState.currentPage.appBarActions :
+                        {appBarState.currentPage && appBarState.currentPage.appBarActions ? PAGES[appBarState.currentPage.id].appBarActions :
                             <div/>}
                         <IconButton className={classes.menuButton} color="inherit" component={Link} to="/login">
                             <AccountCircle/>
