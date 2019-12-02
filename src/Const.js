@@ -18,8 +18,7 @@ import ReportsAppBarActions from "./components/app_bar/actions/ReportsAppBarActi
 import TimeAccountingDictionaryDisplay from "./components/TimeAccountingDictionaryDisplay";
 import PartnersDisplay from "./components/partners_report/PartnersDisplay";
 import KeyPartnersReportContainer from "./components/key_partners_report/container";
-import {Workbook} from "./helper_functions/export_to_excel";
-import * as XLSX from "xlsx";
+import SingleIndicator from "./components/partners_report/SingleIndicator";
 
 export const drawerWidth = 300;
 export const [sidebarWidthOpen, sidebarWidthOpenWide, sidebarWidthClosed] = ['320px', '640px', '60px'];
@@ -143,6 +142,14 @@ export const PAGES = [
         path: '/partners',
         component: PartnersDisplay,
         availableInDrawer: true,
+        appBarActions: null
+    },
+    {
+        id: 17,
+        name: 'Реестр партнёров',
+        path: '/partners/byIndicator',
+        component: SingleIndicator,
+        availableInDrawer: false,
         appBarActions: null
     },
     {

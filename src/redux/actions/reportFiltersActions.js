@@ -108,3 +108,38 @@ export function setDateTo(dateTo) {
         });
     }
 }
+
+export function toggleSelectedPartnerAndProject(item) {
+    return function (dispatch, getState) {
+        let arr = getState().reportFilters.selectedPartners.slice();
+        const index = arr.findIndex(a => a.project === item.projectId && a.ets === item.etsProject && a.customer === item.customerName);
+        if (index !== -1) arr.splice(index, 1); else arr.push({
+            project: item.projectId,
+            ets: item.etsProject,
+            customer: item.customerName
+        });
+        dispatch({type: "TOGGLE_SELECTION_SINGLE_PARTNER_AND_PROJECT", payload: arr})
+    }
+}
+
+export function setSelectedPartnersAndProjects(filter) {
+    return function (dispatch, getState) {
+        const data = getState().partnersData.data;
+        let arr = getState().reportFilters.selectedPartners ? getState().reportFilters.selectedPartners.slice() : [];
+        data.filter((pr) => pr['customerName'].toLowerCase().includes(filter.toLowerCase()))
+            .forEach((item) => {
+                const index = arr.findIndex(a => a.project === item.projectId && a.ets === item.etsProject && a.customer === item.customerName);
+                if (index === -1) {
+                    arr.push({project: item.projectId, ets: item.etsProject, customer: item.customerName})
+                }
+            });
+
+        dispatch({type: "TOGGLE_SELECTION_MULTIPLE_PARTNERS_AND_PROJECTS", payload: [...new Set(arr)]})
+    }
+}
+
+export function clearPartnersAndProjects() {
+    return function (dispatch) {
+        dispatch({type: "CLEAR_SELECTION_PARTNERS_AND_PROJECTS"});
+    }
+}

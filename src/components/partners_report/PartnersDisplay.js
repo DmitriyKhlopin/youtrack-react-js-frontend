@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {store} from "../../redux/store";
 import connect from "react-redux/es/connect/connect";
 import {drawerWidth, PAGES} from "../../Const";
 import {setSelectedNavItem} from "../../redux/actions/appBarActions";
@@ -23,6 +22,11 @@ import {
 } from "../../styled_components/StyledComponents";
 import html2canvas from "html2canvas";
 import jsPDF from 'jspdf';
+import {
+    clearPartnersAndProjects,
+    setSelectedPartnersAndProjects,
+    toggleSelectedPartnerAndProject
+} from "../../redux/actions/reportFiltersActions";
 
 const pxToMm = (px) => {
     return Math.floor(px / document.getElementById('myMm').offsetHeight);
@@ -38,11 +42,9 @@ const range = (start, end) => {
     });
 };
 
-
-function PartnersDisplay({location, filters, data, appBarState, loadData, reportData}) {
+function PartnersDisplay({location, filters, data, appBarState, reportData, setTitle, fetchPartners, loadData, toggleSinglePartnerAndProject, selectMultiplePartnersAndProjects, clearSelection}) {
     const {textField, iconButton} = styles;
     const [sidebarWidthOpen, sidebarWidthClosed] = ['100%', '64px'];
-    const [selected, setSelected] = useState([]);
     const [priorities, setPriorities] = useState(['Major', 'Normal', 'Minor']);
     const [open, setOpen] = useState(false);
     const [project, setProject] = useState('');
@@ -50,42 +52,19 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
     const size = useWindowDimensions();
 
     useEffect(() => {
-        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));
-        store.dispatch(fetchPartners());
+        setTitle(location);
+        fetchPartners();
     }, []);
 
     const groupedData = groupBy(data.data, 'partnerName');
 
-    const onChange = (e, item) => {
-        const index = selected.findIndex(a => a.project === item.projectId && a.ets === item.etsProject && a.customer === item.customerName);
-        let j = selected.slice();
-        if (index !== -1) j.splice(index, 1); else j.push({
-            project: item.projectId,
-            ets: item.etsProject,
-            customer: item.customerName
-        });
-        setSelected(j);
-    };
-
-    const toggleMode = () => {
-        if (!mode) loadData('state', selected);
-        if (!mode) loadData('type', selected);
-        if (!mode) loadData('priority', selected);
-        if (!mode) loadData('customer', selected);
-        if (!mode) loadData('product', selected);
+    const getData = () => {
+        if (!mode) loadData('state', filters.selectedPartners);
+        if (!mode) loadData('type', filters.selectedPartners);
+        if (!mode) loadData('priority', filters.selectedPartners);
+        if (!mode) loadData('customer', filters.selectedPartners);
+        if (!mode) loadData('product', filters.selectedPartners);
         setMode(!mode);
-    };
-
-    const selectCurrent = () => {
-        let j = selected.slice();
-        data.data.filter((pr) => pr['customerName'].toLowerCase().includes(project.toLowerCase()))
-            .forEach((item) => {
-                const index = j.findIndex(a => a.project === item.projectId && a.ets === item.etsProject && a.customer === item.customerName);
-                if (index === -1) {
-                    j.push({project: item.projectId, ets: item.etsProject, customer: item.customerName})
-                }
-            });
-        setSelected([...new Set(j)]);
     };
 
     const exp = () => {
@@ -121,7 +100,6 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
     };
 
 
-    const clearSelection = () => setSelected([]);
     const w = size.width - (appBarState ? drawerWidth : 0) - 64 - 17 - 16; //ширина окна - ширина боковика - ширина меню - вертикальный сролл - margin меню
     const indicators = ['state', 'type', 'priority', 'customer', 'product'];
     const rowSize = 3;
@@ -150,9 +128,9 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
                                                              data={reportData} indicator={item}/>)}
                 </FlexContent>
                 : <div/>}
-            {!open && selected.length > 0 ?
+            {!open && filters.selectedPartners.length > 0 ?
                 <div>
-                    <HoverButton onClick={toggleMode}>Сформировать отчёт</HoverButton>
+                    <HoverButton onClick={getData}>Сформировать отчёт</HoverButton>
                     <HoverButton onClick={exp}>Сформировать PDF</HoverButton>
                 </div> : <div/>}
         </FlexContent>
@@ -174,13 +152,12 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
                         margin="normal"
                         style={{...textField}}
                     /> : <div/>}
-                    {open ? <HoverButtonSmall onClick={selectCurrent}
+                    {open ? <HoverButtonSmall onClick={() => selectMultiplePartnersAndProjects(project)}
                                               style={{backgroundColor: '#4CAF50'}}>Отметить</HoverButtonSmall> : <div/>}
-                    {open && (selected.length > 0) ?
+                    {open && (filters.selectedPartners.length > 0) ?
                         <HoverButtonSmall onClick={clearSelection} style={{backgroundColor: '#4CAF50'}}>Снять отметку
-                            ({selected.length})</HoverButtonSmall> : <div/>}
+                            ({filters.selectedPartners.length})</HoverButtonSmall> : <div/>}
                 </div>
-
                 <FlexContent>
                     {open && Object.values(groupedData)
                         .filter((pr) => project === '' || pr.filter((e2) => e2['customerName'].toLowerCase().includes(project.toLowerCase())).length > 0)
@@ -191,12 +168,12 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
                                     .filter((e) => project === '' || e['customerName'].toLowerCase().includes(project.toLowerCase()))
                                     .map((item2, index2) => {
                                             return <div key={`customer-${index2}`}
-                                                        style={{background: item2.important ? 'red' : 'transparent'}}>
+                                                        style={{background: item2.important ? 'red' : 'transparent'}}
+                                                        onClick={() => toggleSinglePartnerAndProject(item2)}>
                                                 <label className="container">
                                                     <input type="checkbox"
-                                                           checked={selected.some(e => e.project === item2.projectId && e.ets === item2.etsProject && e.customer === item2.customerName)}
-                                                           onChange={(e) => onChange(e, item2)}/>
-
+                                                           checked={filters.selectedPartners.some(e => e.project === item2.projectId && e.ets === item2.etsProject && e.customer === item2.customerName)}
+                                                    />
                                                 </label>
                                                 {`${item2['etsProject']} ${item2['customerName']} ${item2['issuesCount']}`}
                                             </div>
@@ -212,7 +189,12 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
 
 function mapDispatchToProps(dispatch) {
     return {
-        loadData: (id, filters) => dispatch(fetchAbstractReportData(id, filters))
+        setTitle: (location) => dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0])),
+        fetchPartners: () => dispatch(fetchPartners()),
+        loadData: (id, filters) => dispatch(fetchAbstractReportData(id, filters)),
+        toggleSinglePartnerAndProject: (item) => dispatch(toggleSelectedPartnerAndProject(item)),
+        selectMultiplePartnersAndProjects: (items) => dispatch(setSelectedPartnersAndProjects(items)),
+        clearSelection: () => dispatch(clearPartnersAndProjects()),
     }
 }
 

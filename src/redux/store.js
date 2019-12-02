@@ -7,7 +7,7 @@ import throttle from "lodash/throttle"
 
 const loadState = () => {
     try {
-        const serializedState = localStorage.getItem('state');
+        const serializedState = localStorage.getItem('ytstate');
         if (serializedState === null) {
             console.log('local state is null');
             return undefined;
@@ -22,16 +22,15 @@ const loadState = () => {
 const saveState = (state) => {
     try {
         const serializedState = JSON.stringify(state);
-        localStorage.setItem('state', serializedState);
+        localStorage.setItem('ytstate', serializedState);
     } catch (e) {
         console.log(e);
     }
-}
+};
 
 const persistedState = loadState();
 export const store = createStore(reducers, persistedState, applyMiddleware(promise, thunk, createLogger()));
 
 store.subscribe(throttle(() => {
-
     saveState(store.getState());
 }, 1000));

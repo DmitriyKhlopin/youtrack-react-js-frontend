@@ -75,7 +75,7 @@ function KPIContainer({location, data, detailedData, setTitle, loadData, df, dt,
                 {kpiCharts.map((item, index) => <KPIBarChart key={`kpi-barchart-wide-${index}`} w={w1} h={h1} data={data} settings={item}/>)}
                 {detailedData.map((e, index) => {
                     return (
-                        <div>
+                        <div key={`kpi-detailed-data-${index}`}>
                             <h3 style={{textAlign: 'center', color: MATERIAL_COLORS[index]}}>{e.name}</h3>
                             <BarChart data={e.data} width={w1 / 2} height={h1 / 1.5}>
                                 <CartesianGrid strokeDasharray='3 3'/>

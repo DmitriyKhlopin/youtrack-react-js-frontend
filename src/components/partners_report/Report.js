@@ -6,8 +6,8 @@ import {MATERIAL_COLORS} from "../../Const";
 export default function Report({w, rowSize, itemsInRow, indexInRow, data, indicator}) {
     const applyMargin = itemsInRow < rowSize && itemsInRow !== 1;
     const [activeIndex, setActiveIndex] = useState(0);
-    const marginLeft = applyMargin && indexInRow === 1 ? w/6 : 0;
-    const marginRight = applyMargin && indexInRow === itemsInRow ? w/6 : 0;
+    const marginLeft = applyMargin && indexInRow === 1 ? w / 6 : 0;
+    const marginRight = applyMargin && indexInRow === itemsInRow ? w / 6 : 0;
 
     const renderActiveShape = (props) => {
         const RADIAN = Math.PI / 180;
@@ -75,7 +75,8 @@ export default function Report({w, rowSize, itemsInRow, indexInRow, data, indica
 
     const onClick = (a, b, c) => {
         console.log([a, b, c]);
-        var win = window.open("http://localhost:3000/partners?indicator=1&value=2", '_blank');
+        console.log(encodeURI(`http://localhost:3000/partners?indicator=${indicator}&value=${a.name}`));
+        var win = window.open(`http://localhost:3000/partners/byIndicator?indicator=${indicator}&value=${a.name}`, '_blank');
         win.focus();
     };
 
