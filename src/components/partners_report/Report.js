@@ -1,10 +1,13 @@
 import React, {useState} from "react";
-import {PieChart, Pie, Sector, Cell,} from 'recharts';
+import {Cell, Pie, PieChart, Sector,} from 'recharts';
 import {groupBy} from "../../HelperFunctions";
 import {MATERIAL_COLORS} from "../../Const";
 
-export default function Report({w, itemsInRow, data, indicator}) {
+export default function Report({w, rowSize, itemsInRow, indexInRow, data, indicator}) {
+    const applyMargin = itemsInRow < rowSize && itemsInRow !== 1;
     const [activeIndex, setActiveIndex] = useState(0);
+    const marginLeft = applyMargin && indexInRow === 1 ? w/6 : 0;
+    const marginRight = applyMargin && indexInRow === itemsInRow ? w/6 : 0;
 
     const renderActiveShape = (props) => {
         const RADIAN = Math.PI / 180;
@@ -63,35 +66,37 @@ export default function Report({w, itemsInRow, data, indicator}) {
         });
     }
 
-    /*const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];*/
     const COLORS = MATERIAL_COLORS;
 
     const pieWidth = w / itemsInRow;
-    const pieHeight = w / (itemsInRow > 5 ? itemsInRow : 5);
-    const innerRadius = w/24;
-    const outerRadius = w/16;
+    const pieHeight = w / (itemsInRow * 1.5 > 5 ? itemsInRow : 5);
+    const innerRadius = w / 21;
+    const outerRadius = w / 15;
 
-    const onClick = (a,b,c) => {
-        console.log([a, b, c])
+    const onClick = (a, b, c) => {
+        console.log([a, b, c]);
         var win = window.open("http://localhost:3000/partners?indicator=1&value=2", '_blank');
         win.focus();
     };
 
-    return (<div><PieChart width={pieWidth} height={pieHeight}>
-        <Pie
-            onClick={onClick}
-            data={data1}
-            innerRadius={innerRadius}
-            outerRadius={outerRadius}
-            fill="#8884d8"
-            paddingAngle={0.5}
-            dataKey="value"
-            activeIndex={activeIndex}
-            activeShape={renderActiveShape}
-            onMouseEnter={onPieEnter}
-        >
-            {data1.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>)}
-        </Pie>
 
-    </PieChart></div>)
+    return (
+        <div style={{marginLeft: marginLeft, marginRight: marginRight}}><PieChart
+            width={pieWidth - marginLeft - marginRight} height={pieHeight}>
+            <Pie
+                onClick={onClick}
+                data={data1}
+                innerRadius={innerRadius}
+                outerRadius={outerRadius}
+                fill="#8884d8"
+                paddingAngle={0.5}
+                dataKey="value"
+                activeIndex={activeIndex}
+                activeShape={renderActiveShape}
+                onMouseEnter={onPieEnter}
+            >
+                {data1.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>)}
+            </Pie>
+
+        </PieChart></div>)
 }

@@ -13,7 +13,30 @@ import {styles} from "../../Styles";
 import Report from "./Report";
 import useWindowDimensions from "../../helper_functions/dimensions";
 import {fetchAbstractReportData} from "../../redux/actions/abstractReportsActions";
-import {ContainerWithSidebar, CustomCard, CustomSidebar, FlexContent, HoverButton, HoverButtonSmall} from "../../styles/StyledComponents";
+import {
+    ContainerWithSidebar,
+    CustomCard,
+    CustomSidebar,
+    FlexContent,
+    HoverButton,
+    HoverButtonSmall
+} from "../../styled_components/StyledComponents";
+import html2canvas from "html2canvas";
+import jsPDF from 'jspdf';
+
+const pxToMm = (px) => {
+    return Math.floor(px / document.getElementById('myMm').offsetHeight);
+};
+
+const mmToPx = (mm) => {
+    return document.getElementById('myMm').offsetHeight * mm;
+};
+
+const range = (start, end) => {
+    return Array(end - start).join(0).split(0).map(function (val, id) {
+        return id + start
+    });
+};
 
 
 function PartnersDisplay({location, filters, data, appBarState, loadData, reportData}) {
@@ -36,7 +59,11 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
     const onChange = (e, item) => {
         const index = selected.findIndex(a => a.project === item.projectId && a.ets === item.etsProject && a.customer === item.customerName);
         let j = selected.slice();
-        if (index !== -1) j.splice(index, 1); else j.push({project: item.projectId, ets: item.etsProject, customer: item.customerName});
+        if (index !== -1) j.splice(index, 1); else j.push({
+            project: item.projectId,
+            ets: item.etsProject,
+            customer: item.customerName
+        });
         setSelected(j);
     };
 
@@ -51,7 +78,6 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
 
     const selectCurrent = () => {
         let j = selected.slice();
-
         data.data.filter((pr) => pr['customerName'].toLowerCase().includes(project.toLowerCase()))
             .forEach((item) => {
                 const index = j.findIndex(a => a.project === item.projectId && a.ets === item.etsProject && a.customer === item.customerName);
@@ -59,26 +85,82 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
                     j.push({project: item.projectId, ets: item.etsProject, customer: item.customerName})
                 }
             });
-        console.log(j);
         setSelected([...new Set(j)]);
     };
+
+    const exp = () => {
+        const input = document.getElementById('exportable-report');
+        const inputHeightMm = pxToMm(input.offsetHeight);
+        const inputWidthMm = pxToMm(input.offsetWidth);
+        const a4PortraitWidthMm = 210;
+        const a4PortraitHeightMm = 297;
+        const a4HeightPx = mmToPx(a4PortraitHeightMm);
+        const proportions = inputWidthMm / inputHeightMm;
+        const actualHeight = a4PortraitHeightMm / proportions > a4PortraitWidthMm ? a4PortraitWidthMm : a4PortraitHeightMm / proportions;
+        const numPages = inputHeightMm <= a4PortraitHeightMm ? 1 : Math.floor(inputHeightMm / a4PortraitHeightMm) + 1;
+        console.log({
+            input,
+            proportions,
+            inputHeightMm,
+            inputWidthMm,
+            a4HeightMm: a4PortraitHeightMm,
+            a4HeightPx,
+            numPages,
+            range: range(0, numPages),
+            comp: inputHeightMm <= a4PortraitHeightMm,
+            inputHeightPx: input.offsetHeight
+        });
+
+        html2canvas(input)
+            .then((canvas) => {
+                const imgData = canvas.toDataURL('image/png', 1.0);
+                const pdf = new jsPDF('l', 'mm', 'a4');
+                pdf.addImage(imgData, 'PNG', 0, (a4PortraitWidthMm - actualHeight) / 2, a4PortraitHeightMm, actualHeight);
+                pdf.save("download.pdf");
+            });
+    };
+
 
     const clearSelection = () => setSelected([]);
     const w = size.width - (appBarState ? drawerWidth : 0) - 64 - 17 - 16; //ширина окна - ширина боковика - ширина меню - вертикальный сролл - margin меню
     const indicators = ['state', 'type', 'priority', 'customer', 'product'];
+    const rowSize = 3;
+
+    function indicatorsInRow(indicatorsCount, index) {
+        return (indicatorsCount - 1 - rowSize * ~~(index / rowSize)) < rowSize ? indicatorsCount % rowSize : rowSize;
+    }
+
+    function indicatorIndexInRow(index, rowSize, baseRowSize) {
+        return index - baseRowSize * ~~(index / baseRowSize) + 1;
+    }
+
     return (<ContainerWithSidebar>
-        <FlexContent style={{width: `calc(100% - ${open ? sidebarWidthOpen : sidebarWidthClosed} - 16px)`, display: open ? '' : 'hidden'}}>
+        <div id="myMm" style={{height: "1mm"}}/>
+        <FlexContent style={{
+            width: `calc(100% - ${open ? sidebarWidthOpen : sidebarWidthClosed} - 16px)`,
+            display: open ? '' : 'hidden'
+        }}>
             {mode && !open ?
-                <FlexContent>
+                <FlexContent id={'exportable-report'}>
                     {indicators.map((item, index) => <Report key={`report-${item}-${index}`}
                                                              w={w}
-                                                             itemsInRow={(indicators.length - 1 - 3 * ~~(index / 3)) < 3 ? indicators.length % 3 : 3}
+                                                             rowSize={rowSize}
+                                                             itemsInRow={indicatorsInRow(indicators.length, index)}
+                                                             indexInRow={indicatorIndexInRow(index, indicatorsInRow(indicators.length, index), rowSize)}
                                                              data={reportData} indicator={item}/>)}
                 </FlexContent>
                 : <div/>}
-            {!open && selected.length > 0 ? <HoverButton onClick={toggleMode}>Сформировать отчёт</HoverButton> : <div/>}
+            {!open && selected.length > 0 ?
+                <div>
+                    <HoverButton onClick={toggleMode}>Сформировать отчёт</HoverButton>
+                    <HoverButton onClick={exp}>Сформировать PDF</HoverButton>
+                </div> : <div/>}
         </FlexContent>
-        <CustomSidebar style={{width: open ? sidebarWidthOpen : sidebarWidthClosed, height: open ? 'auto' : '64px', borderRadius: open ? '4px' : '32px'}}>
+        <CustomSidebar style={{
+            width: open ? sidebarWidthOpen : sidebarWidthClosed,
+            height: open ? 'auto' : '64px',
+            borderRadius: open ? '4px' : '32px'
+        }}>
             <IconButton onClick={() => setOpen(!open)} style={{...iconButton, color: '#C2185B'}}>
                 {open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
             </IconButton>
@@ -92,8 +174,11 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
                         margin="normal"
                         style={{...textField}}
                     /> : <div/>}
-                    {open ? <HoverButtonSmall onClick={selectCurrent} style={{backgroundColor: '#4CAF50'}}>Отметить</HoverButtonSmall> : <div/>}
-                    {open && (selected.length > 0) ? <HoverButtonSmall onClick={clearSelection} style={{backgroundColor: '#4CAF50'}}>Снять отметку ({selected.length})</HoverButtonSmall> : <div/>}
+                    {open ? <HoverButtonSmall onClick={selectCurrent}
+                                              style={{backgroundColor: '#4CAF50'}}>Отметить</HoverButtonSmall> : <div/>}
+                    {open && (selected.length > 0) ?
+                        <HoverButtonSmall onClick={clearSelection} style={{backgroundColor: '#4CAF50'}}>Снять отметку
+                            ({selected.length})</HoverButtonSmall> : <div/>}
                 </div>
 
                 <FlexContent>
@@ -105,7 +190,8 @@ function PartnersDisplay({location, filters, data, appBarState, loadData, report
                                 <div>{item.sort(dynamicSort('-issuesCount'))
                                     .filter((e) => project === '' || e['customerName'].toLowerCase().includes(project.toLowerCase()))
                                     .map((item2, index2) => {
-                                            return <div key={`customer-${index2}`} style={{background: item2.important ? 'red' : 'transparent'}}>
+                                            return <div key={`customer-${index2}`}
+                                                        style={{background: item2.important ? 'red' : 'transparent'}}>
                                                 <label className="container">
                                                     <input type="checkbox"
                                                            checked={selected.some(e => e.project === item2.projectId && e.ets === item2.etsProject && e.customer === item2.customerName)}

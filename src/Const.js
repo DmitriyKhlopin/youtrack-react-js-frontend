@@ -30,7 +30,7 @@ export const PAGES = [
         path: '/',
         component: ReportContainer,
         availableInDrawer: true,
-        appBarActions: <ReportsAppBarActions  key={'asdfasdfasd'} />
+        appBarActions: <ReportsAppBarActions key={'asdfasdfasd'}/>
 
     },
     {
@@ -43,7 +43,7 @@ export const PAGES = [
     },
     {
         id: 6,
-        name: 'Привязка проектов',
+        name: 'Привязка проектов YT в ETS',
         path: '/time_accounting_dictionary',
         component: TimeAccountingDictionaryDisplay,
         availableInDrawer: true,
@@ -70,7 +70,7 @@ export const PAGES = [
         name: 'Запросы в YT',
         path: '/issues',
         component: IssuesDisplay,
-        availableInDrawer: true,
+        availableInDrawer: false,
         appBarActions: null
     },
     {
@@ -118,7 +118,7 @@ export const PAGES = [
         name: 'Продолжительность работ',
         path: '/duration',
         component: DurationDisplay,
-        availableInDrawer: true,
+        availableInDrawer: false,
         appBarActions: null
     },
     {
@@ -150,14 +150,14 @@ export const PAGES = [
         name: 'Отчёт по ключевым проектам',
         path: '/key_partners',
         component: KeyPartnersReportContainer,
-        availableInDrawer: true,
+        availableInDrawer: false,
         appBarActions: null
     },
 ];
 
 
 export const YT_ENDPOINT = 'http://support.fsight.ru/api/';
-export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://10.9.172.76:8080' : 'http://10.30.207.22:8080';
+export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://172.16.16.1:8080' : 'http://10.30.207.22:8080';
 export const RADIAN = Math.PI / 180;
 export const innerProjects = ['PP_Lic', 'FMP_LIC', 'SD', 'PDP', 'W', 'P_PROJ1', 'T', 'TEST', 'SPAM', 'TC', 'RELEASE', 'PO', 'P'];
 export const licProjects = ['PP_Lic',];
@@ -253,7 +253,12 @@ export const kpiCharts = [
         bars: [
             {yAxisId: 'left', name: 'Решения (count)', dataKey: 'solutionCount', legendType: 'circle',},
             {yAxisId: 'left', name: 'Уточнения (count)', dataKey: 'clarificationCount', legendType: 'circle',},
-            {yAxisId: 'left', name: 'Переносы сроков решения (count)', dataKey: 'postponementCount', legendType: 'circle',},
+            {
+                yAxisId: 'left',
+                name: 'Переносы сроков решения (count)',
+                dataKey: 'postponementCount',
+                legendType: 'circle',
+            },
             {yAxisId: 'left', name: 'Оценки (count)', dataKey: 'evaluationCount', legendType: 'circle',},
             {yAxisId: 'left', name: 'Типы задач (count)', dataKey: 'issueTypeCount', legendType: 'circle',},
             {yAxisId: 'left', name: 'Приоритеты (count)', dataKey: 'priorityCount', legendType: 'circle',},

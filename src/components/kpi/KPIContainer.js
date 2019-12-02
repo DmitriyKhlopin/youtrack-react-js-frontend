@@ -12,7 +12,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import KPISidebar from "./KPISidebar";
 import {CircularProgress} from "@material-ui/core";
 import useWindowDimensions from "../../helper_functions/dimensions";
-import {ContainerWithSidebar, CustomA, CustomCard, CustomH4, CustomSidebar, DataContainer} from "../../styles/StyledComponents";
+import {ContainerWithSidebar, CustomA, CustomCard, CustomH4, CustomSidebar, DataContainer} from "../../styled_components/StyledComponents";
 import {KPIBarChart} from "./KPIBarChart";
 
 function KPIContainer({location, data, detailedData, setTitle, loadData, df, dt, isFetching, appBarState, overallData}) {

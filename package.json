@@ -19,6 +19,8 @@
     "eslint-plugin-react-hooks": "^1.6.1",
     "export-from-json": "^1.1.4",
     "history": "^4.9.0",
+    "html2canvas": "^1.0.0-rc.5",
+    "jspdf": "^1.5.3",
     "lodash": "^4.17.15",
     "material-ui": "^0.20.2",
     "material-ui-next-pickers": "0.0.20",
