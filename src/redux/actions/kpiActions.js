@@ -10,7 +10,7 @@ export function fetchKpiReportData() {
             }
         };
         const state = getState();
-        const url1 = `${ENDPOINT}/api/kpi?mode=result2&dateFrom=${state.kpiFilters.dateFrom}&dateTo=${state.kpiFilters.dateTo}`;
+        const url1 = `${ENDPOINT}/api/kpi?mode=result&dateFrom=${state.kpiFilters.dateFrom}&dateTo=${state.kpiFilters.dateTo}`;
         const url2 = `${ENDPOINT}/api/kpi?mode=overall&dateFrom=${state.kpiFilters.dateFrom}&dateTo=${state.kpiFilters.dateTo}`;
 
         Promise.all([url1, url2].map(u => fetch(u, obj))).then(responses =>
