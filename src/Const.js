@@ -164,7 +164,7 @@ export const PAGES = [
 
 
 export const YT_ENDPOINT = 'http://support.fsight.ru/api/';
-export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://172.16.16.1:8080' : 'http://10.30.207.22:8080';
+export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://10.11.78.213:8080' : 'http://10.30.207.22:8080';
 export const RADIAN = Math.PI / 180;
 export const innerProjects = ['PP_Lic', 'FMP_LIC', 'SD', 'PDP', 'W', 'P_PROJ1', 'T', 'TEST', 'SPAM', 'TC', 'RELEASE', 'PO', 'P'];
 export const licProjects = ['PP_Lic',];

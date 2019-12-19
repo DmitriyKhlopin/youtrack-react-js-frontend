@@ -16,7 +16,6 @@
     "date-fns": "next",
     "devextreme": "^19.1.5",
     "devextreme-react": "^19.1.5",
-    "eslint-plugin-react-hooks": "^1.6.1",
     "export-from-json": "^1.1.4",
     "history": "^4.9.0",
     "html2canvas": "^1.0.0-rc.5",
@@ -63,5 +62,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "eslint-plugin-react-hooks": "^1.7.0"
+  }
 }

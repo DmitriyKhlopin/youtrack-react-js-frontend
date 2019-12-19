@@ -126,6 +126,7 @@ function PartnersDisplay({location, filters, data, appBarState, reportData, setT
                                                              itemsInRow={indicatorsInRow(indicators.length, index)}
                                                              indexInRow={indicatorIndexInRow(index, indicatorsInRow(indicators.length, index), rowSize)}
                                                              data={reportData} indicator={item}/>)}
+                    {<div>test</div>}
                 </FlexContent>
                 : <div/>}
             {!open && filters.selectedPartners.length > 0 ?

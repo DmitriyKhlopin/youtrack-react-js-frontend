@@ -2,8 +2,10 @@ import React, {useState} from "react";
 import {Cell, Pie, PieChart, Sector,} from 'recharts';
 import {groupBy} from "../../HelperFunctions";
 import {MATERIAL_COLORS} from "../../Const";
+import {useDispatch} from "react-redux";
 
 export default function Report({w, rowSize, itemsInRow, indexInRow, data, indicator}) {
+    const dispatch = useDispatch();
     const applyMargin = itemsInRow < rowSize && itemsInRow !== 1;
     const [activeIndex, setActiveIndex] = useState(0);
     const marginLeft = applyMargin && indexInRow === 1 ? w / 6 : 0;
@@ -85,7 +87,11 @@ export default function Report({w, rowSize, itemsInRow, indexInRow, data, indica
         <div style={{marginLeft: marginLeft, marginRight: marginRight}}><PieChart
             width={pieWidth - marginLeft - marginRight} height={pieHeight}>
             <Pie
-                onClick={onClick}
+                /*onClick={onClick}*/
+                onClick={(a, b, c) => dispatch({
+                    type: "REPORT_INDICATOR_CLICKED",
+                    payload: {indicator: indicator, value: a.name}
+                })}
                 data={data1}
                 innerRadius={innerRadius}
                 outerRadius={outerRadius}
