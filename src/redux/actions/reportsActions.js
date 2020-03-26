@@ -4,10 +4,10 @@ import {ENDPOINT} from "../../Const";
 export function fetchReportData() {
     return function (dispatch) {
         dispatch({type: 'FETCH_REPORT_PENDING'});
-        fetchSigmaData();
+        /*fetchSigmaData();
         fetchDynamicsData();
         fetchSpentTimeData();
-        fetchCreatedOnWeekData();
+        fetchCreatedOnWeekData();*/
     }
 }
 

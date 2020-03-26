@@ -17,20 +17,10 @@ import Button from "../../node_modules/@material-ui/core/Button/Button";
 import {fetchToken, setUserLogin, setUserPassword} from "../redux/actions/userActions";
 import {PAGES} from "../Const";
 
-const clientServiceId = '95dc00cf-e9da-479d-84ea-fbe73f4652a5';
-const redirectUrl = 'http://10.9.172.76:3000/login';
+const clientServiceId = '64cf7005-df32-4ca1-8d05-41791683275c';
+const redirectUrl = 'http://localhost:3000/login';
 
 class AuthDisplay extends Component {
-    state = {
-        user: '',
-        password: '',
-        showPassword: false,
-    };
-
-    handleClickShowPassword = () => {
-        this.setState(state => ({showPassword: !state.showPassword}));
-    };
-
     componentWillMount() {
         store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
     }
@@ -40,7 +30,6 @@ class AuthDisplay extends Component {
         console.log(a);
         const s = a.substring('#access_token='.length, a.indexOf('&token_type='));
         console.log(s);
-        console.log(this.state);
         return <div style={{display: 'flex', height: '80%'}}>
             <Paper style={{margin: 'auto', padding: 16, maxWidth: 256, alignSelf: 'center'}}>
                 <a href={'https://support.fsight.ru/hub/api/rest/oauth2/auth?response_type=token&state=' + clientServiceId + '&redirect_uri=' + redirectUrl + '&request_credentials=default&client_id=' + clientServiceId + '&scope=' + clientServiceId}>

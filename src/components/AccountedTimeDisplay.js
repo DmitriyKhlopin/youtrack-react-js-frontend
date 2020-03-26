@@ -172,7 +172,7 @@ class AccountedTimeDisplay extends Component {
             store: this.props.actualTimeData.reportData
         });
 
-        return <div style={{minWidth: '100%'}}>
+        return <div >
             <div style={{
                 display: 'flex',
                 flexWrap: 'wrap',

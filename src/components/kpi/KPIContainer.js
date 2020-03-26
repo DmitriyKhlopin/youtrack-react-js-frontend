@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import connect from 'react-redux/es/connect/connect';
 import {fetchKpiReportData} from '../../redux/actions/kpiActions';
 import {setSelectedNavItem} from '../../redux/actions/appBarActions';
-import {format, parseISO} from 'date-fns'
-import {drawerWidth, MATERIAL_COLORS, PAGES, sidebarWidthClosed, sidebarWidthOpenWide, kpiCharts} from '../../Const';
-import {Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis} from 'recharts';
+import {format} from 'date-fns'
+import {drawerWidth, kpiCharts, kpiDetails, MATERIAL_COLORS, PAGES} from '../../Const';
+import {Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis} from 'recharts';
 import {fetchProjects} from "../../redux/actions/reportFiltersActions";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -14,6 +14,7 @@ import {CircularProgress} from "@material-ui/core";
 import useWindowDimensions from "../../helper_functions/dimensions";
 import {ContainerWithSidebar, CustomA, CustomCard, CustomH4, CustomSidebar, DataContainer} from "../../styled_components/StyledComponents";
 import {KPIBarChart} from "./KPIBarChart";
+import {dynamicSort} from "../../helper_functions/sorting";
 
 function KPIContainer({location, data, detailedData, setTitle, loadData, df, dt, isFetching, appBarState, overallData}) {
     const size = useWindowDimensions();
@@ -64,7 +65,7 @@ function KPIContainer({location, data, detailedData, setTitle, loadData, df, dt,
                                         <CustomH4>{item.name}: {value}%</CustomH4></CustomA>
                                     <div style={{width: '100%', margin: '8px 16px', display: 'flex', flexFlow: 'row wrap', justifyContent: 'space-around'}}>{overallData.dynamics.map((item2, index2) => {
                                         const v2 = Number(100 * item2.second[item.key] / item2.second['total']).toFixed(2);
-                                        return <div style={{flex: '1 0 50%', margin:'8px 0px'}}>{format(item2.first.first, 'yyyy.MM.dd')} - {format(item2.first.second, 'yyyy.MM.dd')}<br/>{v2}%</div>
+                                        return <div style={{flex: '1 0 50%', margin: '8px 0px'}}>{format(item2.first.first, 'yyyy.MM.dd')} - {format(item2.first.second, 'yyyy.MM.dd')}<br/>{v2}%</div>
                                     })}</div>
 
                                 </CustomCard>
@@ -72,7 +73,8 @@ function KPIContainer({location, data, detailedData, setTitle, loadData, df, dt,
                         )}
                     </div>
                 </div>
-                {kpiCharts.map((item, index) => <KPIBarChart key={`kpi-barchart-wide-${index}`} w={w1} h={h1} data={data} settings={item}/>)}
+                {kpiCharts.map((item, index) => <KPIBarChart key={`kpi-barchart-wide-${index}`} w={w1 / 3} h={h1 / 1.5} data={[...data].sort(dynamicSort('-'+item.bars[0].dataKey))} settings={item}/>)}
+                {kpiDetails.map((item, index) => <KPIBarChart key={`kpi-barchart-wide-${index}`} w={w1} h={h1} data={data} settings={item}/>)}
                 {detailedData.map((e, index) => {
                     return (
                         <div key={`kpi-detailed-data-${index}`}>

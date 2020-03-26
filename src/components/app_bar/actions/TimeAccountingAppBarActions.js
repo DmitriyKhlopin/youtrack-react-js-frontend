@@ -10,6 +10,7 @@ import moment from "moment";
 import * as XLSX from "xlsx";
 import TimeAccountingFilterDialog from "../../dialogs/TimeAccountingFilterDialog";
 import {Workbook} from "../../../helper_functions/export_to_excel";
+import styles from "../../../styles/components.module.css";
 
 class TimeAccountingAppBarActions extends React.Component {
     constructor(props) {
@@ -83,14 +84,7 @@ class TimeAccountingAppBarActions extends React.Component {
 
     render() {
         return (
-            <div style={{
-                /*width: '20%',
-                minWidth: '160px',*/
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'row',
-                backgroundColor: 'transparent',
-            }}>
+            <div className={`${styles.row} ${styles.centered}`}>
                 <div style={{margin: 0, flex: 1}}>
                     <IconButton color='inherit'
                                 onClick={this.requestData}>

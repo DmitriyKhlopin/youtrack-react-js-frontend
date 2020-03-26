@@ -2,7 +2,7 @@ import PossibleErrorsDisplay from "./components/PossibleErrorsDisplay";
 import KPIContainer from "./components/kpi/KPIContainer";
 import IssuesWithTFSDetailsDisplay from "./components/high_priority_issues/IssuesWithTFSDetailsDisplay";
 import ReportContainer from "./components/ReportContainer";
-import TimeAccountingDisplay from "./components/TimeAccountingDisplay";
+import TimeAccountingDisplay from "./components/time_acctounting/TimeAccountingDisplay";
 import AccountedTimeDisplay from "./components/AccountedTimeDisplay";
 import ETLDisplay from "./components/ETLDisplay";
 import IssuesDisplay from "./components/IssuesDisplay";
@@ -15,10 +15,11 @@ import TimeAccountingAppBarActions from "./components/app_bar/actions/TimeAccoun
 import React from "react";
 import KPIAppBarActions from "./components/app_bar/actions/KPIAppBarActions";
 import ReportsAppBarActions from "./components/app_bar/actions/ReportsAppBarActions";
-import TimeAccountingDictionaryDisplay from "./components/TimeAccountingDictionaryDisplay";
+import TimeAccountingDictionaryDisplay from "./components/time_acctounting/TimeAccountingDictionaryDisplay";
 import PartnersDisplay from "./components/partners_report/PartnersDisplay";
 import KeyPartnersReportContainer from "./components/key_partners_report/container";
 import SingleIndicator from "./components/partners_report/SingleIndicator";
+import {faClock, faChartBar, faEdit, faSpinner, faPray} from '@fortawesome/free-solid-svg-icons';
 
 export const drawerWidth = 300;
 export const [sidebarWidthOpen, sidebarWidthOpenWide, sidebarWidthClosed] = ['320px', '640px', '60px'];
@@ -29,8 +30,8 @@ export const PAGES = [
         path: '/',
         component: ReportContainer,
         availableInDrawer: true,
-        appBarActions: <ReportsAppBarActions key={'asdfasdfasd'}/>
-
+        appBarActions: <ReportsAppBarActions key={'asdfasdfasd'}/>,
+        icon: faChartBar
     },
     {
         id: 1,
@@ -38,7 +39,8 @@ export const PAGES = [
         path: '/time_accounting',
         component: TimeAccountingDisplay,
         availableInDrawer: true,
-        appBarActions: <TimeAccountingAppBarActions/>
+        appBarActions: <TimeAccountingAppBarActions/>,
+        icon: faClock
     },
     {
         id: 6,
@@ -46,7 +48,8 @@ export const PAGES = [
         path: '/time_accounting_dictionary',
         component: TimeAccountingDictionaryDisplay,
         availableInDrawer: true,
-        appBarActions: null
+        appBarActions: null,
+        icon: faEdit
     },
     {
         id: 2,
@@ -54,7 +57,8 @@ export const PAGES = [
         path: '/accounted_time',
         component: AccountedTimeDisplay,
         availableInDrawer: true,
-        appBarActions: null
+        appBarActions: null,
+        icon: faClock
     },
     {
         id: 3,
@@ -62,7 +66,8 @@ export const PAGES = [
         path: '/etl',
         component: ETLDisplay,
         availableInDrawer: true,
-        appBarActions: null
+        appBarActions: null,
+        icon: faSpinner
     },
     {
         id: 4,
@@ -94,7 +99,8 @@ export const PAGES = [
         path: '/kpi',
         component: KPIContainer,
         availableInDrawer: true,
-        appBarActions: <KPIAppBarActions/>
+        appBarActions: <KPIAppBarActions/>,
+        icon: faPray
     },
     {
         id: 10,
@@ -164,7 +170,7 @@ export const PAGES = [
 
 
 export const YT_ENDPOINT = 'http://support.fsight.ru/api/';
-export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://10.11.78.213:8080' : 'http://10.30.207.22:8080';
+export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://10.30.207.22:8080';
 export const RADIAN = Math.PI / 180;
 export const innerProjects = ['PP_Lic', 'FMP_LIC', 'SD', 'PDP', 'W', 'P_PROJ1', 'T', 'TEST', 'SPAM', 'TC', 'RELEASE', 'PO', 'P'];
 export const licProjects = ['PP_Lic',];
@@ -192,8 +198,39 @@ export const MATERIAL_COLORS = [/*'#F44336',
 export const MATERIAL_LINE_CHART_COLORS = ['#2196F3', '#FFC107', '#4CAF50'];
 export const MATERIAL_SIGMA_COLORS = ['#34495e', '#4CAF50', '#FFEB3B', '#FF9800'];
 
+export const kpiCharts = [{
+    id: 't1-1',
+    title: 't',
+    dataKey: 'agent',
+    paletteOffset: 0,
+    y: {left: {id: 'left', orientation: 'left'},},
+    bars: [
+        {yAxisId: 'left', name: 'Рейтинг/Количество задач', dataKey: 'totalAvg', legendType: 'circle',},
+    ]
+},
+    {
+        id: 't1-2',
+        title: 't',
+        dataKey: 'agent',
+        paletteOffset: 1,
+        y: {left: {id: 'left', orientation: 'left'},},
+        bars: [
+            {yAxisId: 'left', name: 'Рейтинг', dataKey: 'totalWithViolations', legendType: 'circle',},
+        ]
+    },
+    {
+        id: 't1-3',
+        title: 't',
+        dataKey: 'agent',
+        paletteOffset: 2,
+        y: {left: {id: 'left', orientation: 'left'},},
+        bars: [
+            {yAxisId: 'left', name: 'Рейтинг без учёта SLA', dataKey: 'total', legendType: 'circle',}
+        ]
+    },];
 
-export const kpiCharts = [
+
+export const kpiDetails = [
     {
         id: 't1',
         title: 't',

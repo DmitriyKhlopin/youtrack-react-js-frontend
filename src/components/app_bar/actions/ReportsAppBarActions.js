@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton';
 import {store} from "../../../redux/store";
 import {fetchReportData} from "../../../redux/actions/reportsActions";
 import ReportFilterDialog from "../../dialogs/ReportFilterDialog";
+import styles from "../../../styles/components.module.css";
 
 function ReportsAppBarActions() {
     const [open, setOpen] = useState(false);
@@ -73,12 +74,7 @@ function ReportsAppBarActions() {
 
 
     return (
-        <div style={{
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'row',
-            backgroundColor: 'transparent',
-        }}>
+        <div className={`${styles.row} ${styles.centered}`}>
             <div style={{margin: 0, flex: 1}}>
                 <IconButton color='inherit'
                             onClick={requestData}>

@@ -1,4 +1,5 @@
 import {ENDPOINT} from '../../Const';
+import {stringSort} from "../../helper_functions/sorting";
 
 export function fetchIterations() {
     return function (dispatch) {
@@ -186,15 +187,4 @@ export function clearWorkItems() {
         dispatch({type: 'CLEAR_WORK_ITEMS'});
     }
 }
-
-const stringSort = function (a, b) {
-    if (a.name > b.name) {
-        return 1;
-    }
-    if (a.name < b.name) {
-        return -1;
-    }
-    // a должно быть равным b
-    return 0;
-};
 

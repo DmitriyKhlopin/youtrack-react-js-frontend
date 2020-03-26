@@ -24,12 +24,12 @@ function KPISidebar({df, dt, close, loadData, dispatchAll}) {
     const inputLabel1 = React.useRef(null);
     const [labelWidth1, setLabelWidth1] = useState(0);
 
-    useEffect(() => {
+    /*useEffect(() => {
         setLabelWidth1(inputLabel1.current.offsetWidth);
-    }, []);
+    }, []);*/
 
-    const handleChange = (value) => {
-    };
+    /*const handleChange = (value) => {
+    };*/
 
     return (<div style={sidebarContentBase}>
         <div style={dateRangeSelectorContainer}>
@@ -59,12 +59,11 @@ function KPISidebar({df, dt, close, loadData, dispatchAll}) {
             </div>
         </div>
         <div style={spacedRowWithButtons}>
-            <FormControl variant="outlined" className={styles.multiSelect} component='div'>
+            {/*<FormControl variant="outlined" className={styles.multiSelect} component='div'>
                 <InputLabel ref={inputLabel1} htmlFor="outlined-projects-simple">
                     Проекты
                 </InputLabel>
                 <Select value={period} onChange={handleChange} multiple={false}
-                        renderValue={period}
                         input={
                             <OutlinedInput labelWidth={labelWidth1} name="Projects" id="outlined-projects-simple"/>
                         }>
@@ -77,7 +76,7 @@ function KPISidebar({df, dt, close, loadData, dispatchAll}) {
                     ))}
 
                 </Select>
-            </FormControl>
+            </FormControl>*/}
         </div>
         <div style={spacedRowWithButtons}>
             <Button onClick={loadData} variant="contained" color="primary">Обновить</Button>

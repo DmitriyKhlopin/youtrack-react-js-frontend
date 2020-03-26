@@ -1,11 +1,11 @@
 import React, {useEffect} from "react";
 import moment from "moment";
 import ReactTable from "react-table";
-import {store} from "../redux/store";
-import {setSelectedNavItem} from "../redux/actions/appBarActions";
+import {store} from "../../redux/store";
+import {setSelectedNavItem} from "../../redux/actions/appBarActions";
 import connect from "react-redux/es/connect/connect";
-import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
-import {PAGES} from "../Const";
+import {fetchTimeAccountingData} from "../../redux/actions/timeAccountingActions";
+import {PAGES} from "../../Const";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
 function TimeAccountingDisplay({location, timeAccountingData}) {

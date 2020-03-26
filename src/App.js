@@ -1,34 +1,25 @@
 import React from 'react';
 import 'react-table/react-table.css'
 import './App.css';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import {createBrowserHistory} from 'history';
-import ListItemIcon from "../node_modules/@material-ui/core/ListItemIcon/ListItemIcon";
-import ListItemText from "../node_modules/@material-ui/core/ListItemText/ListItemText";
-import ListItem from "../node_modules/@material-ui/core/ListItem/ListItem";
-import {Link, Route, Router, Switch} from "react-router-dom";
+import {BrowserRouter, NavLink, Route, Router, Switch} from "react-router-dom";
 import connect from "react-redux/es/connect/connect";
 import {closeMainDialog, openMainDialog, toggleAppBar} from "./redux/actions/appBarActions";
 import HelpDialog from "./components/HelpDialog";
-import {drawerWidth, PAGES} from "./Const";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import AppBar from "@material-ui/core/AppBar";
+import {PAGES} from "./Const";
 import {store} from "./redux/store";
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import NotificationsIcon from '@material-ui/icons/Help';
-import clsx from 'clsx';
-import {ETLState} from "./components/app_state/ETLState";
+import styles from "./styles/components.module.css";
+import cx from 'classnames';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faBars, faQuestionCircle} from '@fortawesome/free-solid-svg-icons'
+
 
 export const history = createBrowserHistory();
 
 
+/*
 const useStyles = makeStyles(theme => ({
     root: {
         minHeight: '100vh',
@@ -94,11 +85,11 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1,
     },
 }));
+*/
 
 
 function App({appBarState}) {
-    const classes = useStyles();
-    const theme = useTheme();
+
 
     const handleClose = () => {
         store.dispatch(closeMainDialog());
@@ -112,82 +103,74 @@ function App({appBarState}) {
         store.dispatch(toggleAppBar())
     };
     console.log(appBarState.currentPage);
+
+    const hamburger = <FontAwesomeIcon
+        icon={faBars}
+        className={styles.button}
+        onClick={toggle} size={'2x'}
+    />;
+
+    const infoButton = <FontAwesomeIcon
+        icon={faQuestionCircle}
+        className={styles.button}
+        onClick={handleClickOpenMainDialog} size={'1x'}
+    />;
+
+
     return (
-        <Router history={history}>
-            <div className={classes.root}>
-                <AppBar
-                    position="fixed"
-                    className={clsx(classes.appBar, {[classes.appBarShift]: appBarState.drawerOpened})}>
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="Open drawer"
-                            edge="start"
-                            onClick={toggle}
-                            className={clsx(classes.menuButton, appBarState.drawerOpened && classes.hide)}>
-                            <MenuIcon/>
-                        </IconButton>
-                        <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-                            {appBarState.currentPage === null ? 'Default' : appBarState.currentPage.name}
-                        </Typography>
-                        <div>
-                            <IconButton color="inherit" onClick={handleClickOpenMainDialog}>
-                                <NotificationsIcon/>
-                            </IconButton>
+        <BrowserRouter history={history}>
+            <div style={{
+                minHeight: '100vh',
+                maxHeight: '100vh',
+                minxWidth: '100vw',
+                maxWidth: '100vw',
+                width: '100%',
+                height: '100%',
+                /*zIndex: 1,*/
+                padding: 0,
+                margin: 0,
+                fontSize: '12px',
+                position: 'absolute',
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'visible\!important',
+            }}>
+                <div className={styles.navBar}>
+                    {hamburger}
+                    <span className={styles.title} color="inherit">
+                        {appBarState.currentPage === null ? 'Default' : appBarState.currentPage.name}
+                    </span>
+                    {infoButton}
+                    <div className={styles.expand}/>
+                    {appBarState.currentPage && appBarState.currentPage.appBarActions ? PAGES[appBarState.currentPage.id].appBarActions :
+                        <div/>}
+                    <IconButton /*className={classes.menuButton}*/ color="inherit" component={NavLink} to="/login">
+                        <AccountCircle/>
+                    </IconButton>
+                </div>
+                <div className={styles.row}>
+                    {appBarState.drawerOpened
+                        ? <div style={{display: 'flex', flexDirection: 'column', minWidth: `${appBarState.drawerOpened ? '240px' : '0px'}`}}>
+                            {PAGES.filter((item) => item.availableInDrawer === true).map((item, index) =>
+                                <NavLink key={`key-drawer-${index}`} exact to={item.path} className={styles.sidebarItem} activeClassName={styles.sidebarItemActive}>
+                                    {item.icon && <FontAwesomeIcon icon={item.icon} size={'1x'} style={{margin: '0.5rem'}}/>} <span>{item.name}</span>
+                                </NavLink>)}
                         </div>
-                        <ETLState/>
-                        <div className={classes.grow}/>
-                        {appBarState.currentPage && appBarState.currentPage.appBarActions ? PAGES[appBarState.currentPage.id].appBarActions :
-                            <div/>}
-                        <IconButton className={classes.menuButton} color="inherit" component={Link} to="/login">
-                            <AccountCircle/>
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-                <Drawer
-                    variant="persistent"
-                    anchor="left"
-                    classes={{paper: classes.drawerPaper}}
-                    open={appBarState.drawerOpened}>
-                    <div className={classes.drawerHeader}>
-                        <IconButton onClick={toggle}>
-                            {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
-                        </IconButton>
-                    </div>
-                    <Divider/>
-                    <div>
-                        {PAGES.filter((item) => item.availableInDrawer === true).map((item, index) => <ListItem
-                            key={`key-drawer-${index}`}
-                            style={{paddingLeft: 24}} component={Link} to={item.path}
-                            selected={appBarState.selectedId === item.id}>
-                            <ListItemIcon>
-                                <MenuIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary={item.name}/>
-                        </ListItem>)}
-                    </div>
-                    <Divider/>
-                </Drawer>
-                <main className={clsx(classes.content, {
-                    [classes.contentShift]: appBarState.drawerOpened,
-                })}>
-                    <div className={classes.drawerHeader}/>
-                    <div style={{width: '100%'}}>
+                        : null}
+                    <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
                         <Switch>
                             {PAGES.map((item, index) =>
-                                <Route exact path={item.path}
-                                       component={item.component}
-                                       key={`key-route-${index}`}/>
+                                <Route exact path={item.path} component={item.component} key={`key-route-${index}`}/>
                             )}
                         </Switch>
                     </div>
+                    <HelpDialog open={appBarState.dialogOpened}
+                                handleClose={handleClose}
+                                aria-labelledby="scroll-dialog-title"/>
+                </div>
 
-                </main>
-                <HelpDialog open={appBarState.dialogOpened}
-                            handleClose={handleClose}
-                            aria-labelledby="scroll-dialog-title"/>
             </div>
-        </Router>
+        </BrowserRouter>
     );
 }
 

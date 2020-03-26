@@ -1,3 +1,5 @@
+import {dynamicSort} from "./helper_functions/sorting";
+
 export const groupBy = function (arr, criteria) {
     return arr.reduce(function (obj, item) {
 
@@ -20,20 +22,7 @@ export const groupBy = function (arr, criteria) {
 
 export const customSort = (a, b) => a > b ? 1 : -1;
 
-export function dynamicSort(property) {
-    let sortOrder = 1;
-    if (property[0] === "-") {
-        sortOrder = -1;
-        property = property.substr(1);
-    }
-    return function (a, b) {
-        /* next line works with strings and numbers,
-         * and you may want to customize it to your needs
-         */
-        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-        return result * sortOrder;
-    }
-}
+
 
 export function customMap(data, property) {
     return data.map((item) => {

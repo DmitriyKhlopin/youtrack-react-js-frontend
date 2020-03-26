@@ -1,6 +1,6 @@
 export const styles = {
     /*containerWithSidebar: {display: 'flex', padding: 0, margin: 0, flexDirection: 'row', flexWrap: 'no-wrap', width: '100%',},*/
-    content: {
+    /*content: {
         display: 'flex',
         padding: '0px',
         margin: '0px',
@@ -33,7 +33,7 @@ export const styles = {
         minHeight: '300px',
         display: 'flex',
         flexDirection: 'row',
-        /*justifyContent: 'center',*/
+        /!*justifyContent: 'center',*!/
         backgroundColor: 'transparent',
         justifyContent: 'space-around',
     },
@@ -46,7 +46,7 @@ export const styles = {
         textAlign: 'center',
         textDecoration: 'none',
         display: 'inlineBlock',
-        fontSize: '16px',
+        /!*fontSize: '16px',*!/
         margin: '8px 8px',
         cursor: 'pointer',
         WebkitTransitionDuration: '0.4s',
@@ -86,5 +86,5 @@ export const styles = {
         ':hover': {
             boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)'
         },
-    }
+    }*/
 };

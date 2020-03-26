@@ -3,7 +3,7 @@ import connect from "react-redux/es/connect/connect";
 import {drawerWidth, PAGES} from "../../Const";
 import {setSelectedNavItem} from "../../redux/actions/appBarActions";
 import {fetchPartners} from "../../redux/actions/partnersActions";
-import {dynamicSort, groupBy} from "../../HelperFunctions";
+import {groupBy} from "../../HelperFunctions";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from '@material-ui/icons/Settings';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -12,21 +12,11 @@ import {styles} from "../../Styles";
 import Report from "./Report";
 import useWindowDimensions from "../../helper_functions/dimensions";
 import {fetchAbstractReportData} from "../../redux/actions/abstractReportsActions";
-import {
-    ContainerWithSidebar,
-    CustomCard,
-    CustomSidebar,
-    FlexContent,
-    HoverButton,
-    HoverButtonSmall
-} from "../../styled_components/StyledComponents";
+import {ContainerWithSidebar, CustomCard, CustomSidebar, FlexContent, HoverButton, HoverButtonSmall} from "../../styled_components/StyledComponents";
 import html2canvas from "html2canvas";
 import jsPDF from 'jspdf';
-import {
-    clearPartnersAndProjects,
-    setSelectedPartnersAndProjects,
-    toggleSelectedPartnerAndProject
-} from "../../redux/actions/reportFiltersActions";
+import {clearPartnersAndProjects, setSelectedPartnersAndProjects, toggleSelectedPartnerAndProject} from "../../redux/actions/reportFiltersActions";
+import {dynamicSort} from "../../helper_functions/sorting";
 
 const pxToMm = (px) => {
     return Math.floor(px / document.getElementById('myMm').offsetHeight);

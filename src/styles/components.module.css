@@ -1,0 +1,128 @@
+@value dimensions: './dimensions.css';
+
+@value colors: './colors.css';
+
+@value navBarHeight from dimensions;
+
+@value primaryText from colors;
+
+@value primaryBackground from colors;
+
+.navBar {
+    height: navBarHeight;
+    background: primaryBackground;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px black solid;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.defaultPadding {
+    padding: 0.25rem;
+}
+
+.defaultMargin {
+    margin: 0.25rem;
+}
+
+.centered {
+    height: 100%;
+    align-items: center;
+}
+
+.expand {
+    flex: 1
+}
+
+.sidebarItem {
+    text-decoration: none;
+    height: 3rem;
+    background: transparent;
+    padding: 1rem;
+    font-size: 1.2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0.25rem;
+    color: primaryText;
+    border-bottom: lightslategrey 1px solid;
+    /*border-radius: 0.25rem;*/
+}
+
+.sidebarItem:hover {
+    background: lightslategrey;
+    color: white;
+    transition-duration: 500ms;
+    border-radius: 0.25rem;
+}
+
+.sidebarItemActive {
+    background: lightgrey;
+    border-radius: 0.25rem;
+}
+
+.button {
+    padding: 0;
+    margin: 0;
+}
+
+.primary {
+    color: red
+}
+
+.title {
+    font-size: 1.4rem;
+    /*color: primaryText;*/
+    margin: 0 1rem;
+}
+
+.textPrimary {
+    font-size: 1.25rem;
+    color: primaryText;
+    word-wrap: break-spaces; /* Перенос слов */
+    white-space: normal;
+}
+
+.textSecondary {
+    font-size: 1rem;
+    color: primaryText;
+}
+
+.iconButton {
+    background-color: white; /* Blue background */
+    border-radius: 0.25rem;
+    border: none; /* Remove borders */
+    color: lightslategrey; /* White text */
+    cursor: pointer; /* Mouse pointer on hover */
+}
+
+/* Darker background on mouse-over */
+.iconButton:hover {
+    color: hotpink;
+}
+
+.textButton {
+    background: mediumseagreen;
+    border: none;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin: 0.5rem;
+    min-width: 5rem;
+}
+
+.textButton:disabled {
+    background: lightgrey;
+    text-decoration-color: primaryText;
+}
