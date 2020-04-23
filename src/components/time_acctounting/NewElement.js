@@ -5,6 +5,7 @@ import inputStyles from "../../styles/textinput.module.css";
 import {format} from 'date-fns'
 import {useDispatch} from "react-redux";
 import {postTimeAccountingDictionaryItem} from "../../redux/actions/timeAccountingActions";
+import cx from "classnames";
 
 
 const defaultStyle = {
@@ -40,17 +41,20 @@ export function NewElement() {
         dispatch(postTimeAccountingDictionaryItem(data));
     };
 
-    return (<div className={styles.column}>
-        <div className={`${styles.row} ${styles.centered}`} style={{alignItems:'stretch', justifyContent:'space-between'}}>
-            <TextInput value={project} label={'Проект'} onChange={(e) => setProject(e.target.value)} style={defaultStyle}/>
-            <TextInput value={customer} label={'Заказчик'} onChange={(e) => setCustomer(e.target.value)} style={defaultStyle}/>
-            <TextInput value={ets} label={'Проект ETS'} onChange={(e) => setEts(e.target.value)} style={defaultStyle}/>
-            <TextInput value={iteration} label={'Этап'} onChange={(e) => setIteration(e.target.value)} style={defaultStyle}/>
-            <DateInput value={df} label={'Дата начала'} onChange={date => setDf(date)}/>
-            <DateInput value={dt} label={'Дата окончания'} onChange={date => setDt(date)}/>
-            <button class={styles.textButton} onClick={postData} disabled={isEmpty(project) || isEmpty(customer) || isEmpty(ets) || isEmpty(iteration)}>Save</button>
+    return (
+        <div className={cx(styles.column, styles.styledContainer)}>
+            <span className={styles.title} style={{marginTop: '0.5rem', padding: '0.5rem'}}>Новая запись</span>
+            <div className={cx(styles.row, styles.centered)} style={{alignItems: 'stretch', justifyContent: 'space-between', marginTop: '0.5rem', padding: '0.25rem'}}>
+                <TextInput value={project} label={'Проект'} onChange={(e) => setProject(e.target.value)} style={defaultStyle}/>
+                <TextInput value={customer} label={'Заказчик'} onChange={(e) => setCustomer(e.target.value)} style={defaultStyle}/>
+                <TextInput value={ets} label={'Проект ETS'} onChange={(e) => setEts(e.target.value)} style={defaultStyle}/>
+                <TextInput value={iteration} label={'Этап'} onChange={(e) => setIteration(e.target.value)} style={defaultStyle}/>
+                <DateInput value={df} label={'Дата начала'} onChange={date => setDf(date)}/>
+                <DateInput value={dt} label={'Дата окончания'} onChange={date => setDt(date)}/>
+                <button className={styles.textButton} onClick={postData} disabled={isEmpty(project) || isEmpty(customer) || isEmpty(ets) || isEmpty(iteration)}>Save</button>
+            </div>
         </div>
-    </div>)
+    )
 }
 
 function TextInput({onChange, value, label}) {

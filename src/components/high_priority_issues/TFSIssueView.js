@@ -4,7 +4,7 @@ import TFSDefectView from "./TFSDefectView";
 
 export default function TFSIssueView(props) {
     const tfsIssue = props.data;
-    const now = moment(now);
+    const now = moment();
     const then = moment(tfsIssue.issueLastUpdate, 'YYYY/MM/DD HH:mm:ss');
     const duration = now.diff(then, 'days');
     let color;
@@ -47,7 +47,7 @@ export default function TFSIssueView(props) {
     return (
         <div style={{color: color, padding: 0}}>
             <div>
-                Issue <a href={`https://tfsprod.fsight.ru/Prognoz/P7/_workitems?_a=edit&id=${tfsIssue.issueId}`}
+                Issue <a href={`https://tfsprod.fsight.ru/Foresight/AP/_workitems/edit/${tfsIssue.issueId}`}
                          target="_blank"
                          style={{textDecoration: 'none', color: color}}>{tfsIssue.issueId}</a> {tfsIssue.issueState}
             </div>

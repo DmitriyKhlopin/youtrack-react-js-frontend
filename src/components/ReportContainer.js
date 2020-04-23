@@ -1,14 +1,17 @@
 import React, {useEffect} from "react";
-import {store} from "../redux/store";
 import {fetchProjects} from "../redux/actions/reportFiltersActions";
-import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import LineChartByWeeks from "./charts/LineChartByWeeks";
-import {PAGES} from "../Const";
 import PieChartByPartners from "./charts/PieChartByPartners";
 import ScatterChartSigma from "./charts/ScatterChartSigma";
 import useWindowDimensions from "../helper_functions/dimensions";
+import {withRouter} from 'react-router-dom';
+import {setSelectedNavItem} from "../redux/actions/appBarActions";
+import {compose} from 'recompose';
+import {PAGES} from "../Const";
+import {useDispatch} from "react-redux";
 
 function ReportContainer({location}) {
+    const dispatch = useDispatch();
     const size = useWindowDimensions();
     let percentage;
     switch (true) {
@@ -23,8 +26,8 @@ function ReportContainer({location}) {
             break;
     }
     useEffect(() => {
-        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));
-        store.dispatch(fetchProjects());
+        dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));
+        dispatch(fetchProjects());
     }, []);
 
     return (
@@ -45,4 +48,4 @@ function ReportContainer({location}) {
 }
 
 
-export default ReportContainer;
+export default compose(withRouter)(ReportContainer);

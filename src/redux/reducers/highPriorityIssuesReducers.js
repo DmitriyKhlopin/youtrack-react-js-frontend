@@ -3,6 +3,10 @@ export default function reducer(state = {
     fetched: false,
     error: null,
     issues: [],
+    primaryFilter: 'project',
+    projects: [],
+    customers: [],
+    bindings: []
 }, action) {
     switch (action.type) {
         case 'FETCH_HIGH_PRIORITY_ISSUES_PENDING': {

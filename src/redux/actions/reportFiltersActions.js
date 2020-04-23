@@ -32,40 +32,6 @@ export function fetchProjects() {
 
 export function fetchPartnerCustomers() {
     return function (dispatch) {
-        /*const obj1 = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "password": "demotest123",
-                "username": "demotest",
-                "environment": "test",
-                "project": "test"
-            })
-        };
-        fetch('http://demofmp.fsight.cloud/api/v1/auth/jwt/obtain/', obj1)
-            .then(res => res.json())
-            .then(res => {
-                    const obj2 = {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Authorization': `Bearer ${res.token}`,
-                            'Origin': 'spb-fsight.05.fs.fsight.world'
-                        }
-                    };
-                    console.log(obj2);
-                    fetch('http://demofmp.fsight.cloud/api/v1/schema', obj2)
-                        .then(res1 => res1.json())
-                        .then(                                console.log)
-                        .catch(console.log);
-                }
-            )
-            .catch(console.log);*/
-
-
         dispatch({type: "FETCH_PARTNER_CUSTOMERS_PENDING"});
         const obj = {
             method: 'GET',

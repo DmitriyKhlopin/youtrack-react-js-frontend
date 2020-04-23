@@ -29,7 +29,8 @@ const saveState = (state) => {
 };
 
 const persistedState = loadState();
-export const store = createStore(reducers, persistedState, applyMiddleware(promise, thunk, createLogger()));
+export const store = createStore(reducers,   applyMiddleware(promise, thunk, createLogger()));
+/*export const store = createStore(reducers, persistedState,  applyMiddleware(promise, thunk, createLogger()));*/
 
 store.subscribe(throttle(() => {
     saveState(store.getState());

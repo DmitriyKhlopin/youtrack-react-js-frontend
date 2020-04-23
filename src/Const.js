@@ -15,11 +15,11 @@ import TimeAccountingAppBarActions from "./components/app_bar/actions/TimeAccoun
 import React from "react";
 import KPIAppBarActions from "./components/app_bar/actions/KPIAppBarActions";
 import ReportsAppBarActions from "./components/app_bar/actions/ReportsAppBarActions";
-import TimeAccountingDictionaryDisplay from "./components/time_acctounting/TimeAccountingDictionaryDisplay";
 import PartnersDisplay from "./components/partners_report/PartnersDisplay";
 import KeyPartnersReportContainer from "./components/key_partners_report/container";
 import SingleIndicator from "./components/partners_report/SingleIndicator";
-import {faClock, faChartBar, faEdit, faSpinner, faPray} from '@fortawesome/free-solid-svg-icons';
+import {faChartBar, faClock, faEdit, faPray, faSpinner} from '@fortawesome/free-solid-svg-icons';
+import TimeAccountingDictionaryDisplay from "./components/time_acctounting/TimeAccountingDictionaryDisplay";
 
 export const drawerWidth = 300;
 export const [sidebarWidthOpen, sidebarWidthOpenWide, sidebarWidthClosed] = ['320px', '640px', '60px'];
@@ -198,16 +198,17 @@ export const MATERIAL_COLORS = [/*'#F44336',
 export const MATERIAL_LINE_CHART_COLORS = ['#2196F3', '#FFC107', '#4CAF50'];
 export const MATERIAL_SIGMA_COLORS = ['#34495e', '#4CAF50', '#FFEB3B', '#FF9800'];
 
-export const kpiCharts = [{
-    id: 't1-1',
-    title: 't',
-    dataKey: 'agent',
-    paletteOffset: 0,
-    y: {left: {id: 'left', orientation: 'left'},},
-    bars: [
-        {yAxisId: 'left', name: 'Рейтинг/Количество задач', dataKey: 'totalAvg', legendType: 'circle',},
-    ]
-},
+export const kpiCharts = [
+    {
+        id: 't1-1',
+        title: 't',
+        dataKey: 'agent',
+        paletteOffset: 0,
+        y: {left: {id: 'left', orientation: 'left'},},
+        bars: [
+            {yAxisId: 'left', name: 'Рейтинг/Количество задач', dataKey: 'totalAvg', legendType: 'circle',},
+        ]
+    },
     {
         id: 't1-2',
         title: 't',
@@ -227,7 +228,8 @@ export const kpiCharts = [{
         bars: [
             {yAxisId: 'left', name: 'Рейтинг без учёта SLA', dataKey: 'total', legendType: 'circle',}
         ]
-    },];
+    },
+];
 
 
 export const kpiDetails = [

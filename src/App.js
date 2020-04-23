@@ -1,5 +1,4 @@
 import React from 'react';
-import 'react-table/react-table.css'
 import './App.css';
 import IconButton from '@material-ui/core/IconButton';
 import {createBrowserHistory} from 'history';
@@ -119,22 +118,7 @@ function App({appBarState}) {
 
     return (
         <BrowserRouter history={history}>
-            <div style={{
-                minHeight: '100vh',
-                maxHeight: '100vh',
-                minxWidth: '100vw',
-                maxWidth: '100vw',
-                width: '100%',
-                height: '100%',
-                /*zIndex: 1,*/
-                padding: 0,
-                margin: 0,
-                fontSize: '12px',
-                position: 'absolute',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'visible\!important',
-            }}>
+
                 <div className={styles.navBar}>
                     {hamburger}
                     <span className={styles.title} color="inherit">
@@ -169,7 +153,7 @@ function App({appBarState}) {
                                 aria-labelledby="scroll-dialog-title"/>
                 </div>
 
-            </div>
+
         </BrowserRouter>
     );
 }

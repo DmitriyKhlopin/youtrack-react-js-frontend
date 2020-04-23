@@ -70,3 +70,6 @@ export default function reducer(state = {
     }
     return state;
 };
+
+
+export const selectTimeAccountingData = (state) => state.timeAccountingData;

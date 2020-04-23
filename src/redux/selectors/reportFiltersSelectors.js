@@ -1,0 +1,1 @@
+export const selectPartnerCustomersDictionary = (state) => state.reportFilters.partnerCustomers;

@@ -1,7 +1,6 @@
 export default function reducer(state = {
     repositoriesData: []
 }, action) {
-    /*console.log(action);*/
     switch (action.type) {
         case 'FETCH_ALL_REPOSITORIES_PENDING': {
             break;
