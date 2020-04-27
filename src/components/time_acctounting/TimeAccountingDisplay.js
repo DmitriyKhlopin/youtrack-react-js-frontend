@@ -70,54 +70,7 @@ function TimeAccountingDisplay({location}) {
         rows,
         prepareRow,
     } = useTable({columns, data});
-    return (<Table data={data} columns={columns} editable={false}  updateMyData={(index, id, value)=>console.log(index, id, value)} skipPageReset={true}/>)
-
-   /* return (<div style={{width: '100%'}}>
-        <table {...getTableProps()} style={{border: 'solid 1px blue'}}>
-            <thead>
-            {headerGroups.map(headerGroup => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map(column => (
-                        <th
-                            {...column.getHeaderProps()}
-                            style={{
-                                borderBottom: 'solid 3px red',
-                                background: 'aliceblue',
-                                color: 'black',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            {column.render('Header')}
-                        </th>
-                    ))}
-                </tr>
-            ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-            {rows.map(row => {
-                prepareRow(row);
-                return (
-                    <tr {...row.getRowProps()}>
-                        {row.cells.map(cell => {
-                            return (
-                                <td
-                                    {...cell.getCellProps()}
-                                    style={{
-                                        padding: '10px',
-                                        border: 'solid 1px gray',
-                                        background: 'papayawhip',
-                                    }}
-                                >
-                                    {cell.render('Cell')}
-                                </td>
-                            )
-                        })}
-                    </tr>
-                )
-            })}
-            </tbody>
-        </table>
-    </div>)*/
+    return (<Table data={data} columns={columns} editable={false} updateMyData={(index, id, value)=>console.log(index, id, value)} skipPageReset={true} filterableColumns={false}/>)
 }
 
 export default compose(withRouter)(TimeAccountingDisplay);

@@ -9,7 +9,6 @@ function RepositoriesDisplay({location, repositoriesData}) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        /*dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));*/
         dispatch(getAllRepositoriesData());
     }, []);
 

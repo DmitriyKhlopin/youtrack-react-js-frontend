@@ -5,11 +5,9 @@ import ReportContainer from "./components/ReportContainer";
 import TimeAccountingDisplay from "./components/time_acctounting/TimeAccountingDisplay";
 import AccountedTimeDisplay from "./components/AccountedTimeDisplay";
 import ETLDisplay from "./components/ETLDisplay";
-import IssuesDisplay from "./components/IssuesDisplay";
 import LicenseRequest from "./components/LicenseRequest";
 import AuthDisplay from "./components/AuthDisplay";
 import RepositoriesDisplay from "./components/RepositoriesDisplay";
-import FixedDefectsDisplay from "./components/FixedDefectsDisplay";
 import DurationDisplay from "./components/DurationDisplay";
 import TimeAccountingAppBarActions from "./components/app_bar/actions/TimeAccountingAppBarActions";
 import React from "react";
@@ -70,14 +68,6 @@ export const PAGES = [
         icon: faSpinner
     },
     {
-        id: 4,
-        name: 'Запросы в YT',
-        path: '/issues',
-        component: IssuesDisplay,
-        availableInDrawer: false,
-        appBarActions: null
-    },
-    {
         id: 5,
         name: 'Получить лицензию',
         path: '/license',
@@ -108,14 +98,6 @@ export const PAGES = [
         path: '/repositories',
         component: RepositoriesDisplay,
         availableInDrawer: true,
-        appBarActions: null
-    },
-    {
-        id: 11,
-        name: 'Исправленные дефекты',
-        path: '/fixed_defects',
-        component: FixedDefectsDisplay,
-        availableInDrawer: false,
         appBarActions: null
     },
     {
@@ -333,3 +315,21 @@ export const renderLegend = (props) => {
         </ul>
     );
 };
+
+export const PRIORITIES_DICTIONARY = [
+    {value: 'Major', label: 'Высокий', color: '#00B8D9'},
+    {value: 'Normal', label: 'Обычный', color: '#00B8D9'},
+    {value: 'Minor', label: 'Низкий', color: '#00B8D9'}
+]
+
+export const STATES_DICTIONARY = [
+    {value: 'Submitted', label: 'Зарегистрирована', color: '#00B8D9', resolved: false},
+    {value: 'Open', label: 'Открыта', color: '#00B8D9', resolved: false},
+    {value: 'In Progress', label: 'В обработке', color: '#00B8D9', resolved: false},
+    {value: 'Направлена разработчику', label: 'Направлена разработчику', color: '#00B8D9', resolved: false},
+    {value: 'Ожидает ответа', label: 'Ожидает ответа', color: '#00B8D9', resolved: false},
+    {value: 'Ожидает подтверждения', label: 'Ожидает подтверждения', color: '#00B8D9', resolved: false},
+    {value: 'Подтверждена', label: 'Подтверждена', color: '#00B8D9', resolved: true},
+    {value: 'Без подтверждения', label: 'Без подтверждения', color: '#00B8D9', resolved: true},
+    {value: 'Duplicate', label: 'Дубликат', color: '#00B8D9', resolved: true},
+]

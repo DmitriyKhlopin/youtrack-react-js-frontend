@@ -1,6 +1,6 @@
 import {ENDPOINT} from "../../Const";
 
-export function getIssuesWithDetails(projects, customers, priorities, states) {
+export function getIssuesWithDetails(projects, customers, priorities, states, tags, allTags) {
     return function (dispatch) {
         dispatch({type: 'FETCH_HIGH_PRIORITY_ISSUES_PENDING'});
         console.log(projects.map(e => e.value));
@@ -14,12 +14,9 @@ export function getIssuesWithDetails(projects, customers, priorities, states) {
             },
             body: JSON.stringify({
                 "priorities": priorities.map(e => e.value),
-                "tags": [
-                    "критично"
-                ],
-                "states": [
-                    "Направлена разработчику"
-                ],
+                "tags": tags.map(e => e.value),
+                "allTags": allTags,
+                "states": states.map(e => e.value),
                 "detailedStates": [
                     "Backlog 2ЛП"
                 ],

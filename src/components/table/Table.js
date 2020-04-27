@@ -3,6 +3,12 @@ import React, {useMemo} from "react";
 import matchSorter from 'match-sorter';
 import {useFilters, useGlobalFilter, usePagination, useTable} from "react-table";
 
+
+const ReadOnlyCell = ({cell: {value: initialValue}}) => {
+    return <span>{initialValue}</span>
+}
+
+
 // Create an editable cell renderer
 const EditableCell = ({
                           cell: {value: initialValue},
@@ -174,7 +180,7 @@ function NumberRangeColumnFilter({
                 }}
                 placeholder={`Min (${min})`}
                 style={{
-                    width: '70px',
+                    minWidth: '30px',
                     marginRight: '0.5rem',
                 }}
             />
@@ -188,7 +194,7 @@ function NumberRangeColumnFilter({
                 }}
                 placeholder={`Max (${max})`}
                 style={{
-                    width: '70px',
+                    minWidth: '70px',
                     marginLeft: '0.5rem',
                 }}
             />
@@ -203,14 +209,16 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 // Let the table remove the filter if the string is empty
 fuzzyTextFilterFn.autoRemove = val => !val
 
-const defaultColumn = {
-    // Let's set up our default Filter UI
-    Filter: DefaultColumnFilter,
-    Cell: EditableCell
+function defaultColumn(editable, filterableColumns) {
+    return {
+        // Let's set up our default Filter UI
+        Filter: filterableColumns ? DefaultColumnFilter : null,
+        Cell: editable ? EditableCell : ReadOnlyCell
+    }
 }
 
 // Our table component
-function Table({columns, data, editable, updateMyData, skipPageReset}) {
+function Table({columns, data, editable, updateMyData, skipPageReset, filterableColumns}) {
     const filterTypes = useMemo(
         () => ({
             // Add a new fuzzyTextFilterFn filter type.
@@ -230,7 +238,7 @@ function Table({columns, data, editable, updateMyData, skipPageReset}) {
         }),
         []
     )
-
+    const dc = defaultColumn(editable, filterableColumns)
 
     const {
         getTableProps,
@@ -255,9 +263,9 @@ function Table({columns, data, editable, updateMyData, skipPageReset}) {
         {
             columns,
             data,
-            defaultColumn, // Be sure to pass the defaultColumn option
+            dc, // Be sure to pass the defaultColumn option
             filterTypes,
-            initialState: {pageIndex: 0},
+            initialState: {pageIndex: 0, pageSize: 50},
             autoResetPage: !skipPageReset,
             updateMyData
         },
@@ -272,7 +280,7 @@ function Table({columns, data, editable, updateMyData, skipPageReset}) {
 
     return (
         <>
-            <table {...getTableProps()}>
+            <table {...getTableProps()} style={{width: '100%'}}>
                 <thead>
                 <tr>
                     <th
@@ -294,7 +302,7 @@ function Table({columns, data, editable, updateMyData, skipPageReset}) {
                             <th {...column.getHeaderProps()}>
                                 {column.render('Header')}
                                 {/* Render the columns filter UI */}
-                                <div>{column.canFilter ? column.render('Filter') : null}</div>
+                                <div>{column.canFilter && filterableColumns ? column.render('Filter') : null}</div>
                             </th>
                         ))}
                     </tr>
@@ -346,7 +354,7 @@ function Table({columns, data, editable, updateMyData, skipPageReset}) {
                             const page = e.target.value ? Number(e.target.value) - 1 : 0
                             gotoPage(page)
                         }}
-                        style={{width: '100px'}}
+                        style={{minWidth: '100px'}}
                     />
         </span>{' '}
                 <select
@@ -355,7 +363,7 @@ function Table({columns, data, editable, updateMyData, skipPageReset}) {
                         setPageSize(Number(e.target.value))
                     }}
                 >
-                    {[10, 20, 30, 40, 50, 250].map(pageSize => (
+                    {[10, 20, 50, 100, 250].map(pageSize => (
                         <option key={pageSize} value={pageSize}>
                             Show {pageSize}
                         </option>

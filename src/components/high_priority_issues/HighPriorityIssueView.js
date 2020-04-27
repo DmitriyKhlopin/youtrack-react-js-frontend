@@ -3,16 +3,19 @@ import styles from "../../styles/components.module.css";
 import cx from "classnames";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBug} from "@fortawesome/free-solid-svg-icons";
+import {faBug, faPlus} from "@fortawesome/free-solid-svg-icons";
 
 export default function HighPriorityIssueView({issue, expanded}) {
     const [expand, setExpand] = useState(false);
+    const bugColor = issue.devOpsBugs.length === issue.devOpsBugs.filter(e => ['Closed', 'Resolved'].includes(e.state)).length
+    /*console.log({id: issue.id, bugColor, l1: issue.devOpsBugs.length, l2: issue.devOpsBugs.filter(e => ['Closed', 'Resolved'].includes(e.state)).length})*/
+
     return (
         <div className={cx(styles.column, styles.card, styles.defaultMargin, styles.defaultPadding)}>
-            <div className={cx(styles.row, styles.spread)}>
+            <div className={cx(styles.row, styles.spread, styles.noWrap)}>
                 <div className={styles.column}>
-                    <div className={cx(styles.row, styles.defaultMargin, styles.defaultPadding, styles.spread)}>
-                        <a href={`https://support.fsight.ru/issue/${issue.id}`} target="_blank" style={{textDecoration: 'none'}}>{issue.id + " " + issue.summary}</a>
+                    <div className={cx(styles.row, styles.defaultMargin, styles.defaultPadding, styles.spread, styles.title)}>
+                        <a href={`https://support.fsight.ru/issue/${issue.id}`} target="_blank" style={{textDecoration: 'none', overflowWrap: 'break-word'}}>{issue.id + " " + issue.summary}</a>
                     </div>
                     <div className={cx(styles.row, styles.defaultMargin, styles.defaultPadding)}>
                         <span className={styles.textSecondary} style={{marginRight: '1rem'}}>{issue.priority}</span>
@@ -20,12 +23,20 @@ export default function HighPriorityIssueView({issue, expanded}) {
                         <span className={styles.textSecondary} style={{marginRight: '1rem'}}>{issue.state}</span>
                     </div>
                 </div>
-                <div className={cx(styles.column)}>
-                    <div className={cx(styles.row, styles.centered)} onClick={() => setExpand(!expand)}>
-                        <span style={{margin: '0.5rem', color: 'red'}}>{issue.devOpsBugs.length}</span>
-                        <FontAwesomeIcon icon={faBug} size={'2x'} style={{margin: '1rem', color: 'red'}}/>
+                <div className={styles.expand}/>
+                {issue.devOpsBugs.length > 0
+                    ? <div className={cx(styles.stack, styles.defaultPadding, styles.defaultMargin)} style={{color: bugColor ? 'green' : 'red'}} onClick={() => setExpand(!expand)}>
+                        <FontAwesomeIcon icon={faBug} size={'2x'} className={cx(styles.mediumMargin, styles.mediumPadding)}/>
+                        <div className={styles.textPrimary} style={{position: 'absolute', right: 0, top: 0,}}>{issue.devOpsBugs.length}</div>
                     </div>
-                </div>
+                    : null}
+
+                {issue.devOpsRequirements.length > 0
+                    ? <div className={cx(styles.stack, styles.defaultPadding, styles.defaultMargin)}>
+                        <FontAwesomeIcon icon={faPlus} size={'2x'} className={cx(styles.mediumMargin, styles.mediumPadding)}/>
+                        <div className={styles.textPrimary} style={{position: 'absolute', right: 0, top: 0,}}>{issue.devOpsRequirements.length}</div>
+                    </div>
+                    : null}
             </div>
             <div className={cx(styles.row, styles.defaultMargin, styles.defaultPadding)}>
                 <span className={styles.textSecondary} style={{marginRight: '1rem'}}>{Number(issue.timeUser / 3600).toFixed(2)}</span>
@@ -52,6 +63,7 @@ function DevOpsBug({bug}) {
                 <span>{bug.severity}</span>
                 <span>{bug.state}</span>
                 <span>{bug.reason}</span>
+                <span>{bug.resolvedReason}</span>
                 <span>{bug.lastUpdate}</span>
             </div>
             <div className={cx(styles.row, styles.spread)}>

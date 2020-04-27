@@ -56,6 +56,32 @@ export function fetchPartnerCustomers() {
     }
 }
 
+export function fetchTags() {
+    return function (dispatch) {
+        dispatch({type: "FETCH_TAGS_PENDING"});
+        const obj = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        };
+
+        const url = `${ENDPOINT}/api/dictionary/tags`;
+        fetch(url, obj)
+            .then(res => res.json())
+            .then(json => {
+                dispatch({
+                    type: "FETCH_TAGS_FULFILLED",
+                    payload: json.map(e => new Object({value: e, label: e, color: '#00B8D9'})),
+                });
+            })
+            .catch(err => dispatch({
+                type: "FETCH_TAGS_REJECTED",
+                payload: err
+            }));
+    }
+}
+
 const stringSort = function (a, b) {
     if (a.shortName > b.shortName) {
         return 1;

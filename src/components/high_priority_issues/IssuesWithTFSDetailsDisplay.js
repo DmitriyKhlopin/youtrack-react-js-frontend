@@ -1,68 +1,80 @@
 import React, {useEffect, useState} from "react";
-import {PAGES} from "../../Const";
+import {PAGES, PRIORITIES_DICTIONARY, STATES_DICTIONARY} from "../../Const";
 import {getIssuesWithDetails} from "../../redux/actions/highPriorityIssuesActions";
-import {fetchPartnerCustomers} from "../../redux/actions/reportFiltersActions";
+import {fetchPartnerCustomers, fetchTags} from "../../redux/actions/reportFiltersActions";
 import HighPriorityIssueView from "./HighPriorityIssueView";
 import {setSelectedNavItem} from "../../redux/actions/appBarActions";
 import {customSort} from "../../HelperFunctions";
 import {useDispatch, useSelector} from "react-redux";
 import {selectPartnerCustomersDictionary} from "../../redux/selectors/reportFiltersSelectors";
-import {selectIssueDetails} from "../../redux/selectors/issueDetailsSelector";
-import Select, {components} from "react-select";
+import {selectIsIssueDetailsLoading, selectIssueDetails, selectTags} from "../../redux/selectors/issueDetailsSelector";
+import Select from "react-select";
 import styles from "../../styles/components.module.css"
+import {Workbook} from "../../helper_functions/export_to_excel";
+import * as XLSX from 'xlsx';
+import cx from "classnames";
+import {format} from "date-fns";
 
-/*
-const useStyles = makeStyles(theme => ({
-    content: {display: 'flex', padding: 0, margin: 0},
-    controlsContainer: {width: '100%', position: 'fixed', display: 'flex', backgroundColor: '#ddd', zIndex: 3},
-    issuesContainer: {width: '100%', zIndex: 2, position: 'relative', top: 72},
-    multiSelect: {minWidth: 150, maxWidth: 250, margin: 8},
-    button: {margin: 8, minWidth: 120},
-}));
-*/
-
-const PRIORITIES_DICTIONARY = [
-    {value: 'Major', label: 'Высокий', color: '#00B8D9'},
-    {value: 'Normal', label: 'Обычный', color: '#00B8D9'},
-    {value: 'Minor', label: 'Низкий', color: '#00B8D9'}
-]
-
+const customStyles = {
+    container: base => ({
+        ...base,
+        display: 'inline-block',
+        width: '240px',
+        margin: '0.5rem',
+    }),
+};
 
 function IssuesWithTFSDetailsDisplay({location}) {
     const dispatch = useDispatch();
     const [priorities, setPriorities] = useState([PRIORITIES_DICTIONARY[0]]);
-    const [states, setStates] = useState(['Активные']);
+    const [states, setStates] = useState([]);
     const [projects, setProjects] = useState([]);
     const [customers, setCustomers] = useState([]);
     const [primaryColumns, setPrimaryColumns] = useState(true);
+    const [tags, setTags] = useState([]);
+    const [allTags, setAllTags] = useState(false);
     const [expanded, setExpanded] = useState(false);
     useEffect(() => {
         dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));
         dispatch(fetchPartnerCustomers());
+        dispatch(fetchTags());
     }, []);
 
     const partnerCustomers = useSelector(selectPartnerCustomersDictionary);
     const data = useSelector(selectIssueDetails);
+    const tagOptions = useSelector(selectTags);
+    const isLoading = useSelector(selectIsIssueDetailsLoading);
 
-    const loadData = () => dispatch(getIssuesWithDetails(projects, customers, priorities, states));
-    const exportDefects = () => window.alert("Not implemented");
-    const exportToExcel = () => window.alert("Not implemented");
+    const loadData = () => dispatch(getIssuesWithDetails(projects, customers, priorities, states, tags, allTags));
     const clearFilters = () => {
         setProjects([]);
         setCustomers([]);
         setPriorities([]);
         setStates([]);
     };
+    const selectUnresolvedStates = () => setStates(STATES_DICTIONARY.filter(e => !e.resolved))
+    const selectResolvedStates = () => setStates(STATES_DICTIONARY.filter(e => e.resolved))
 
+    const exportDefects = () => {
+        const wb = new Workbook();
+        let ws = XLSX.utils.json_to_sheet(data.map(e => e.flattenIssue()).flat());
+        XLSX.utils.book_append_sheet(wb, ws, "issues");
+        XLSX.writeFile(wb, `Статус запросов.xlsx`);
+    }
 
-    const customStyles = {
-        container: base => ({
-            ...base,
-            display: 'inline-block',
-            width: '400px',
-            margin: '8px',
-        }),
-    };
+    const handleProjectsChange = (selectedOption) => {
+        console.log(selectedOption)
+        if (selectedOption === null || selectedOption.length === 0) {
+            setProjects([]);
+            setCustomers([]);
+        } else {
+            setProjects(selectedOption);
+            setCustomers([...new Set(partnerCustomers
+                .filter((item) => selectedOption.map(e => e.value).includes(item.project) && item.customer !== null && customers.map(e => e.value).includes(item.customer))
+                .map((item) => item.customer))]
+                .sort(customSort).map(e => new Object({value: e, label: e, color: '#00B8D9'})))
+        }
+    }
 
     return (<div className={styles.column}>
         <div className={styles.row}>
@@ -70,13 +82,11 @@ function IssuesWithTFSDetailsDisplay({location}) {
                 styles={customStyles}
                 isMulti
                 options={[...new Set(partnerCustomers.map((item) => item.project))]
-                    .sort(customSort).map(e => {
-                        return {value: e, label: e, color: '#00B8D9'}
-                    })
+                    .sort(customSort).map(e => new Object({value: e, label: e, color: '#00B8D9'}))
                 }
                 placeholder="Проекты"
                 value={projects}
-                onChange={(selectedOption) => setProjects(selectedOption)}
+                onChange={handleProjectsChange}
                 closeMenuOnSelect={false}
                 /*components={{ ValueContainer }}*/
                 isSearchable={true}
@@ -88,13 +98,11 @@ function IssuesWithTFSDetailsDisplay({location}) {
                 options={[...new Set(partnerCustomers
                     .filter((item) => projects.map(e => e.value).includes(item.project) && item.customer !== null)
                     .map((item) => item.customer))]
-                    .sort(customSort).map(e => {
-                        return {value: e, label: e, color: '#00B8D9'}
-                    })
+                    .sort(customSort).map(e => new Object({value: e, label: e, color: '#00B8D9'}))
                 }
                 placeholder="Заказчики"
                 value={customers}
-                onChange={(selectedOption) => setCustomers(selectedOption)}
+                onChange={(selectedOption) => setCustomers(selectedOption === null ? [] : selectedOption)}
                 closeMenuOnSelect={false}
             />
             <Select
@@ -103,124 +111,98 @@ function IssuesWithTFSDetailsDisplay({location}) {
                 options={PRIORITIES_DICTIONARY}
                 placeholder="Приоритеты"
                 value={priorities}
-                onChange={(selectedOption) => setPriorities(selectedOption)}
+                onChange={(selectedOption) => setPriorities(selectedOption === null ? [] : selectedOption)}
             />
-            {/*<FormControl variant="outlined" className={styles.multiSelect} component='div'>
-                <InputLabel ref={inputLabel1} htmlFor="outlined-projects-simple">
-                    Проекты
-                </InputLabel>
-                <Select value={projects} onChange={handleChange} multiple={true}
-                        renderValue={selected => selected.join(", ")}
-                        input={
-                            <OutlinedInput labelWidth={labelWidth1} name="Projects" id="outlined-projects-simple"/>
-                        }>
-                    {<MenuItem value="SelectAll"> <em>Выбрать все</em> </MenuItem>}
-                    {[...new Set(partnerCustomers.map((item) => item.project))]
-                        .sort(customSort)
-                        .map((item, index) => (
-                            <MenuItem key={`projects-list-item-${index}`} value={item}>
-                                <Checkbox checked={projects.indexOf(item) > -1}/>
-                                {item}
-                            </MenuItem>
-                        ))}
-
-                </Select>
-            </FormControl>
-            <FormControl variant="outlined" className={styles.multiSelect}>
-                <InputLabel ref={inputLabel2} htmlFor="outlined-customers-simple">
-                    Заказчики
-                </InputLabel>
-                <Select value={customers} onChange={handleChange} multiple={true}
-                        renderValue={selected => selected.join(", ")}
-                        input={
-                            <OutlinedInput labelWidth={labelWidth2} name="Customers" id="outlined-customers-simple"/>
-                        }>
-                    {<MenuItem value="SelectAll"> <em>Выбрать все</em> </MenuItem>}
-                    {[...new Set(partnerCustomers
-                        .filter((item) => projects.includes(item.project) && item.customer !== null)
-                        .map((item) => item.customer))]
-                        .sort(customSort)
-                        .map((item, index) =>
-                            (<MenuItem key={`customers-list-item-${index}`} value={item}>
-                                <Checkbox checked={customers.indexOf(item) > -1}/>
-                                {item}
-                            </MenuItem>))}
-
-                </Select>
-            </FormControl>
-            <FormControl variant="outlined" className={styles.multiSelect}>
-                <InputLabel ref={inputLabel3} htmlFor="outlined-priorities-simple">
-                    Приоритеты
-                </InputLabel>
-                <Select value={priorities} onChange={handleChange} multiple={true}
-                        input={
-                            <OutlinedInput
-                                labelWidth={labelWidth3}
-                                name="Priorities"
-                                id="outlined-priorities-simple"
-                            />
-                        }>
-                    {<MenuItem value="SelectAll"> <em>Выбрать все</em> </MenuItem>}
-                    {defaultPriorities.map((item, index) => (
-                        <MenuItem key={`priorities-list-item-${index}`} value={item}>{item}</MenuItem>
-                    ))}
-
-                </Select>
-            </FormControl>
-            <FormControl variant="outlined" className={styles.multiSelect}>
-                <InputLabel ref={inputLabel4} htmlFor="outlined-states-simple">
-                    Состояния
-                </InputLabel>
-                <Select value={states} onChange={handleChange} multiple={true}
-                        input={
-                            <OutlinedInput
-                                labelWidth={labelWidth4}
-                                name="States"
-                                id="outlined-states-simple"
-                            />
-                        }>
-                    {defaultStates.map((item, index) => (
-                        <MenuItem key={`priorities-list-item-${index}`} value={item}>{item}</MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-            <Button variant="contained" color="primary" className={styles.button} onClick={loadData}>
-                Загрузить
-            </Button>
-            <Button variant="contained" color="primary" className={styles.button} onClick={exportToExcel}
-                    disabled={data.length === 0}>
-                Выгрузить в Excel
-            </Button>
-            <FormControlLabel
-                control={
-                    <Checkbox checked={primaryColumns} onChange={() => setPrimaryColumns(!primaryColumns)}
-                              disabled={data.length === 0}/>
-                }
-                label="Только основные столбцы"/>
-            <Button variant="contained" color="primary" className={styles.button} onClick={exportDefects}
-                    disabled={data.length === 0}>
-                Выгрузить дефекты для рассылки
-            </Button>
-            <Button variant="contained" color="primary" className={styles.button} onClick={exportToExcel}
-                    disabled={data.length === 0}>
-                Сбросить фильтры
-            </Button>*/}
+            <Select
+                styles={customStyles}
+                isMulti
+                options={STATES_DICTIONARY}
+                placeholder="Состояния"
+                value={states}
+                onChange={(selectedOption) => setStates(selectedOption === null ? [] : selectedOption)}
+                closeMenuOnSelect={false}
+            />
+            <Select
+                styles={customStyles}
+                isMulti
+                options={tagOptions}
+                placeholder="Тэги"
+                value={tags}
+                onChange={(selectedOption) => setTags(selectedOption === null ? [] : selectedOption)}
+                closeMenuOnSelect={false}
+            />
+            {tags.length > 1 ? <button className={cx(styles.statefulButton, allTags ? styles.on : styles.off)} onClick={() => setAllTags(!allTags)} disabled={tags.length <= 1}>
+                {allTags ? 'Только задачи со всеми тегами' : 'Задачи с любым из тегов'}
+            </button> : null}
         </div>
-        <div className={styles.row}>
-            <button onClick={loadData}>Загрузить данные</button>
-            <button onClick={() => setExpanded(!expanded)}>{expanded ? 'Свернуть все баги' : 'Развернуть все баги'}</button>
-            <button onClick={clearFilters}>Очистить фильтры</button>
+        <div className={cx(styles.row, styles.defaultPadding)}>
+            <button className={styles.chipButton} onClick={selectUnresolvedStates}>Выбрать незавершённые</button>
+            <button className={styles.chipButton} onClick={selectResolvedStates}>Выбрать завершённые</button>
+            <button className={styles.chipButton} onClick={clearFilters}>Очистить фильтры</button>
         </div>
-        <div className={styles.column}>
-            {data.map((item, index) => <HighPriorityIssueView issue={item} key={`hpiv-${index}`} style={{minWidth: '100%'}} expanded={expanded}/>)}
-            {data.length === 0 ? <div>Нет данных</div> : null}
+        <div className={cx(styles.row, styles.defaultPadding)}>
+            <button className={styles.chipButton} onClick={loadData}>Загрузить данные</button>
+            <button className={styles.chipButton} onClick={exportDefects}>Выгрузить всё</button>
+            <button className={styles.chipButton} onClick={exportDefects}>Выгрузить дефекты</button>
+            <button className={styles.chipButton} onClick={exportDefects}>Выгрузить фичи</button>
+            <button className={styles.chipButton} onClick={() => setExpanded(!expanded)}>{expanded ? 'Свернуть все баги' : 'Развернуть все баги'}</button>
         </div>
+        {isLoading
+            ? <div className={styles.loader}/>
+            : <div className={styles.column}>
+                {data.length === 0
+                    ? <div>Нет данных</div>
+                    : data.map((item, index) => <HighPriorityIssueView issue={item} key={`hpiv-${index}`} style={{minWidth: '100%'}} expanded={expanded}/>)}
+            </div>}
     </div>);
 }
 
 
-export default IssuesWithTFSDetailsDisplay
+Object.defineProperty(
+    Object.prototype, "flattenIssue", {
+        value: function flattenIssue() {
+            let temp = this.devOpsBugs.concat(this.devOpsRequirements);
+            if (temp.length === 0) {
+                temp = [new Object({})]
+            }
+            return temp.map(e => new Object({
+                'ID задачи': this.id,
+                'Проект': this.project,
+                'Заказчик': this.customer,
+                'Заголовок': this.summary,
+                'Время создания': format(this.created, 'yyyy-MM-dd hh-mm'),
+                'Приоритет': this.priority,
+                'Состояние': this.state,
+                'Тип': this.type,
+                'Исполнитель': this.assignee,
+                'Комментарий': this.comment,
+                'Автор комментария': this.commentAuthor,
+                /*'Bug в DevOps': this.issue,
+                'Feature в DevOps': this.requirement,*/
+                'Поля Devops':null,
+                'Тип (DevOps)': e.type,
+                'ID задачи (DevOps)': e.id,
+                'Состояние (DevOps)': e.state,
+                'Reason (DevOps)': e.state,
+                'Время последнего изменения (DevOps)': e.lastUpdate,
+                'Итерация (DevOps)': e.iteration,
+                'Исполнитель (DevOps)': e.responsible,
+                'Причина закрытия ': e.resolvedReason,
+                'Приоритет (DevOps)': e.priority,
+                'Обнаружено в ': e.foundIn,
+                'Внесено в': e.integratedIn,
+                'Severity': e.severity,
+                'Area': e.area,
+                'Заголовок (DevOps)': e.title,
+                'triage (DevOps)': e.triage,
+            }))
+        },
+        writable: true,
+        configurable: true
+    }
+)
 
+export default IssuesWithTFSDetailsDisplay
 
 
 /*

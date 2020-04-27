@@ -12,6 +12,7 @@ export default function reducer(state = {
     dateTo: moment().format('YYYY-MM-DD'),
     partnerCustomers: [],
     selectedPartners: [],
+    tags: []
 }, action) {
     switch (action.type) {
         case 'FETCH_PROJECTS_PENDING': {
@@ -130,6 +131,13 @@ export default function reducer(state = {
             state = {
                 ...state,
                 partnerCustomers: action.payload
+            };
+            break;
+        }
+        case 'FETCH_TAGS_FULFILLED': {
+            state = {
+                ...state,
+                tags: action.payload
             };
             break;
         }
