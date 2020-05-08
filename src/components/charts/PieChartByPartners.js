@@ -1,9 +1,5 @@
 import React, {Component} from "react";
-import Typography from '@material-ui/core/Typography';
 import {Cell, Legend, Pie, PieChart, ResponsiveContainer} from "recharts";
-import * as PropTypes from "prop-types";
-import withStyles from "@material-ui/core/styles/withStyles";
-import {styles} from "../../Styles";
 import connect from "react-redux/es/connect/connect";
 import {MATERIAL_COLORS, RADIAN} from "../../Const";
 import {store} from "../../redux/store";
@@ -46,9 +42,7 @@ class PieChartByPartners extends Component {
     render() {
         const aggregatedIssuesByPartner = this.props.reports.aggregatedIssuesByPartner;
         return <div>
-            <Typography align={'center'} variant="h5">
-                Количество запросов от партнёров
-            </Typography>
+            <div>Количество запросов от партнёров</div>
             <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
                 <PieChart margin={{top: 30, right: 0, left: 0, bottom: 30}}>
                     <Pie data={aggregatedIssuesByPartner}
@@ -75,10 +69,6 @@ class PieChartByPartners extends Component {
     }
 }
 
-PieChartByPartners.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
-
 function mapStateToProps(state) {
     return {
         reportFilters: state.reportFilters,
@@ -87,4 +77,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(PieChartByPartners));
+export default connect(mapStateToProps, null)(PieChartByPartners);

@@ -1,8 +1,5 @@
 import React, {useState} from 'react';
 import {connect} from 'react-redux';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import DownloadIcon from '@material-ui/icons/CloudDownload';
-import IconButton from '@material-ui/core/IconButton';
 import KPIFilterDialog from "../../dialogs/KPIFilterDialog";
 import {fetchKpiReportData} from "../../../redux/actions/kpiActions";
 import {exportToExcel} from "../../../helper_functions/export_to_excel";
@@ -18,11 +15,10 @@ function KPIAppBarActions({loadData, data}) {
             backgroundColor: 'transparent',
         }}>
             <div style={{margin: 0, flex: 1}}>
-                <IconButton color='inherit' onClick={() => loadData()}> <RefreshIcon/> </IconButton>
+                <button color='inherit' onClick={() => loadData()}>Refresh</button>
             </div>
             <div style={{margin: 0, flex: 1, float: 'right'}}>
-                <IconButton color='inherit' onClick={() => exportToExcel(data, 'KPI', 'KPI')}> <DownloadIcon/>
-                </IconButton>
+                <button color='inherit' onClick={() => exportToExcel(data, 'KPI', 'KPI')}>Download</button>
             </div>
             <KPIFilterDialog open={open} handleClose={() => setOpen(false)} aria-labelledby="scroll-dialog-title"/>
         </div>

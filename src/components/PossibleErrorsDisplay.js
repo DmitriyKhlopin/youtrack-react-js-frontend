@@ -1,16 +1,10 @@
-import React, {Component} from "react";
-import {store} from "../redux/store";
-import {setSelectedNavItem} from "../redux/actions/appBarActions";
-import withStyles from "@material-ui/styles/withStyles";
+import React, {useEffect} from "react";
 import connect from "react-redux/es/connect/connect";
 import {getPossibleErrors} from "../redux/actions/possibleErrorsActions";
-import {PAGES} from "../Const";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/es/Typography/Typography";
-import {createStyles} from "@material-ui/styles";
+import {useDispatch} from "react-redux";
 
 
-const styles = createStyles({
+/*const styles = createStyles({
     componentRoot: {
         display: 'flex',
         justifyContent: 'left',
@@ -18,40 +12,35 @@ const styles = createStyles({
         padding: 0,
         margin: 0,
     },
-});
+});*/
 
 
-const PossibleErrorsDisplay = withStyles(styles)(class extends Component {
-        componentDidMount() {
-            store.dispatch(getPossibleErrors());
-            store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
-        }
+const PossibleErrorsDisplay = ({data, location}) => {
+    const dispatch = useDispatch();
+    useEffect(dispatch(getPossibleErrors()), []);
+    /*store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));*/
 
-        render() {
-            const data = this.props.possibleErrors.possibleErrorsData;
-            const {classes} = this.props;
-            return <Grid container spacing={8} className={classes.componentRoot} wrap={'wrap'}>
-                {data.map(tile => (
-                    <Grid item={true} key={tile.ytIssueId}>
-                        <Typography>{tile.ytIssueId}</Typography>
-                        <Typography>{tile.assignee}</Typography>
-                        {tile.list.map(wi => (
-                            <Typography key={tile.ytIssueId + wi.systemId}>
-                                {`${wi.systemId}: ${wi.state} ->  ${wi.previousState}`}
-                            </Typography>
-                        ))}
-                    </Grid>
+    return (<div>
+        {data.map(tile => (
+            <div key={tile.ytIssueId}>
+                <div>{tile.ytIssueId}</div>
+                <div>{tile.assignee}</div>
+                {tile.list.map(wi => (
+                    <div key={tile.ytIssueId + wi.systemId}>
+                        {`${wi.systemId}: ${wi.state} ->  ${wi.previousState}`}
+                    </div>
                 ))}
-            </Grid>
-        }
-    }
-)
+            </div>
+        ))}
+    </div>);
+}
+
 
 function mapStateToProps(state) {
     return {
         appBarState: state.appBarState,
-        possibleErrors: state.possibleErrors,
+        data: state.possibleErrors.possibleErrorsData,
     }
 }
 
-export default (connect(mapStateToProps, null)(PossibleErrorsDisplay));
+export default connect(mapStateToProps, null)(PossibleErrorsDisplay);

@@ -2,7 +2,6 @@ import {combineReducers} from "redux";
 import reportFiltersReducers from "./reducers/reportFiltersReducers";
 import reportsReducer from './reducers/reportsReducers';
 import etlFiltersReducers from "./reducers/etlFiltersReducers";
-import appBarReducers from "./reducers/appBarReducers";
 import licenseRequestReducers from "./reducers/licenseRequestReducers";
 import userReducers from "./reducers/userReducers";
 import timeAccountingFiltersReducers from "./reducers/timeAccountingFiltersReducers";
@@ -18,6 +17,9 @@ import workDurationReducers from "./reducers/workDurationReducers";
 import highPriorityIssuesReducers from "./reducers/highPriorityIssuesReducers";
 import partnersReducers from "./reducers/partnersReducers";
 import abstractReportReducers from "./reducers/abstractReportReducer";
+import {mainDialogReducer} from "./combined/mainDialog";
+import {navigationReducer} from "./combined/navigation";
+import {appBarReducer} from "./combined/appBar";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
@@ -27,7 +29,7 @@ export default combineReducers({
     etlFilters: etlFiltersReducers,
     reports: reportsReducer,
     kpi: kpiReducers,
-    appBarState: appBarReducers,
+
     licenseRequestState: licenseRequestReducers,
     user: userReducers,
     actualTimeData: actualTimeReducers,
@@ -39,4 +41,7 @@ export default combineReducers({
     highPriorityIssuesData: highPriorityIssuesReducers,
     partnersData: partnersReducers,
     abstractReportData: abstractReportReducers,
+    ...mainDialogReducer,
+    ...navigationReducer,
+    ...appBarReducer
 });

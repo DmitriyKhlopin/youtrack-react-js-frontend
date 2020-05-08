@@ -280,7 +280,7 @@ function Table({columns, data, editable, updateMyData, skipPageReset, filterable
 
     return (
         <>
-            <table {...getTableProps()} style={{width: '100%'}}>
+            <table {...getTableProps()} style={{width: '100%', borderSpacing: 0, border: '1px solib black'}}>
                 <thead>
                 <tr>
                     <th

@@ -1,19 +1,5 @@
-export function setSelectedNavItem(currentPage) {
-    return function (dispatch) {
-        dispatch({
-            type: "SET_SELECTED_NAV_ITEM",
-            payload: currentPage
-        });
-    }
-}
 
-export function toggleAppBar() {
-    return function (dispatch) {
-        dispatch({
-            type: "TOGGLE_APP_BAR"
-        });
-    }
-}
+/*
 
 export function openMainDialog() {
     return function (dispatch) {
@@ -30,3 +16,4 @@ export function closeMainDialog() {
         })
     }
 }
+*/

@@ -1,34 +1,29 @@
 import React, {useEffect} from "react";
-import Typography from '@material-ui/core/Typography';
 import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
-import withStyles from "@material-ui/core/styles/withStyles";
-import {styles} from "../../Styles";
 import connect from "react-redux/es/connect/connect";
 import {MATERIAL_LINE_CHART_COLORS} from "../../Const";
 import {openDrillDown} from "../../redux/actions/drillDownActions";
-import {store} from "../../redux/store";
 import {fetchDynamicsData} from "../../redux/actions/reportsActions";
+import {useDispatch} from "react-redux";
 
 
 function LineChartByWeeks({reports, reportFilters}) {
+    const dispatch = useDispatch();
+
     const handleClick = (data, index) => {
-        console.log(data);
-        console.log(index);
         const filters = {
             week: data.activeLabel,
         };
-        store.dispatch(openDrillDown('aaaa'));
+        dispatch(openDrillDown('aaaa'));
     };
 
     useEffect(() => {
-        store.dispatch(fetchDynamicsData());
+        dispatch(fetchDynamicsData());
     }, [reportFilters]);
 
     const dynamics = reports.dynamicsData;
     return <div>
-        <Typography align={'center'} variant="h5">
-            Количество поступивших и закрытых запросов
-        </Typography>
+        <div>Количество поступивших и закрытых запросов</div>
         <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
             <LineChart
                 data={dynamics}
@@ -61,4 +56,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(LineChartByWeeks));
+export default connect(mapStateToProps, null)(LineChartByWeeks);

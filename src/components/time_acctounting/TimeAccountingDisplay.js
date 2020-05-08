@@ -1,22 +1,45 @@
 import React, {useEffect, useMemo} from "react";
 import moment from "moment";
-import {setSelectedNavItem} from "../../redux/actions/appBarActions";
 import {fetchTimeAccountingData} from "../../redux/actions/timeAccountingActions";
-import {PAGES} from "../../Const";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import {useDispatch, useSelector} from "react-redux";
 import {selectTimeAccountingData} from "../../redux/reducers/timeAccountingReducers";
-import {compose} from "recompose";
-import {withRouter} from "react-router-dom";
-import {useTable} from "react-table";
 import Table from "../table/Table";
+import styles from "../../styles/components.module.css";
+import styled from "styled-components";
 
+const Styles = styled.div`
+  padding: 1rem;
+
+  table {
+    border-spacing: 0;
+    border: 1px solid black;
+
+    tr {
+      :last-child {
+        td {
+          border-bottom: 0;
+        }
+      }
+    }
+
+    th,
+    td {
+      margin: 0;
+      padding: 0.5rem;
+      border-bottom: 1px solid black;
+      border-right: 1px solid black;
+
+      :last-child {
+        border-right: 0;
+      }
+    }
+  }
+`
 
 function TimeAccountingDisplay({location}) {
     const dispatch = useDispatch();
     const timeAccountingData = useSelector(selectTimeAccountingData);
     useEffect(() => {
-        dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));
         dispatch(fetchTimeAccountingData());
     }, []);
 
@@ -24,7 +47,7 @@ function TimeAccountingDisplay({location}) {
     let table;
 
     if (data === null) table = <div>Error</div>;
-    if (data && timeAccountingData.timeLoading === true) table = <LinearProgress/>;
+    if (data && timeAccountingData.timeLoading === true) table = <div className={styles.loader}/>;
     if (data && timeAccountingData.timeLoading === false && data.length === 0) table = <div>No items to display</div>;
     const columns = useMemo(() => [
             {
@@ -62,15 +85,7 @@ function TimeAccountingDisplay({location}) {
             }
         ]
         , []);
-
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable({columns, data});
-    return (<Table data={data} columns={columns} editable={false} updateMyData={(index, id, value)=>console.log(index, id, value)} skipPageReset={true} filterableColumns={false}/>)
+    return (<Styles><Table data={data} columns={columns} editable={false} updateMyData={(index, id, value) => console.log(index, id, value)} skipPageReset={true} filterableColumns={false}/></Styles>)
 }
 
-export default compose(withRouter)(TimeAccountingDisplay);
+export default TimeAccountingDisplay;

@@ -1,63 +1,52 @@
-import React, {Component} from "react";
-import DialogTitle from "../../node_modules/@material-ui/core/DialogTitle/DialogTitle";
-import DialogContent from "../../node_modules/@material-ui/core/DialogContent/DialogContent";
-import DialogActions from "../../node_modules/@material-ui/core/DialogActions/DialogActions";
-import Button from "../../node_modules/@material-ui/core/Button/Button";
-import Dialog from "../../node_modules/@material-ui/core/Dialog/Dialog";
-import PropTypes from "prop-types";
-import {withStyles} from "@material-ui/core/styles";
+import React from "react";
 import connect from "react-redux/es/connect/connect";
-import {styles} from "../Styles";
-import Typography from "@material-ui/core/Typography/Typography";
+import styles from "../styles/components.module.css"
+import {useDispatch} from "react-redux";
+import {closeMainDialog} from "../redux/actions/appBarActions";
 
+function ReportFilterDialog({appBarState}) {
 
-class ReportFilterDialog extends Component {
-    handleClose = () => {
-        this.props.handleClose(false, null, null, [])
-    };
+    const dispatch = useDispatch();
 
-    render() {
-        const {classes} = this.props;
-        const noDescriptionHelp = <DialogContent className={classes.dialog}>
-            <Typography style={{width: '100vw'}}>
-                Unfortunately I'm undefined :(
-            </Typography>
-        </DialogContent>;
+    const noDescriptionHelp = <div className={styles.column}>
+        <div style={{width: '100vw'}}>
+            Unfortunately I'm undefined :(
+        </div>
+    </div>;
 
-        const timeAccountingHelp = <DialogContent className={classes.dialog}>
-            <Typography style={{width: '100vw'}}>
-                Трудозатраты выгружаются в соотвествии с расписанием cron-планировщика:
-            </Typography>
-            <Typography style={{width: '100vw'}}>
-                '0 0/10 * * * *'
-            </Typography>
-            <br/>
-            <Typography align={'left'} style={{width: '100vw'}}>
-                Если их нет в таблице через 10 минут после внесения, то проверьте их наличие в YT и фильтры
-                отчёта.
-            </Typography>
-        </DialogContent>;
-        const m = new Map();
-        m.set(1, timeAccountingHelp);
-        console.log(m.get(this.props.appBarState.selectedId));
-        return <Dialog
-            open={this.props.open}
-            scroll={'paper'}
-            aria-labelledby="scroll-dialog-title">
-            <DialogTitle id="scroll-dialog-title">{this.props.appBarState.title}</DialogTitle>
-            {m.get(this.props.appBarState.selectedId) ? m.get(this.props.appBarState.selectedId) : noDescriptionHelp}
-            <DialogActions>
-                <Button onClick={this.handleClose} color="primary">
-                    Закрыть
-                </Button>
-            </DialogActions>
-        </Dialog>
-    }
+    const timeAccountingHelp = <div>
+        <div style={{width: '100vw'}}>
+            Трудозатраты выгружаются в соотвествии с расписанием cron-планировщика:
+        </div>
+        <div style={{width: '100vw'}}>
+            '0 0/10 * * * *'
+        </div>
+        <br/>
+        <div align={'left'} style={{width: '100vw'}}>
+            Если их нет в таблице через 10 минут после внесения, то проверьте их наличие в YT и фильтры
+            отчёта.
+        </div>
+    </div>;
+    const m = new Map();
+    m.set(1, timeAccountingHelp);
+
+    console.log(m.get(appBarState.selectedId));
+
+    return appBarState.dialogOpened
+        ? <div className={styles.modalBackground} onClick={() => dispatch(closeMainDialog())}>
+            <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
+                <div id="scroll-dialog-title">{appBarState.title}</div>
+                {m.get(appBarState.selectedId) ? m.get(appBarState.selectedId) : noDescriptionHelp}
+                <div className={styles.row}>
+                    <button onClick={() => dispatch(closeMainDialog())} color="primary">
+                        Закрыть
+                    </button>
+                </div>
+            </div>
+        </div>
+        : null
+
 }
-
-ReportFilterDialog.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
 
 function mapStateToProps(state) {
     return {
@@ -65,4 +54,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(ReportFilterDialog));
+export default connect(mapStateToProps, null)(ReportFilterDialog);

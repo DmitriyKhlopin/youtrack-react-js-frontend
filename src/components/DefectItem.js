@@ -1,15 +1,6 @@
 import React from "react";
-import withStyles from "@material-ui/core/styles/withStyles";
-import {styles} from "../Styles";
-import Card from "@material-ui/core/Card";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import FormControl from "@material-ui/core/FormControl";
-import Button from "@material-ui/core/Button";
 import {ENDPOINT} from "../Const";
 import {AUTH_TOKEN} from "../Config";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import TextField from "@material-ui/core/TextField";
 
 class DefectItem extends React.Component {
     state = {

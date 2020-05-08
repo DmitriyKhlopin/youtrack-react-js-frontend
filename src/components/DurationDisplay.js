@@ -1,28 +1,15 @@
 import React, {Component} from "react";
-import {styles} from  "../Styles"
+import styles from "../styles/components.module.css"
 import {store} from "../redux/store";
-import {setSelectedNavItem} from "../redux/actions/appBarActions";
-import * as PropTypes from "prop-types";
-/*import withStyles from "@material-ui/core/styles/withStyles";*/
-import { withStyles } from '@material-ui/styles';
 import connect from "react-redux/es/connect/connect";
-import Button from "@material-ui/core/Button/Button";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
-import {drawerWidth, PAGES} from "../Const";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import MenuItem from "@material-ui/core/MenuItem";
 import * as ReactDOM from "react-dom";
-import InputLabel from "@material-ui/core/InputLabel";
 import {fetchProjects} from "../redux/actions/reportFiltersActions";
 import {getWorkDuration} from "../redux/actions/workDurationActions";
+import * as X from 'xlsx';
+import {Select} from "react-select";
 
 /*import { withTheme } from '@material-ui/styles';*/
-
-
-import * as X from 'xlsx';
-import LinearProgress from "@material-ui/core/LinearProgress";
 
 function Workbook() {
     if (!(this instanceof Workbook))
@@ -41,12 +28,19 @@ class DurationDisplay extends Component {
         labelWidth: 0
     };
 
+    static s2ab(s) {
+        const buf = new ArrayBuffer(s.length);
+        const view = new Uint8Array(buf);
+        for (let i = 0; i !== s.length; ++i)
+            view[i] = s.charCodeAt(i) & 0xFF;
+        return buf
+    }
+
     requestData = () => {
         store.dispatch(fetchTimeAccountingData());
     };
 
     componentDidMount() {
-        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
         if (this.props.reportFilters.proj.length === 0) {
             store.dispatch(fetchProjects());
         }
@@ -59,7 +53,6 @@ class DurationDisplay extends Component {
         this.setState({[event.target.name.toLowerCase()]: event.target.value});
     };
 
-
     download = (url, name) => {
         let a = document.createElement('a');
         a.href = url;
@@ -67,15 +60,6 @@ class DurationDisplay extends Component {
         a.click();
         window.URL.revokeObjectURL(url)
     };
-
-
-    static s2ab(s) {
-        const buf = new ArrayBuffer(s.length);
-        const view = new Uint8Array(buf);
-        for (let i = 0; i !== s.length; ++i)
-            view[i] = s.charCodeAt(i) & 0xFF;
-        return buf
-    }
 
     exportToExcel() {
         const wb = new Workbook();
@@ -88,73 +72,33 @@ class DurationDisplay extends Component {
     }
 
     render() {
-        const {classes} = this.props;
-        console.log(this.props);
         return <div style={{minWidth: '100%'}}>
             <div style={{
                 display: 'flex',
                 flexWrap: 'wrap',
             }}>
-                <FormControl variant="outlined" className={classes.formControl}>
-                    <InputLabel
-                        ref={ref => {
-                            this.InputLabelRef2 = ref;
-                        }}
-                        htmlFor="outlined-projects-simple"
-                    >
-                        Projects
-                    </InputLabel>
-                    <Select
-                        value={this.state.projects}
-                        onChange={this.handleChange}
-                        multiple={true}
-                        input={
-                            <OutlinedInput
-                                labelWidth={this.state.labelWidth}
-                                name="Projects"
-                                id="outlined-projects-simple"
-                            />
-                        }
-                    >
-                        {<MenuItem value="">
-                            <em>Select iteration</em>
-                        </MenuItem>}
-                        {this.props.reportFilters.proj.map((item, index) => (
-                            <MenuItem key={`projects-list-item-${index}`} value={item}>{item.shortName}</MenuItem>
-                        ))}
+                <div>Add iterations select</div>
+                <button className={styles.button}
+                        onClick={() => store.dispatch(getWorkDuration(this.state.projects.map(project => project.shortName)))}>
+                    Загрузить
+                </button>
 
-                    </Select>
-                </FormControl>
-                <FormControl variant="outlined" className={classes.formControl}>
-                    <Button variant="contained" color="primary" className={classes.button2}
-                            onClick={() => {
-                                store.dispatch(getWorkDuration(this.state.projects.map(project => project.shortName)));
-                            }
-                            }>
-                        Загрузить
-                    </Button>
-                </FormControl>
-                <FormControl variant="outlined" className={classes.formControl}>
-                    <Button variant="contained" color="primary" className={classes.button2}
-                            onClick={() =>
+                <button className={styles.button}
+                        onClick={() =>
 
-                                this.exportToExcel()
-                            }>
-                        Выгрузить в xlsx
-                    </Button>
-                </FormControl>
+                            this.exportToExcel()
+                        }>
+                    Выгрузить в xlsx
+                </button>
+
             </div>
-            {this.props.workDurationData.fetching ?
-                <LinearProgress/> : this.props.workDurationData.durationItems.map((item, index) => (
-                    <div key={`di-${index}`}>{JSON.stringify(item)}</div>))}
+            {this.props.workDurationData.fetching
+                ? <div className={styles.loader}/>
+                : this.props.workDurationData.durationItems.map((item, index) => (<div key={`di-${index}`}>{JSON.stringify(item)}</div>))}
         </div>;
     }
 }
 
-
-DurationDisplay.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
 
 function mapStateToProps(state) {
     return {
@@ -164,30 +108,6 @@ function mapStateToProps(state) {
     }
 }
 
-const st = {
-    formControl: {
-        margin: 16,
-        minWidth: 120,
-    },
-    button2: {
-        height: '100%'
-    },
-};
 
-const styles2 = theme => ({
-    formControl: {
-        /*marginTop: theme.spacing.unit * 2,
-        marginLeft: theme.spacing.unit * 2,
-        marginRight: theme.spacing.unit * 2,*/
-        margin: theme.spacing.unit * 2,
-        minWidth: 120,
-    },
-});
-
-
-
-/*export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(DurationDisplay));*/
-/*export default withStyles(st, {withTheme: true})(connect(mapStateToProps, null)(DurationDisplay));*/
-export default withStyles(styles/*, {withTheme: true}*/)(connect(mapStateToProps, null)(DurationDisplay));
-/*export default withTheme()(connect(mapStateToProps, null)(DurationDisplay));*/
+export default connect(mapStateToProps, null)(DurationDisplay);
 

@@ -1,16 +1,9 @@
 import React, {useEffect} from "react";
-import moment from "moment";
-import {deleteTimeAccountingDictionaryItem, fetchTimeAccountingDictionaryData, toggleTimeAccountingDictionaryItem} from "../../redux/actions/timeAccountingActions";
+import {fetchTimeAccountingDictionaryData} from "../../redux/actions/timeAccountingActions";
 import {NewElement} from "./NewElement";
-import styles from "../../styles/components.module.css";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSpinner, faToggleOff, faToggleOn, faTrash} from "@fortawesome/free-solid-svg-icons";
-import cx from "classnames";
 import {useDispatch, useSelector} from "react-redux";
 import {selectTimeAccountingData} from "../../redux/reducers/timeAccountingReducers";
 import {compose} from "recompose";
-import {setSelectedNavItem} from "../../redux/actions/appBarActions"
-import {PAGES} from "../../Const";
 import {withRouter} from "react-router-dom";
 import Table from "../table/Table";
 
@@ -19,7 +12,6 @@ function TimeAccountingDictionaryDisplay({location}) {
     const timeAccountingData = useSelector(selectTimeAccountingData);
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));
         requestData();
     }, []);
 
@@ -45,7 +37,6 @@ function TimeAccountingDictionaryDisplay({location}) {
             id: 'projectShortName',
             Header: 'PROJECT',
             accessor: 'projectShortName',
-
 
 
         },

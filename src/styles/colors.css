@@ -1,4 +1,9 @@
-@value primaryBackground: white;
-
-@value primaryText: #161c20 ;
-@value accent: lightblue ;
+/*@value primaryBackground: white;*/
+@value darkPrimaryColor:   #512DA8;
+@value primaryColor:       #673AB7;
+@value lightPrimaryColor:  #D1C4E9;
+@value textPrimaryColor:   #FFFFFF;
+@value accentColor:        #FF4081;
+@value primaryTextColor:   #212121;
+@value secondaryTextColor: #757575;
+@value dividerColor:       #BDBDBD;

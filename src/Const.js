@@ -1,15 +1,12 @@
 import PossibleErrorsDisplay from "./components/PossibleErrorsDisplay";
 import KPIContainer from "./components/kpi/KPIContainer";
-import IssuesWithTFSDetailsDisplay from "./components/high_priority_issues/IssuesWithTFSDetailsDisplay";
 import ReportContainer from "./components/ReportContainer";
-import TimeAccountingDisplay from "./components/time_acctounting/TimeAccountingDisplay";
 import AccountedTimeDisplay from "./components/AccountedTimeDisplay";
 import ETLDisplay from "./components/ETLDisplay";
 import LicenseRequest from "./components/LicenseRequest";
 import AuthDisplay from "./components/AuthDisplay";
 import RepositoriesDisplay from "./components/RepositoriesDisplay";
 import DurationDisplay from "./components/DurationDisplay";
-import TimeAccountingAppBarActions from "./components/app_bar/actions/TimeAccountingAppBarActions";
 import React from "react";
 import KPIAppBarActions from "./components/app_bar/actions/KPIAppBarActions";
 import ReportsAppBarActions from "./components/app_bar/actions/ReportsAppBarActions";
@@ -18,6 +15,8 @@ import KeyPartnersReportContainer from "./components/key_partners_report/contain
 import SingleIndicator from "./components/partners_report/SingleIndicator";
 import {faChartBar, faClock, faEdit, faPray, faSpinner} from '@fortawesome/free-solid-svg-icons';
 import TimeAccountingDictionaryDisplay from "./components/time_acctounting/TimeAccountingDictionaryDisplay";
+import IssueDetails from "./components/high_priority_issues"
+import TimeAcounting from "./components/time_acctounting"
 
 export const drawerWidth = 300;
 export const [sidebarWidthOpen, sidebarWidthOpenWide, sidebarWidthClosed] = ['320px', '640px', '60px'];
@@ -31,7 +30,8 @@ export const PAGES = [
         appBarActions: <ReportsAppBarActions key={'asdfasdfasd'}/>,
         icon: faChartBar
     },
-    {
+    TimeAcounting,
+    /*{
         id: 1,
         name: 'Трудозатраты',
         path: '/time_accounting',
@@ -39,7 +39,7 @@ export const PAGES = [
         availableInDrawer: true,
         appBarActions: <TimeAccountingAppBarActions/>,
         icon: faClock
-    },
+    },*/
     {
         id: 6,
         name: 'Привязка проектов YT в ETS',
@@ -108,14 +108,16 @@ export const PAGES = [
         availableInDrawer: false,
         appBarActions: null
     },
-    {
+    IssueDetails,
+    /*{
         id: 13,
         name: 'Детализация по запросам',
         path: '/issues_with_tfs_details',
         component: IssuesWithTFSDetailsDisplay,
         availableInDrawer: true,
-        appBarActions: null
-    },
+        appBarActions: null,
+        help: null
+    },*/
     {
         id: 14,
         name: 'Авторизация',

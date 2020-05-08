@@ -2,36 +2,14 @@ import React, {useEffect, useState} from "react";
 import {store} from "../../redux/store";
 import connect from "react-redux/es/connect/connect";
 import {MATERIAL_COLORS, PAGES, sidebarWidthClosed, sidebarWidthOpen} from "../../Const";
-import {makeStyles} from "@material-ui/core/styles";
-import {setSelectedNavItem} from "../../redux/actions/appBarActions";
 import {fetchPartners} from "../../redux/actions/partnersActions";
-import IconButton from "@material-ui/core/IconButton";
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import {Sidebar} from "./sidebar";
-import {Canvas, Document, Page, PDFViewer, StyleSheet, Text, View} from "@react-pdf/renderer";
+import {Canvas, Document, Page, StyleSheet, Text, View} from "@react-pdf/renderer";
 import {Cell, Legend, Pie, PieChart, ResponsiveContainer} from "recharts";
 import {renderCustomizedLabel} from "../charts/PieChartByPartners";
+import styles from "../../styles/components.module.css";
 
-const useStyles = makeStyles(theme => ({
-    content: {display: 'flex', padding: 0, margin: 0, flexDirection: 'row', flexWrap: 'no-wrap', width: '100%'},
-    textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: `calc(192px - ${theme.spacing(2)})`,
-    },
-    page: {
-        flexDirection: 'row',
-        backgroundColor: '#E4E4E4'
-    },
-    section: {
-        margin: 10,
-        padding: 10,
-        flexGrow: 1
-    }
-}));
-
-const styles = StyleSheet.create({
+const styleSheet = StyleSheet.create({
     page: {
         flexDirection: 'row',
         backgroundColor: '#E4E4E4'
@@ -46,11 +24,11 @@ const styles = StyleSheet.create({
 const MyDocument = () => (
 
     <Document>
-        <Page size="A4" style={styles.page}>
-            <Canvas style={styles.section}>
+        <Page size="A4" style={styleSheet.page}>
+            <Canvas style={styleSheet.section}>
                 <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
                     <PieChart margin={{top: 30, right: 0, left: 0, bottom: 30}}>
-                        <Pie data={ [{name: 'a', value: 1}, {name: 'b', value: 2}]}
+                        <Pie data={[{name: 'a', value: 1}, {name: 'b', value: 2}]}
                              nameKey={'name'}
                              dataKey={'value'}
                              labelLine={true}
@@ -63,14 +41,14 @@ const MyDocument = () => (
                         >
                             {
                                 [{name: 'a', value: 1}, {name: 'b', value: 2}].map((entry, index) => <Cell key={`cell-${index}`}
-                                                                                      fill={MATERIAL_COLORS[index % MATERIAL_COLORS.length]}/>)
+                                                                                                           fill={MATERIAL_COLORS[index % MATERIAL_COLORS.length]}/>)
                             }
                         </Pie>
                         <Legend/>
                     </PieChart>
                 </ResponsiveContainer>
             </Canvas>
-            <View style={styles.section}>
+            <View style={styleSheet.section}>
                 <Text>Section #2</Text>
             </View>
         </Page>
@@ -79,16 +57,14 @@ const MyDocument = () => (
 
 
 function KeyPartnersReportContainer({location, filters, data}) {
-    const styles = useStyles();
     const [open, setOpen] = useState(false);
     useEffect(() => {
-        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));
         store.dispatch(fetchPartners());
     }, []);
 
     const [w1, w2] = [`calc(100% - ${open ? sidebarWidthOpen : sidebarWidthClosed} - 16px)`, open ? sidebarWidthOpen : sidebarWidthClosed];
 
-    return (<div className={styles.content}>
+    return (<div className={styles.column}>
         <div style={{
             width: w1,
             display: 'flex',
@@ -98,7 +74,7 @@ function KeyPartnersReportContainer({location, filters, data}) {
             flexWrap: 'no-wrap',*/
         }}>
 
-                <MyDocument/>
+            <MyDocument/>
 
             content
         </div>
@@ -114,13 +90,7 @@ function KeyPartnersReportContainer({location, filters, data}) {
                 boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)'
             },
         }}>
-            <IconButton onClick={() => setOpen(!open)} style={{
-                display: 'block',
-                marginLeft: 'auto',
-                marginRight: 'auto'
-            }}>
-                {open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
-            </IconButton>
+            <button onClick={() => setOpen(!open)}>{open ? 'Close' : 'Open'}</button>
             {open ? <Sidebar/> : <div/>}
         </div>
     </div>);

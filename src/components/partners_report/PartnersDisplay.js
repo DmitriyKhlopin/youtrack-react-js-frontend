@@ -1,14 +1,8 @@
 import React, {useEffect, useState} from "react";
 import connect from "react-redux/es/connect/connect";
-import {drawerWidth, PAGES} from "../../Const";
-import {setSelectedNavItem} from "../../redux/actions/appBarActions";
+import {drawerWidth} from "../../Const";
 import {fetchPartners} from "../../redux/actions/partnersActions";
 import {groupBy} from "../../HelperFunctions";
-import IconButton from "@material-ui/core/IconButton";
-import ChevronLeftIcon from '@material-ui/icons/Settings';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import TextField from "@material-ui/core/TextField";
-import {styles} from "../../Styles";
 import Report from "./Report";
 import useWindowDimensions from "../../helper_functions/dimensions";
 import {fetchAbstractReportData} from "../../redux/actions/abstractReportsActions";
@@ -33,7 +27,6 @@ const range = (start, end) => {
 };
 
 function PartnersDisplay({location, filters, data, appBarState, reportData, setTitle, fetchPartners, loadData, toggleSinglePartnerAndProject, selectMultiplePartnersAndProjects, clearSelection}) {
-    const {textField, iconButton} = styles;
     const [sidebarWidthOpen, sidebarWidthClosed] = ['100%', '64px'];
     const [priorities, setPriorities] = useState(['Major', 'Normal', 'Minor']);
     const [open, setOpen] = useState(false);
@@ -42,7 +35,6 @@ function PartnersDisplay({location, filters, data, appBarState, reportData, setT
     const size = useWindowDimensions();
 
     useEffect(() => {
-        setTitle(location);
         fetchPartners();
     }, []);
 
@@ -130,19 +122,15 @@ function PartnersDisplay({location, filters, data, appBarState, reportData, setT
             height: open ? 'auto' : '64px',
             borderRadius: open ? '4px' : '32px'
         }}>
-            <IconButton onClick={() => setOpen(!open)} style={{...iconButton, color: '#C2185B'}}>
-                {open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
-            </IconButton>
+            <button onClick={() => setOpen(!open)}>{open ? 'Close' : 'Open'}</button>
             <div style={{visibility: open ? 'visible' : 'hidden'}}>
                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                    {open ? <TextField
+                    {open ? <input
+                        type={'text'}
                         id="standard-name"
-                        label="Проект"
                         value={project}
                         onChange={(event) => setProject(event.target.value)}
-                        margin="normal"
-                        style={{...textField}}
-                    /> : <div/>}
+                    /> : null}
                     {open ? <HoverButtonSmall onClick={() => selectMultiplePartnersAndProjects(project)}
                                               style={{backgroundColor: '#4CAF50'}}>Отметить</HoverButtonSmall> : <div/>}
                     {open && (filters.selectedPartners.length > 0) ?
@@ -180,7 +168,6 @@ function PartnersDisplay({location, filters, data, appBarState, reportData, setT
 
 function mapDispatchToProps(dispatch) {
     return {
-        setTitle: (location) => dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0])),
         fetchPartners: () => dispatch(fetchPartners()),
         loadData: (id, filters) => dispatch(fetchAbstractReportData(id, filters)),
         toggleSinglePartnerAndProject: (item) => dispatch(toggleSelectedPartnerAndProject(item)),

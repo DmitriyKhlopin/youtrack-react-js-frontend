@@ -1,17 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
-import Chip from '@material-ui/core/Chip';
-import DoneIcon from '@material-ui/icons/Done';
 import {store} from "../redux/store";
 import {addProjectToSelected, removeProjectFromSelected} from "../redux/actions/reportFiltersActions";
 import connect from "react-redux/es/connect/connect";
-
-const styles = theme => ({
-    chip: {
-        margin: theme.spacing.unit / 2,
-    },
-});
 
 class ChipsArray extends React.Component {
     handleDelete = data => () => {
@@ -31,33 +22,21 @@ class ChipsArray extends React.Component {
             <div>
                 <div>{selected.map(data => {
                     return (
-                        <Chip
+                        <button
                             key={data.shortName}
-                            clickable
                             onClick={this.handleDelete(data)}
-                            label={data.name}
-                            onDelete={this.handleDelete(data)}
-                            className={classes.chip}
-                            variant="outlined"
-                            color="primary"
-                        />
+                        >{data.name}</button>
                     );
                 })}
                 </div>
                 <div>
                     {notSelected.map(data => {
                         return (
-                            <Chip
+                            <button
                                 key={data.shortName}
-                                clickable
-                                label={data.name}
-                                onDelete={this.handleAdd(data)}
                                 onClick={this.handleAdd(data)}
-                                deleteIcon={<DoneIcon/>}
-                                className={classes.chip}
-                                variant="outlined"
                                 color="secondary"
-                            />
+                            >{data.name}</button>
                         );
                     })}
                 </div>
@@ -76,4 +55,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(ChipsArray));
+export default connect(mapStateToProps, null)(ChipsArray);

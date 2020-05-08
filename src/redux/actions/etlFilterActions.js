@@ -18,11 +18,9 @@ export function setEtlFilterDateTo(dateTo) {
     }
 }
 
-export function fetchETL() {
-    return function (dispatch, getState) {
-        const state = getState();
-        const dateFrom = state.etlFilters.dateFrom;
-        const dateTo = state.etlFilters.dateTo;
+export function fetchETL(dateType, startDate, endDate, parameters) {
+    return function (dispatch/*, getState*/) {
+        console.log({startDate, endDate, parameters})
         dispatch({type: "FETCH_ETL_PENDING"});
         const obj = {
             method: 'GET',
@@ -31,7 +29,7 @@ export function fetchETL() {
             }
         };
 
-        const url = `${ENDPOINT}/api/etl?dateFrom=${dateFrom}&dateTo=${dateTo}&parameters=issues,projects,bundles,users,check,timeline`;
+        const url = `${ENDPOINT}/api/etl?dateType=${dateType}&dateFrom=${startDate}&dateTo=${endDate}&parameters=${parameters}`;
         fetch(url, obj)
             .then(res => res.json())
             .then(json => {

@@ -1,17 +1,10 @@
-import React, {useEffect, useState} from "react";
-import Button from "@material-ui/core/Button";
+import React, {useState} from "react";
 import connect from "react-redux/es/connect/connect";
 import DatePicker from "react-datepicker";
 import {format, parseISO} from "date-fns";
-import {styles} from "../../Styles";
 import {setDateFrom, setDateTo} from "../../redux/actions/kpiFiltersActions";
 import {fetchKpiReportData} from "../../redux/actions/kpiActions";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import MenuItem from "@material-ui/core/MenuItem";
-import Checkbox from "@material-ui/core/Checkbox";
+import styles from "../../styles/components.module.css";
 
 function KPISidebar({df, dt, close, loadData, dispatchAll}) {
     const {sidebarContentBase, spacedRowWithButtons, dateRangeSelectorContainer} = styles;
@@ -79,9 +72,9 @@ function KPISidebar({df, dt, close, loadData, dispatchAll}) {
             </FormControl>*/}
         </div>
         <div style={spacedRowWithButtons}>
-            <Button onClick={loadData} variant="contained" color="primary">Обновить</Button>
-            <Button onClick={() => dispatchAll(dateFrom, dateTo)} variant="contained" color="primary">Применить</Button>
-            <Button onClick={close} variant="contained" color="secondary">Закрыть</Button>
+            <button className={styles.button} onClick={loadData}>Обновить</button>
+            <button className={styles.button} onClick={() => dispatchAll(dateFrom, dateTo)}>Применить</button>
+            <button className={styles.button} onClick={close}>Закрыть</button>
         </div>
     </div>)
 }

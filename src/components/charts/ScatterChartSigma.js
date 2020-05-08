@@ -1,11 +1,6 @@
-import Typography from '@material-ui/core/Typography';
 import {Legend, ReferenceArea, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis} from "recharts";
 import {MATERIAL_SIGMA_COLORS} from "../../Const";
-import Grid from "@material-ui/core/Grid";
 import React, {Component} from "react";
-import * as PropTypes from "prop-types";
-import withStyles from "@material-ui/core/styles/withStyles";
-import {styles} from "../../Styles";
 import connect from "react-redux/es/connect/connect";
 import {store} from "../../redux/store";
 import {fetchSigmaData} from "../../redux/actions/reportsActions";
@@ -25,10 +20,8 @@ class ScatterChartSigma extends Component {
 
     render() {
         const sigma2 = this.props.reports.sigmaData;
-        return <div >
-            <Typography
-                align={'center'}
-                variant="h5">Продолжительность работ по запросам</Typography>
+        return <div>
+            <div>Продолжительность работ по запросам</div>
             <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
                 <ScatterChart margin={{top: 30, right: 0, left: 0, bottom: 30}}
                               onClick={this.handleClick}>
@@ -73,10 +66,6 @@ class ScatterChartSigma extends Component {
     }
 }
 
-ScatterChartSigma.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
-
 function mapStateToProps(state) {
     return {
         reportFilters: state.reportFilters,
@@ -85,4 +74,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(ScatterChartSigma));
+export default connect(mapStateToProps, null)(ScatterChartSigma);

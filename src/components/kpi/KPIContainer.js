@@ -1,29 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import connect from 'react-redux/es/connect/connect';
 import {fetchKpiReportData} from '../../redux/actions/kpiActions';
-import {setSelectedNavItem} from '../../redux/actions/appBarActions';
 import {format} from 'date-fns'
-import {drawerWidth, kpiCharts, kpiDetails, MATERIAL_COLORS, PAGES} from '../../Const';
+import {drawerWidth, kpiCharts, kpiDetails, MATERIAL_COLORS} from '../../Const';
 import {Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis} from 'recharts';
 import {fetchProjects} from "../../redux/actions/reportFiltersActions";
-import IconButton from "@material-ui/core/IconButton";
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import KPISidebar from "./KPISidebar";
-import {CircularProgress} from "@material-ui/core";
 import useWindowDimensions from "../../helper_functions/dimensions";
 import {ContainerWithSidebar, CustomA, CustomCard, CustomH4, CustomSidebar, DataContainer} from "../../styled_components/StyledComponents";
 import {KPIBarChart} from "./KPIBarChart";
 import {dynamicSort} from "../../helper_functions/sorting";
+import styles from "../../styles/components.module.css";
 
-function KPIContainer({location, data, detailedData, setTitle, loadData, df, dt, isFetching, appBarState, overallData}) {
+function KPIContainer({location, data, detailedData, loadData, df, dt, isFetching, appBarState, overallData}) {
     const size = useWindowDimensions();
     const [sidebarWidthOpen, sidebarWidthClosed] = [640, 64];
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        setTitle(location);
-        loadData();
+        loadData()
     }, []);
 
     const close = () => setOpen(false);
@@ -40,7 +35,7 @@ function KPIContainer({location, data, detailedData, setTitle, loadData, df, dt,
 
 
     return (<ContainerWithSidebar>
-        {isFetching ? <CircularProgress style={{margin: 'auto'}}/> :
+        {isFetching ? <div className={styles.loader}/> :
             <DataContainer style={{width: w1}}>
                 <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
                     <h2 style={{textAlign: 'center', width: '100%'}}>{`Показатели за период с ${df} по ${dt}`}</h2>
@@ -73,7 +68,8 @@ function KPIContainer({location, data, detailedData, setTitle, loadData, df, dt,
                         )}
                     </div>
                 </div>
-                {kpiCharts.map((item, index) => <KPIBarChart key={`kpi-barchart-wide-${index}`} w={w1 / 3} h={h1 / 1.5} data={[...data].sort(dynamicSort('-'+item.bars[0].dataKey))} settings={item}/>)}
+                {kpiCharts.map((item, index) => <KPIBarChart key={`kpi-barchart-wide-${index}`} w={w1 / 3} h={h1 / 1.5} data={[...data].sort(dynamicSort('-' + item.bars[0].dataKey))}
+                                                             settings={item}/>)}
                 {kpiDetails.map((item, index) => <KPIBarChart key={`kpi-barchart-wide-${index}`} w={w1} h={h1} data={data} settings={item}/>)}
                 {detailedData.map((e, index) => {
                     return (
@@ -91,9 +87,9 @@ function KPIContainer({location, data, detailedData, setTitle, loadData, df, dt,
                 })}
             </DataContainer>}
         <CustomSidebar style={{width: open ? `${sidebarWidthOpen}px` : `${sidebarWidthClosed}px`, height: open ? 'auto' : '64px', borderRadius: open ? '4px' : '32px'}}>
-            <IconButton onClick={() => setOpen(!open)} style={{display: 'block', margin: open ? '8px  auto' : '8px'}}>
-                {open ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
-            </IconButton>
+            <button className={styles.button} onClick={() => setOpen(!open)} style={{display: 'block', margin: open ? '8px  auto' : '8px'}}>
+                {open ? 'Close' : 'Open'}
+            </button>
             {open ? <KPISidebar close={close}/> : <div/>}
         </CustomSidebar>
     </ContainerWithSidebar>);
@@ -113,9 +109,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        setTitle: ({pathname}) => {
-            dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === pathname)[0]));
-        },
         loadData: () => {
             dispatch(fetchProjects());
             dispatch(fetchKpiReportData())

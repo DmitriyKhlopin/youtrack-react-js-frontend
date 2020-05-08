@@ -1,12 +1,9 @@
 import React, {useState} from 'react';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import DownloadIcon from '@material-ui/icons/CloudDownload';
-import FilterIcon from '@material-ui/icons/Settings';
-import IconButton from '@material-ui/core/IconButton';
 import {store} from "../../../redux/store";
 import {fetchReportData} from "../../../redux/actions/reportsActions";
 import ReportFilterDialog from "../../dialogs/ReportFilterDialog";
 import styles from "../../../styles/components.module.css";
+import cx from "classnames";
 
 function ReportsAppBarActions() {
     const [open, setOpen] = useState(false);
@@ -74,28 +71,21 @@ function ReportsAppBarActions() {
 
 
     return (
-        <div className={`${styles.row} ${styles.centered}`}>
-            <div style={{margin: 0, flex: 1}}>
-                <IconButton color='inherit'
-                            onClick={requestData}>
-                    <RefreshIcon/>
-                </IconButton>
-            </div>
-            <div style={{margin: 0, flex: 1}}>
-                <IconButton color='inherit'
-                            onClick={handleClickOpen('paper')}>
-                    <FilterIcon/>
-                </IconButton>
-            </div>
-            <div style={{margin: 0, flex: 1, float: 'right'}}>
-                <IconButton color='inherit'
-                            onClick={exportToExcel}>
-                    <DownloadIcon/>
-                </IconButton>
-            </div>
+        <div className={cx(styles.row, styles.centered)}>
+            <button color='inherit'
+                    onClick={requestData}>Refresh
+            </button>
+            <button color='inherit'
+                    onClick={handleClickOpen('paper')}>Filter
+            </button>
+
+            <div className={styles.expand}/>
+
+            <button color='inherit' onClick={exportToExcel}>Export</button>
+
             <ReportFilterDialog open={open}
-                                handleClose={handleClose}
-                                handleCloseAndUpdate={handleCloseAndUpdate}
+                                /*handleClose={handleClose}
+                                handleCloseAndUpdate={handleCloseAndUpdate}*/
                                 aria-labelledby="scroll-dialog-title"/>
         </div>
     )

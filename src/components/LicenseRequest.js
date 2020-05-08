@@ -1,20 +1,6 @@
 import React, {Component} from "react";
-import * as PropTypes from "prop-types";
-import withStyles from "../../node_modules/@material-ui/core/styles/withStyles";
-import {styles} from "../Styles";
 import {store} from "../redux/store";
-import {setSelectedNavItem} from "../redux/actions/appBarActions";
 import connect from "react-redux/es/connect/connect";
-import FormControl from "../../node_modules/@material-ui/core/FormControl/FormControl";
-import FormLabel from "../../node_modules/@material-ui/core/FormLabel/FormLabel";
-import RadioGroup from "../../node_modules/@material-ui/core/RadioGroup/RadioGroup";
-import FormControlLabel from "../../node_modules/@material-ui/core/FormControlLabel/FormControlLabel";
-import Radio from "../../node_modules/@material-ui/core/Radio/Radio";
-import FormGroup from "../../node_modules/@material-ui/core/FormGroup/FormGroup";
-import InputLabel from "../../node_modules/@material-ui/core/InputLabel/InputLabel";
-import Input from "../../node_modules/@material-ui/core/Input/Input";
-import Checkbox from "../../node_modules/@material-ui/core/Checkbox/Checkbox";
-import {setProductVersion} from "../redux/actions/licenseRequestActions";
 import {PAGES} from "../Const";
 
 const units = [{
@@ -120,90 +106,10 @@ class LicenseRequest extends Component {
         duration: 'Постоянная',
     };
 
-    componentWillMount() {
-        store.dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === this.props.location.pathname)[0]));
-    }
-
     render() {
-        const {classes} = this.props;
-        console.log(this.state);
-        return <div>
-            <div>
-                <FormControl component="fieldset" className={classes.formControl}>
-                    <FormLabel component="legend">Продукт</FormLabel>
-                    <RadioGroup row
-                                aria-label="Продукт"
-                                name="gender1"
-                                className={classes.group}
-                                value={this.props.licenseRequestState.selectedProduct}
-                                onChange={event => store.dispatch(setProductVersion(event.target.value))}
-                    >
-                        {this.props.licenseRequestState.products.map((item, index) => (
-                            <FormControlLabel key={index} value={item} control={<Radio/>} label={item}/>
-                        ))}
-                    </RadioGroup>
-                </FormControl>
-            </div>
-            <div>
-                <FormControl component="fieldset" className={classes.formControl}>
-                    <FormLabel component="legend">Тип лицензии</FormLabel>
-                    <RadioGroup row
-                                aria-label="Gender"
-                                name="gender1"
-                                className={classes.group}
-                                value={this.state.type}
-
-                    >
-                        <FormControlLabel value="Сетевая" control={<Radio/>} label="Сетевая"/>
-                        <FormControlLabel value="Автономная" control={<Radio/>} label="Автономная"/>
-                    </RadioGroup>
-                </FormControl>
-            </div>
-            <div>
-                <FormControl component="fieldset" className={classes.formControl}>
-                    <FormLabel component="legend">Тип лицензии</FormLabel>
-                    <RadioGroup row
-                                aria-label="Gender"
-                                name="gender1"
-                                className={classes.group}
-                                value={this.state.duration}
-
-                    >
-                        <FormControlLabel value="Постоянная" control={<Radio/>} label="Постоянная"/>
-                        <FormControlLabel value="От даты до даты" control={<Radio/>} label="От даты до даты"/>
-                        <FormControlLabel value="Триал" control={<Radio/>} label="Триал"/>
-                    </RadioGroup>
-                </FormControl>
-            </div>
-            <div>
-                <FormGroup className={classes.formControl}>
-                    {units.filter(item => item.availableFor.includes(this.props.licenseRequestState.selectedProduct)).map((item, index) => (
-                        <div>
-                            <FormControl className={classes.group}>
-                                <InputLabel htmlFor="component-simple">{item.name}</InputLabel>
-                                <Input id="component-simple" type='number'/>
-                            </FormControl>
-                            <FormControlLabel style={{margin: 8}}
-                                              label='Без ограничений'
-                                              control={<Checkbox
-                                                  key={index}
-                                                  checked={item.limited}
-                                                  onChange={() => console.log(item.name)}
-                                                  value={item.name}
-                                                  color="primary"
-                                              />}
-                            />
-                        </div>
-                    ))}
-                </FormGroup>
-            </div>
-        </div>
+        return (<div>{null}</div>)
     }
 }
-
-LicenseRequest.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
 
 function mapStateToProps(state) {
     return {
@@ -212,4 +118,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default withStyles(styles, {withTheme: true})(connect(mapStateToProps, null)(LicenseRequest));
+export default connect(mapStateToProps, null)(LicenseRequest);

@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {PAGES, PRIORITIES_DICTIONARY, STATES_DICTIONARY} from "../../Const";
+import {PRIORITIES_DICTIONARY, STATES_DICTIONARY} from "../../Const";
 import {getIssuesWithDetails} from "../../redux/actions/highPriorityIssuesActions";
 import {fetchPartnerCustomers, fetchTags} from "../../redux/actions/reportFiltersActions";
 import HighPriorityIssueView from "./HighPriorityIssueView";
-import {setSelectedNavItem} from "../../redux/actions/appBarActions";
 import {customSort} from "../../HelperFunctions";
 import {useDispatch, useSelector} from "react-redux";
 import {selectPartnerCustomersDictionary} from "../../redux/selectors/reportFiltersSelectors";
@@ -14,13 +13,15 @@ import {Workbook} from "../../helper_functions/export_to_excel";
 import * as XLSX from 'xlsx';
 import cx from "classnames";
 import {format} from "date-fns";
+import button from "devextreme/ui/button";
 
 const customStyles = {
     container: base => ({
         ...base,
-        display: 'inline-block',
+        display: 'table',
         width: '240px',
         margin: '0.5rem',
+        scrollbarColor: 'gray lightgray',
     }),
 };
 
@@ -35,7 +36,6 @@ function IssuesWithTFSDetailsDisplay({location}) {
     const [allTags, setAllTags] = useState(false);
     const [expanded, setExpanded] = useState(false);
     useEffect(() => {
-        dispatch(setSelectedNavItem(PAGES.filter((page) => page.path === location.pathname)[0]));
         dispatch(fetchPartnerCustomers());
         dispatch(fetchTags());
     }, []);
@@ -77,7 +77,7 @@ function IssuesWithTFSDetailsDisplay({location}) {
     }
 
     return (<div className={styles.column}>
-        <div className={styles.row}>
+        <div className={cx(styles.row, styles.wrap)}>
             <Select
                 styles={customStyles}
                 isMulti
@@ -135,21 +135,26 @@ function IssuesWithTFSDetailsDisplay({location}) {
                 {allTags ? 'Только задачи со всеми тегами' : 'Задачи с любым из тегов'}
             </button> : null}
         </div>
-        <div className={cx(styles.row, styles.defaultPadding)}>
-            <button className={styles.chipButton} onClick={selectUnresolvedStates}>Выбрать незавершённые</button>
-            <button className={styles.chipButton} onClick={selectResolvedStates}>Выбрать завершённые</button>
-            <button className={styles.chipButton} onClick={clearFilters}>Очистить фильтры</button>
+        <div className={cx(styles.row)}>
+            <button className={cx(styles.textButton/*, {[styles.buttonDisabled]: true}*/)} disabled={true} onClick={selectUnresolvedStates}>Выбрать незавершённые</button>
+            <button className={styles.textButton} onClick={selectResolvedStates}>Выбрать завершённые</button>
+            <button className={styles.textButton} onClick={clearFilters}>Очистить фильтры</button>
         </div>
-        <div className={cx(styles.row, styles.defaultPadding)}>
-            <button className={styles.chipButton} onClick={loadData}>Загрузить данные</button>
-            <button className={styles.chipButton} onClick={exportDefects}>Выгрузить всё</button>
-            <button className={styles.chipButton} onClick={exportDefects}>Выгрузить дефекты</button>
-            <button className={styles.chipButton} onClick={exportDefects}>Выгрузить фичи</button>
-            <button className={styles.chipButton} onClick={() => setExpanded(!expanded)}>{expanded ? 'Свернуть все баги' : 'Развернуть все баги'}</button>
+        <div className={cx(styles.row)}>
+            <button className={styles.textButton} onClick={loadData}>Загрузить данные</button>
+            {data.length > 0
+                ? <>
+                    <button className={styles.textButton} onClick={exportDefects}>Выгрузить всё</button>
+                    <button className={styles.textButton} onClick={exportDefects}>Выгрузить дефекты</button>
+                    <button className={styles.textButton} onClick={exportDefects}>Выгрузить фичи</button>
+                    <button className={styles.textButton} onClick={() => setExpanded(!expanded)}>{expanded ? 'Свернуть все баги' : 'Развернуть все баги'}</button>
+                </>
+                : null}
+
         </div>
         {isLoading
-            ? <div className={styles.loader}/>
-            : <div className={styles.column}>
+            ? <div className={styles.linearProgress}/>
+            : <div className={cx(styles.column, styles.defaultMargin)}>
                 {data.length === 0
                     ? <div>Нет данных</div>
                     : data.map((item, index) => <HighPriorityIssueView issue={item} key={`hpiv-${index}`} style={{minWidth: '100%'}} expanded={expanded}/>)}
@@ -179,7 +184,7 @@ Object.defineProperty(
                 'Автор комментария': this.commentAuthor,
                 /*'Bug в DevOps': this.issue,
                 'Feature в DevOps': this.requirement,*/
-                'Поля Devops':null,
+                'Поля Devops': null,
                 'Тип (DevOps)': e.type,
                 'ID задачи (DevOps)': e.id,
                 'Состояние (DevOps)': e.state,
