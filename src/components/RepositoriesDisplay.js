@@ -3,6 +3,7 @@ import connect from "react-redux/es/connect/connect";
 import {getAllRepositoriesData} from "../redux/actions/repositoriesActions";
 import {useDispatch} from "react-redux";
 import ReactTable from "react-table";
+import Table from "./table/Table";
 
 
 function RepositoriesDisplay({location, repositoriesData}) {
@@ -12,8 +13,8 @@ function RepositoriesDisplay({location, repositoriesData}) {
         dispatch(getAllRepositoriesData());
     }, []);
 
-    let table;
-    let columns;
+
+    let columns=[];
     const items = repositoriesData.repositoriesData;
     if (items && items.length !== 0) {
         columns = [
@@ -59,17 +60,8 @@ function RepositoriesDisplay({location, repositoriesData}) {
     }
 
 
-    if (columns) {
-        table = <ReactTable
-            data={items}
-            filterable
-            defaultFilterMethod={(filter, row) =>
-                String(row[filter.id]) === filter.value}
-            columns={columns}
-        />
-    }
 
-    return (<div style={{minWidth: '100%'}}>{table}</div>)
+    return (<Table data={items} columns={columns} editable={false} updateMyData={(index, id, value) => console.log(index, id, value)} skipPageReset={true} filterableColumns={false}/>)
 
 }
 

@@ -1,119 +1,124 @@
 import React, {useEffect, useState} from 'react';
-import connect from 'react-redux/es/connect/connect';
-import {fetchKpiReportData} from '../../redux/actions/kpiActions';
 import {format} from 'date-fns'
-import {drawerWidth, kpiCharts, kpiDetails, MATERIAL_COLORS} from '../../Const';
-import {Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis} from 'recharts';
-import {fetchProjects} from "../../redux/actions/reportFiltersActions";
-import KPISidebar from "./KPISidebar";
+import {kpiCharts, kpiDetails, MATERIAL_COLORS} from '../../Const';
+import {Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis} from 'recharts';
 import useWindowDimensions from "../../helper_functions/dimensions";
-import {ContainerWithSidebar, CustomA, CustomCard, CustomH4, CustomSidebar, DataContainer} from "../../styled_components/StyledComponents";
+import {CustomA, CustomCard, CustomH4} from "../../styled_components/StyledComponents";
 import {KPIBarChart} from "./KPIBarChart";
 import {dynamicSort} from "../../helper_functions/sorting";
 import styles from "../../styles/components.module.css";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchKpiData, selectKpiData, selectKpiDateFrom, selectKpiDateTo, selectKpiDetails, selectKpiIsFetching, selectKpiOverallData} from "../../redux/combined/kpi";
+import cx from "classnames";
+import ResponsiveContainer from "recharts/lib/component/ResponsiveContainer";
 
-function KPIContainer({location, data, detailedData, loadData, df, dt, isFetching, appBarState, overallData}) {
+function KPIContainer() {
     const size = useWindowDimensions();
     const [sidebarWidthOpen, sidebarWidthClosed] = [640, 64];
     const [open, setOpen] = useState(false);
+    const dispatch = useDispatch()
+    const isFetching = useSelector(selectKpiIsFetching);
+    const dateFrom = format(useSelector(selectKpiDateFrom), 'yyyy-MM-dd');
+    const dateTo = format(useSelector(selectKpiDateTo), 'yyyy-MM-dd');
+    const data = useSelector(selectKpiData);
+    const overallData = useSelector(selectKpiOverallData);
+    const detailedData = useSelector(selectKpiDetails);
 
     useEffect(() => {
-        loadData()
+        dispatch(fetchKpiData())
     }, []);
-
     const close = () => setOpen(false);
+    const w1 = size.width;
 
-    const w = size.width - (appBarState ? drawerWidth : 0) - (open ? sidebarWidthOpen : sidebarWidthClosed) - 17 - 16; //ширина окна - ширина боковика - ширина меню - вертикальный сролл - margin меню
-
-    const w1 = w;
-    const h1 = w / 5;
+    const h1 = w1 / 5;
     const baseUrl = 'https://support.fsight.ru/issues?q=';
-    const additionalIndicators = [{name: 'Выполнение SLA', key: 'notViolated', target: 95, link: `(SLA по первому ответу: Нарушен или SLA по решению:  Нарушен) и дата завершения: ${df} .. ${dt}`},
-        {name: 'Удовлетворенность качеством технической поддержки', key: 'satisfied', target: 95, link: `Неудовлетворительно и дата завершения: ${df} .. ${dt}`},
-        {name: 'Решение на уровне ЦТП', key: 'selfSolved', target: 15},
-        {name: 'Решение с 1 раза', key: 'singleSolution', target: 70}];
+    const additionalIndicators = [
+        {
+            name: 'Выполнение SLA (комм. проекты)',
+            key: 'notViolatedCommercial',
+            divider: 'totalCommercial',
+            target: 95,
+            link: `(SLA по первому ответу: Нарушен или SLA по решению:  Нарушен) и дата завершения: ${dateFrom} .. ${dateTo}`
+        },
+        {
+            name: 'Удовлетворенность качеством технической поддержки (комм. проекты)',
+            key: 'satisfiedCommercial',
+            divider: 'totalCommercial',
+            target: 95,
+            link: `Неудовлетворительно и дата завершения: ${dateFrom} .. ${dateTo}`
+        },
+        {name: 'Решение на уровне ЦТП (комм. проекты)', key: 'selfSolvedCommercial', divider: 'totalCommercial', target: 15},
+        {name: 'Решение с 1 раза (комм. проекты)', key: 'singleSolutionCommercial', divider: 'totalCommercial', target: 70},
+        {name: 'Выполнение SLA', key: 'notViolated', divider: 'total', target: 95, link: `(SLA по первому ответу: Нарушен или SLA по решению:  Нарушен) и дата завершения: ${dateFrom} .. ${dateTo}`},
+        {name: 'Удовлетворенность качеством технической поддержки', key: 'satisfied', divider: 'total', target: 95, link: `Неудовлетворительно и дата завершения: ${dateFrom} .. ${dateTo}`},
+        {name: 'Решение на уровне ЦТП', key: 'selfSolved', divider: 'total', target: 15},
+        {name: 'Решение с 1 раза', key: 'singleSolution', divider: 'total', target: 70}];
 
 
-    return (<ContainerWithSidebar>
-        {isFetching ? <div className={styles.loader}/> :
-            <DataContainer style={{width: w1}}>
-                <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-                    <h2 style={{textAlign: 'center', width: '100%'}}>{`Показатели за период с ${df} по ${dt}`}</h2>
-                    <div style={{display: 'flex', flexDirection: 'row', padding: '16px'}}>
-                        {overallData && additionalIndicators.map((item, index) => {
-                                const value = Number(100 * overallData[item.key] / overallData['total']).toFixed(2);
-                                const b = value < item.target;
-                                return <CustomCard key={`add-ind${index}`}
-                                                   style={{
-                                                       width: '25%',
-                                                       backgroundColor: MATERIAL_COLORS[index],
-                                                       margin: '8px',
-                                                       color: 'white',
-                                                       textAlign: 'center',
-                                                       alignItems: 'center',
-                                                       justifyContent: 'center',
-                                                       borderStyle: b ? 'solid' : 'none',
-                                                       borderColor: b ? 'rgba(0,0,0,0) rgba(0,0,0,0) #C2185B rgba(0,0,0,0)' : 'rgba(0,0,0,0)',
-                                                       borderWidth: b ? '4px 0px 4px 0px' : '0px',
-                                                   }}>
-                                    <CustomA href={item.link ? encodeURI(`${baseUrl}${item.link}`) : null} target={'_blank'}>
-                                        <CustomH4>{item.name}: {value}%</CustomH4></CustomA>
-                                    <div style={{width: '100%', margin: '8px 16px', display: 'flex', flexFlow: 'row wrap', justifyContent: 'space-around'}}>{overallData.dynamics.map((item2, index2) => {
-                                        const v2 = Number(100 * item2.second[item.key] / item2.second['total']).toFixed(2);
-                                        return <div style={{flex: '1 0 50%', margin: '8px 0px'}}>{format(item2.first.first, 'yyyy.MM.dd')} - {format(item2.first.second, 'yyyy.MM.dd')}<br/>{v2}%</div>
-                                    })}</div>
+    return isFetching ? <div className={styles.linearProgress}/> :
+        <div className={styles.column}>
+            <div className={styles.row}>
+                <h2 style={{textAlign: 'center', width: '100%'}}>{`Показатели за период с ${dateFrom} по ${dateTo}`}</h2>
+            </div>
+            <div className={cx(styles.row, styles.defaultMargin, styles.wrap, styles.spread)}>
+                {overallData && additionalIndicators.map((item, index) => {
+                        const value = Number(100 * overallData[item.key] / overallData[item.divider]).toFixed(2);
+                        const b = value < item.target;
+                        return <CustomCard key={`add-ind${index}`}
+                                           style={{
+                                               width: 'calc(100%/4 - 3rem)',
+                                               backgroundColor: MATERIAL_COLORS[index],
+                                               margin: '8px',
+                                               color: 'white',
+                                               textAlign: 'center',
+                                               alignItems: 'center',
+                                               justifyContent: 'center',
+                                               borderStyle: b ? 'solid' : 'none',
+                                               borderColor: b ? 'rgba(0,0,0,0) rgba(0,0,0,0) #C2185B rgba(0,0,0,0)' : 'rgba(0,0,0,0)',
+                                               borderWidth: b ? '4px 0px 4px 0px' : '0px',
+                                           }}>
+                            <CustomA href={item.link ? encodeURI(`${baseUrl}${item.link}`) : null} target={'_blank'}>
+                                <CustomH4>{item.name}: {value}%</CustomH4></CustomA>
+                            <div style={{width: '100%', margin: '8px 16px', display: 'flex', flexFlow: 'row wrap', justifyContent: 'space-around'}}>{overallData.dynamics.map((item2, index2) => {
+                                const v2 = Number(100 * item2.second[item.key] / item2.second[item.divider]).toFixed(2);
+                                return <div style={{flex: '1 0 50%', margin: '8px 0px'}}>{format(item2.first.first, 'yyyy.MM.dd')} - {format(item2.first.second, 'yyyy.MM.dd')}<br/>{v2}%</div>
+                            })}</div>
 
-                                </CustomCard>
-                            }
-                        )}
-                    </div>
-                </div>
-                {kpiCharts.map((item, index) => <KPIBarChart key={`kpi-barchart-wide-${index}`} w={w1 / 3} h={h1 / 1.5} data={[...data].sort(dynamicSort('-' + item.bars[0].dataKey))}
-                                                             settings={item}/>)}
-                {kpiDetails.map((item, index) => <KPIBarChart key={`kpi-barchart-wide-${index}`} w={w1} h={h1} data={data} settings={item}/>)}
+                        </CustomCard>
+                    }
+                )}
+            </div>
+            <div className={cx(styles.row, styles.defaultMargin)}>
+                {kpiCharts.map((item, index) =>
+                    <div style={{width: 'calc(100%/3)'}}>
+                        <KPIBarChart
+                            key={`kpi-barchart-wide-${index}`}
+                            aspect={2.0}
+                            data={data && [...data].sort(dynamicSort('-' + item.bars[0].dataKey))}
+                            settings={item}/></div>)}
+            </div>
+            {kpiDetails.map((item, index) => <KPIBarChart key={`kpi-barchart-wide-${index}`} aspect={6.0} data={data && data} settings={item}/>)}
+            <div className={cx(styles.row, styles.wrap, styles.defaultMargin)}>
                 {detailedData.map((e, index) => {
                     return (
-                        <div key={`kpi-detailed-data-${index}`}>
+                        <div key={`kpi-detailed-data-${index}`} style={{width: '50%'}}>
                             <h3 style={{textAlign: 'center', color: MATERIAL_COLORS[index]}}>{e.name}</h3>
-                            <BarChart data={e.data} width={w1 / 2} height={h1 / 1.5}>
-                                <CartesianGrid strokeDasharray='3 3'/>
-                                <XAxis dataKey='indicator'/>
-                                <YAxis/>
-                                <Tooltip/>
-                                <Bar name={e.name} dataKey='agent' fill={MATERIAL_COLORS[index]} legendType={'circle'}/>
-                            </BarChart>
+                            <ResponsiveContainer width='100%' aspect={3.0}>
+                                <BarChart data={e.data}>
+                                    <CartesianGrid strokeDasharray='3 3'/>
+                                    <XAxis dataKey='indicator'/>
+                                    <YAxis/>
+                                    <Tooltip/>
+                                    <Legend/>
+                                    <Bar name={e.name} dataKey='agent' fill={MATERIAL_COLORS[index]} legendType={'circle'}/>
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     )
                 })}
-            </DataContainer>}
-        <CustomSidebar style={{width: open ? `${sidebarWidthOpen}px` : `${sidebarWidthClosed}px`, height: open ? 'auto' : '64px', borderRadius: open ? '4px' : '32px'}}>
-            <button className={styles.button} onClick={() => setOpen(!open)} style={{display: 'block', margin: open ? '8px  auto' : '8px'}}>
-                {open ? 'Close' : 'Open'}
-            </button>
-            {open ? <KPISidebar close={close}/> : <div/>}
-        </CustomSidebar>
-    </ContainerWithSidebar>);
+            </div>
+        </div>
+
 }
 
-function mapStateToProps(state) {
-    return {
-        data: state.kpi.kpiData[0],
-        overallData: state.kpi.kpiData[1],
-        isFetching: state.kpi.fetching,
-        df: state.kpiFilters.dateFrom,
-        dt: state.kpiFilters.dateTo,
-        detailedData: state.kpi.detailedData,
-        appBarState: state.appBarState.drawerOpened,
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        loadData: () => {
-            dispatch(fetchProjects());
-            dispatch(fetchKpiReportData())
-        }
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(KPIContainer);
+export default KPIContainer;

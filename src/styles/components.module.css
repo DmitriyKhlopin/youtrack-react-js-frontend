@@ -21,7 +21,8 @@
 @value dividerColor from colors;
 
 html {
-    font-size: 12px;
+    font-size: 16px;
+    font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
     overflow-y: hidden;
 }
 
@@ -52,6 +53,7 @@ Navigation
 .navBar > .title {
     margin: 0 1rem;
     text-decoration: none;
+
 }
 
 .navBar > .image {
@@ -184,30 +186,39 @@ Layouts
 
 
 .sidebarItem {
-    text-decoration: none;
-    height: 3rem;
-    background: transparent;
-    padding: 1rem;
-    font-size: 1.2rem;
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: 0.25rem;
+    height: 32px;
+    padding-left: 1rem;
+    margin: .25rem .25rem .25rem 0;
+    background: transparent;
+    font-size: .875rem;
+    text-decoration: none;
     color: primaryTextColor;
-    border-bottom: lightslategrey 1px solid;
-    /*border-radius: 0.25rem;*/
+    border-radius: 0 16px 16px 0;
+    transition-duration: 300ms;
+}
+
+.sidebarItemIcon {
+    padding-right: 1rem;
 }
 
 .sidebarItem:hover {
-    background: lightslategrey;
-    color: white;
-    transition-duration: 500ms;
-    border-radius: 0.25rem;
+    background: #e8eaed;
 }
 
 .sidebarItemActive {
-    background: lightgrey;
-    border-radius: 0.25rem;
+    background: lightPrimaryColor;
+    color: primaryTextColor;
+}
+
+.sidebarItem > image {
+    opacity: 1;
+}
+
+.sidebarItemActive > span {
+    opacity: 1;
 }
 
 .button {
@@ -256,7 +267,7 @@ Layouts
 }
 
 .title {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: textPrimaryColor;
     word-wrap: break-spaces; /* Перенос слов */
     white-space: normal;
@@ -264,7 +275,7 @@ Layouts
 }
 
 .card > .title {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: primaryTextColor;
     word-wrap: break-spaces;
     white-space: normal;
@@ -272,7 +283,7 @@ Layouts
 }
 
 .textPrimary {
-    font-size: 1.25rem;
+    font-size: 1rem;
     color: primaryTextColor;
     word-wrap: break-spaces; /* Перенос слов */
     white-space: normal;
@@ -280,7 +291,7 @@ Layouts
 }
 
 .textSecondary {
-    font-size: 1rem;
+    font-size: .875rem;
     color: secondaryTextColor;
 }
 
@@ -305,8 +316,9 @@ Layouts
 
 /* Darker background on mouse-over */
 .iconButton:hover {
-    color: accentColor;
-    transition-duration: .5s;
+    color: lightPrimaryColor;
+    opacity: 0.9;
+    transition-duration: .3s;
 }
 
 .textButton {
@@ -322,12 +334,13 @@ Layouts
 
 .textButton:hover {
     color: textPrimaryColor;
+    opacity: 0.9;
     background: primaryColor;
     transition: .5s;
 }
 
 .textButton:disabled {
-    background: lightgrey;
+    background: coral;
     text-decoration-color: primaryTextColor;
 }
 
@@ -464,7 +477,8 @@ Layouts
     position: absolute;
     height: 100%;
     background-color: darkPrimaryColor;
-    animation: indeterminate_first 1.5s infinite ease-out;
+    animation: indeterminate_first 1.5s infinite ease-in-out;
+    animation-timing-function: linear;
 }
 
 .linearProgress:after {
@@ -472,28 +486,38 @@ Layouts
     position: absolute;
     height: 100%;
     background-color: lightPrimaryColor;
-    animation: indeterminate_second 1.5s infinite ease-in;
+    animation: indeterminate_second 1.5s infinite ease-in-out;
+    animation-timing-function: linear;
+    animation-delay: .75s;
 }
 
 @keyframes indeterminate_first {
     0% {
-        left: -100%;
-        width: 100%;
+        left: 0;
+        width: 10%;
+    }
+    50% {
+        left: 35%;
+        width: 30%;
     }
     100% {
         left: 100%;
-        width: 10%;
+        width: 0;
     }
 }
 
 @keyframes indeterminate_second {
     0% {
-        left: -150%;
-        width: 100%;
+        left: 0;
+        width: 10%;
+    }
+    50% {
+        left: 35%;
+        width: 30%;
     }
     100% {
         left: 100%;
-        width: 10%;
+        width: 0;
     }
 }
 
@@ -504,40 +528,6 @@ Layouts
 .iconBad {
     color: #D32F2F;
 }
-
-/*.checkboxGroup {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    background-color: lightgrey;
-    padding: .3rem .5rem;
-    border-radius: .5rem;
-}*/
-
-/*
-
-
-.checkboxGroup > input[type=checkbox]:checked + .checkboxGroup{
-    background-color: darkPrimaryColor;
-}
-
-.checkboxGroup:hover {
-    background-color: accentColor;
-    transition-duration: 0.5s;
-}
-
-.checkboxGroup > input {
-    cursor: pointer;
-    width: 1.8rem;
-    height: 1.8rem;
-}
-
-.checkboxGroup > label {
-    cursor: pointer;
-    color: primaryTextColor;
-}*/
-
 
 input[type="checkbox"]:checked,
 input[type="checkbox"]:not(:checked) {
@@ -551,9 +541,10 @@ input[type="checkbox"]:not(:checked) + label {
     display: inline-block;
     position: relative;
     padding-left: 28px;
-    line-height: 25px;
+    line-height: 20px;
     top: 0;
     cursor: pointer;
+    color: primaryTextColor;
 }
 
 input[type="checkbox"]:checked + label:before,
@@ -605,4 +596,34 @@ input[type="checkbox"]:not(:checked) + label:after {
 
 input[type="checkbox"]:checked + label:after {
     opacity: 1;
+}
+
+
+table {
+    border-spacing: 0;
+    border: 1px solid black;
+    font-size: .75rem;
+}
+
+tr:last-child > td {
+    border-bottom: 0;
+}
+
+tr > th {
+    border-right: 1px solid black;
+}
+
+tr > th:last-of-type {
+    border-right: 0;
+}
+
+th, td {
+    margin: 0;
+    padding: 0.5rem;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+}
+
+th, tr > td:last-of-type {
+    border-right: 0;
 }

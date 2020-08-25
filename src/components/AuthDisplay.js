@@ -1,31 +1,49 @@
-import React, {Component} from "react";
-import connect from "react-redux/es/connect/connect";
-import styles from "../styles/components.module.css"
+import React, {useCallback} from "react";
+import qs from "query-string";
 
 const clientServiceId = '64cf7005-df32-4ca1-8d05-41791683275c';
 const redirectUrl = 'http://localhost:3000/login';
 
-class AuthDisplay extends Component {
-    render() {
-        const a = decodeURIComponent(this.props.location.hash);
-        console.log(a);
-        const s = a.substring('#access_token='.length, a.indexOf('&token_type='));
-        console.log(s);
-        return <div style={{display: 'flex', height: '80%'}}>
-            <div style={{margin: 'auto', padding: 16, maxWidth: 256, alignSelf: 'center'}}>
-                <a href={'https://support.fsight.ru/hub/api/rest/oauth2/auth?response_type=token&state=' + clientServiceId + '&redirect_uri=' + redirectUrl + '&request_credentials=default&client_id=' + clientServiceId + '&scope=' + clientServiceId}>
-                    <button className={styles.button}>Sign in via YouTrack</button>
-                </a>
-            </div>
-        </div>
+const AuthDisplay = ({location}) => {
+    const parsed = qs.parse(location.hash);
+    let token;
+    if (parsed.access_token) {
+        token = parsed.access_token;
+        const obj = {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'authorization': `Bearer ${token}`,
+                    'scope': clientServiceId
+                }
+            }
+        ;
+        fetch("https://support.fsight.ru/hub/api/rest/users/me", obj)
+            .then(res => res.json())
+            .then(json => console.log(json))
     }
+
+    const handleLogin = useCallback(async () => {
+        const qParams = [
+            `response_type=token`,
+            `redirect_uri=${redirectUrl}`,
+            `client_id=${clientServiceId}`,
+            `scope=${clientServiceId}`,
+            `state=youtrack`,
+            `request_credentials=default`
+        ].join("&");
+        try {
+            window.location.assign(`https://support.fsight.ru/hub/api/rest/oauth2/auth?${qParams}`);
+        } catch (e) {
+            console.error(e);
+        }
+
+    }, []);
+
+    return <div>
+        <button onClick={handleLogin}>Login with YouTrack</button>
+    </div>
+
 }
 
-function mapStateToProps(state) {
-    return {
-        appBarState: state.appBarState,
-        user: state.user
-    }
-}
-
-export default connect(mapStateToProps, null)(AuthDisplay);
+export default AuthDisplay;

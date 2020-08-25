@@ -2,7 +2,6 @@ import React, {useEffect} from "react";
 import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import connect from "react-redux/es/connect/connect";
 import {MATERIAL_LINE_CHART_COLORS} from "../../Const";
-import {openDrillDown} from "../../redux/actions/drillDownActions";
 import {fetchDynamicsData} from "../../redux/actions/reportsActions";
 import {useDispatch} from "react-redux";
 
@@ -11,10 +10,11 @@ function LineChartByWeeks({reports, reportFilters}) {
     const dispatch = useDispatch();
 
     const handleClick = (data, index) => {
-        const filters = {
+        console.log(data);
+        /*const filters = {
             week: data.activeLabel,
         };
-        dispatch(openDrillDown('aaaa'));
+        dispatch(openDrillDown('aaaa'));*/
     };
 
     useEffect(() => {
@@ -24,7 +24,7 @@ function LineChartByWeeks({reports, reportFilters}) {
     const dynamics = reports.dynamicsData;
     return <div>
         <div>Количество поступивших и закрытых запросов</div>
-        <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
+        <ResponsiveContainer aspect={4.0 / 2.0}>
             <LineChart
                 data={dynamics}
                 margin={{top: 30, right: 10, left: 0, bottom: 30}}

@@ -7,7 +7,6 @@ import {fetchETL} from "../redux/actions/etlFilterActions";
 import {format} from "date-fns";
 
 function ETLDisplay() {
-    const [loading, setLoading] = useState(false);
     const [created, setCreated] = useState(true);
     const dispatch = useDispatch();
     const [startDate, setStartDate] = useState(new Date());
@@ -28,7 +27,7 @@ function ETLDisplay() {
             format(startDate, 'yyyy-MM-dd'),
             format(endDate, 'yyyy-MM-dd'),
             [issuesChecked ? 'issues' : null,
-                workItemsChecked ? 'work_items' : null,
+                workItemsChecked ? 'work' : null,
                 historyChecked ? 'history' : null,
                 projectsChecked ? 'projects' : null,
                 bundlesChecked ? 'bundles' : null,
@@ -40,11 +39,13 @@ function ETLDisplay() {
         ));
     }
 
+    console.log(created);
     return (
         <div className={styles.column}>
             <div className={cx(styles.row, styles.centered, styles.defaultMargin, styles.defaultPadding)}>
-                <CheckBox checked={created} onChange={() => setCreated(true)} label={'Созданы'}/>
-                <CheckBox checked={!created} onChange={() => setCreated(false)} label={'Изменены'}/>
+                Обработать информацию по задачам, которые были
+                <CheckBox id={'created'} checked={created} onChange={() => setCreated(!created)} label={'созданы'}/> либо
+                <CheckBox id={'updated'} checked={!created} onChange={() => setCreated(!created)} label={'изменены'}/> с
                 <div className={styles.defaultMargin}>
                     <DatePicker
                         selected={startDate}
@@ -52,8 +53,10 @@ function ETLDisplay() {
                         selectsStart
                         startDate={startDate}
                         endDate={endDate}
+                        customInput={<ExampleCustomInput/>}
                     />
                 </div>
+                по
                 <div className={styles.defaultMargin}>
                     <DatePicker
                         selected={endDate}
@@ -62,20 +65,21 @@ function ETLDisplay() {
                         startDate={startDate}
                         endDate={endDate}
                         minDate={startDate}
+                        customInput={<ExampleCustomInput/>}
                     />
                 </div>
             </div>
-            <div className={cx(styles.row, styles.centered, styles.defaultMargin, styles.defaultPadding)}>
-                <CheckBox checked={issuesChecked} onChange={() => setIssuesChecked(!issuesChecked)} label={'Заявки'}/>
-                <CheckBox checked={workItemsChecked} onChange={() => setWorkItemsChecked(!workItemsChecked)} label={'Трудозатраты'}/>
-                <CheckBox checked={historyChecked} onChange={() => setHistoryChecked(!historyChecked)} label={'История'}/>
-                <CheckBox checked={bundlesChecked} onChange={() => setBundlesChecked(!bundlesChecked)} label={'Bundles'}/>
-                <CheckBox checked={projectsChecked} onChange={() => setProjectsChecked(!projectsChecked)} label={'Проекты'}/>
-                <CheckBox checked={usersChecked} onChange={() => setUsersChecked(!usersChecked)} label={'Пользователи'}/>
-                <CheckBox checked={timelineChecked} onChange={() => setTimelineChecked(!timelineChecked)} label={'Вычисление периодов'}/>
-                <CheckBox checked={periodTimelineChecked} onChange={() => setPeriodTimelineChecked(!periodTimelineChecked)} label={'Вычисление периодов за вся время'}/>
-                <CheckBox checked={deletedChecked} onChange={() => setDeletedChecked(!deletedChecked)} label={'Поиск удалённых задач'}/>
-                <CheckBox checked={pendingChecked} onChange={() => setPendingChecked(!pendingChecked)} label={'Поиск ожидающих задач'}/>
+            <div className={cx(styles.row, styles.centered, styles.defaultMargin, styles.defaultPadding, styles.wrap)}>
+                <CheckBox id={'issuesChecked'} checked={issuesChecked} onChange={() => setIssuesChecked(!issuesChecked)} label={'Заявки (текущие значения всех полей)'}/>
+                <CheckBox id={'workItemsChecked'} checked={workItemsChecked} onChange={() => setWorkItemsChecked(!workItemsChecked)} label={'Трудозатраты'}/>
+                <CheckBox id={'historyChecked'} checked={historyChecked} onChange={() => setHistoryChecked(!historyChecked)} label={'История'}/>
+                <CheckBox id={'bundlesChecked'} checked={bundlesChecked} onChange={() => setBundlesChecked(!bundlesChecked)} label={'Bundles'}/>
+                <CheckBox id={'projectsChecked'} checked={projectsChecked} onChange={() => setProjectsChecked(!projectsChecked)} label={'Проекты'}/>
+                <CheckBox id={'usersChecked'} checked={usersChecked} onChange={() => setUsersChecked(!usersChecked)} label={'Пользователи'}/>
+                <CheckBox id={'timelineChecked'} checked={timelineChecked} onChange={() => setTimelineChecked(!timelineChecked)} label={'Вычисление периодов'}/>
+                <CheckBox id={'periodTimelineChecked'} checked={periodTimelineChecked} onChange={() => setPeriodTimelineChecked(!periodTimelineChecked)} label={'Вычисление периодов за всё время'}/>
+                <CheckBox id={'deletedChecked'} checked={deletedChecked} onChange={() => setDeletedChecked(!deletedChecked)} label={'Поиск удалённых задач'}/>
+                <CheckBox id={'pendingChecked'} checked={pendingChecked} onChange={() => setPendingChecked(!pendingChecked)} label={'Поиск ожидающих задач'}/>
             </div>
             <div className={cx(styles.row, styles.centered, styles.defaultMargin, styles.defaultPadding)}>
                 <button className={styles.textButton} onClick={handleClick}>Загрузить данные</button>
@@ -86,10 +90,20 @@ function ETLDisplay() {
 
 export default ETLDisplay;
 
-const CheckBox = ({label, checked, onChange}) => {
-    const handleChange = () => onChange();
-
-    return <div className={styles.defaultMargin} style={{marginRight: '1rem'}} onClick={handleChange}>
-        <input type="checkbox" id="cb1" checked={checked} readOnly={true}/> <label htmlFor="cb1">{label}</label>
+const CheckBox = ({id, label, checked, onChange}) => {
+    return <div className={styles.defaultMargin}>
+        <input type="checkbox" id={`cb-${id}`} onChange={onChange.bind(this)} checked={checked} defaultChecked={checked}/> <label htmlFor={`cb-${id}`}>{label}</label>
     </div>
 }
+
+const Radio = ({current, values, setValue}) => (
+    <div onChange={setValue.bind(this)}>
+        {values && values.map((e) => <><input type="radio" value={e} name={'t'} defaultChecked={current === e}/>{e}</>)}
+    </div>
+);
+
+const ExampleCustomInput = ({value, onClick}) => (
+    <button className={styles.textButton} onClick={onClick}>
+        {value}
+    </button>
+);

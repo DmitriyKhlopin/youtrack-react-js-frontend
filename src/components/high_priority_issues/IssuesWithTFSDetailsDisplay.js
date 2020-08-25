@@ -136,7 +136,7 @@ function IssuesWithTFSDetailsDisplay({location}) {
             </button> : null}
         </div>
         <div className={cx(styles.row)}>
-            <button className={cx(styles.textButton/*, {[styles.buttonDisabled]: true}*/)} disabled={true} onClick={selectUnresolvedStates}>Выбрать незавершённые</button>
+            <button className={cx(styles.textButton/*, {[styles.buttonDisabled]: true}*/)} onClick={selectUnresolvedStates}>Выбрать незавершённые</button>
             <button className={styles.textButton} onClick={selectResolvedStates}>Выбрать завершённые</button>
             <button className={styles.textButton} onClick={clearFilters}>Очистить фильтры</button>
         </div>

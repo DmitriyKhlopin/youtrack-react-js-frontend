@@ -2,10 +2,11 @@
 import React, {useMemo} from "react";
 import matchSorter from 'match-sorter';
 import {useFilters, useGlobalFilter, usePagination, useTable} from "react-table";
+import styles from "../../styles/components.module.css"
 
 
 const ReadOnlyCell = ({cell: {value: initialValue}}) => {
-    return <span>{initialValue}</span>
+    return <span className={styles.textSecondary}>{initialValue}</span>
 }
 
 
@@ -56,7 +57,7 @@ function GlobalFilter({
                 }}
                 placeholder={`${count} records...`}
                 style={{
-                    fontSize: '1.1rem',
+                    fontSize: '.75rem',
                     border: '0',
                 }}
             />
@@ -65,11 +66,8 @@ function GlobalFilter({
 }
 
 // Define a default UI for filtering
-function DefaultColumnFilter({
-                                 column: {filterValue, preFilteredRows, setFilter},
-                             }) {
+function DefaultColumnFilter({column: {filterValue, preFilteredRows, setFilter},}) {
     const count = preFilteredRows.length
-
     return (
         <input
             value={filterValue || ''}
@@ -212,7 +210,7 @@ fuzzyTextFilterFn.autoRemove = val => !val
 function defaultColumn(editable, filterableColumns) {
     return {
         // Let's set up our default Filter UI
-        Filter: filterableColumns ? DefaultColumnFilter : null,
+        Filter: filterableColumns ? DefaultColumnFilter : (<></>),
         Cell: editable ? EditableCell : ReadOnlyCell
     }
 }
@@ -263,11 +261,12 @@ function Table({columns, data, editable, updateMyData, skipPageReset, filterable
         {
             columns,
             data,
-            dc, // Be sure to pass the defaultColumn option
+
             filterTypes,
             initialState: {pageIndex: 0, pageSize: 50},
             autoResetPage: !skipPageReset,
-            updateMyData
+            updateMyData,
+            dc, // Be sure to pass the defaultColumn option
         },
         useFilters, // useFilters!
         useGlobalFilter, // useGlobalFilter!
@@ -316,6 +315,7 @@ function Table({columns, data, editable, updateMyData, skipPageReset, filterable
                         <tr {...row.getRowProps()}>
                             {row.cells.map(cell => {
                                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                /*return <td {...cell.getCellProps()}>{<ReadOnlyCell cell={cell}/>}</td>*/
                             })}
                         </tr>
                     )

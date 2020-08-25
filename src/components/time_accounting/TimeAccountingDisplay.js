@@ -2,10 +2,10 @@ import React, {useEffect, useMemo} from "react";
 import moment from "moment";
 import {fetchTimeAccountingData} from "../../redux/actions/timeAccountingActions";
 import {useDispatch, useSelector} from "react-redux";
-import {selectTimeAccountingData} from "../../redux/reducers/timeAccountingReducers";
 import Table from "../table/Table";
-import styles from "../../styles/components.module.css";
 import styled from "styled-components";
+import {selectTimeAccountingData} from "../../redux/reducers/timeAccountingReducers";
+import styles from "../../styles/components.module.css"
 
 const Styles = styled.div`
   padding: 1rem;
@@ -32,23 +32,19 @@ const Styles = styled.div`
       :last-child {
         border-right: 0;
       }
+      font-size: .75rem;
     }
   }
 `
 
-function TimeAccountingDisplay({location}) {
+function TimeAccountingDisplay() {
     const dispatch = useDispatch();
-    const timeAccountingData = useSelector(selectTimeAccountingData);
+    const data = useSelector(selectTimeAccountingData);
     useEffect(() => {
         dispatch(fetchTimeAccountingData());
     }, []);
 
-    const data = timeAccountingData.timeData;
-    let table;
 
-    if (data === null) table = <div>Error</div>;
-    if (data && timeAccountingData.timeLoading === true) table = <div className={styles.loader}/>;
-    if (data && timeAccountingData.timeLoading === false && data.length === 0) table = <div>No items to display</div>;
     const columns = useMemo(() => [
             {
                 Header: 'ID задачи',
@@ -85,7 +81,16 @@ function TimeAccountingDisplay({location}) {
             }
         ]
         , []);
-    return (<Styles><Table data={data} columns={columns} editable={false} updateMyData={(index, id, value) => console.log(index, id, value)} skipPageReset={true} filterableColumns={false}/></Styles>)
+    return (<div className={styles.mediumMargin}>
+        <Table
+            data={data}
+            columns={columns}
+            editable={false}
+            updateMyData={(index, id, value) => console.log(index, id, value)}
+            skipPageReset={true}
+            filterableColumns={false}
+        />
+    </div>)
 }
 
 export default TimeAccountingDisplay;

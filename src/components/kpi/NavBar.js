@@ -13,14 +13,17 @@ export function NavBar() {
     const infoButton = <FontAwesomeIcon
         icon={faQuestionCircle}
         className={styles.iconButton}
-        onClick={() => dispatch(openDialog(<Help/>))} size={'2x'}
+        onClick={() => dispatch(openDialog(<Help/>))} size={'1x'}
     />;
 
     return <>
-        <span className={styles.title}>Трудозатраты</span>
+        <span className={styles.title}>KPI</span>
         {infoButton}
         <div className={styles.expand}/>
         <NavBarActions/>
     </>
 }
 
+export function Actions() {
+    return null
+}

@@ -1,6 +1,4 @@
 import PossibleErrorsDisplay from "./components/PossibleErrorsDisplay";
-import KPIContainer from "./components/kpi/KPIContainer";
-import ReportContainer from "./components/ReportContainer";
 import AccountedTimeDisplay from "./components/AccountedTimeDisplay";
 import ETLDisplay from "./components/ETLDisplay";
 import LicenseRequest from "./components/LicenseRequest";
@@ -8,20 +6,31 @@ import AuthDisplay from "./components/AuthDisplay";
 import RepositoriesDisplay from "./components/RepositoriesDisplay";
 import DurationDisplay from "./components/DurationDisplay";
 import React from "react";
-import KPIAppBarActions from "./components/app_bar/actions/KPIAppBarActions";
-import ReportsAppBarActions from "./components/app_bar/actions/ReportsAppBarActions";
 import PartnersDisplay from "./components/partners_report/PartnersDisplay";
 import KeyPartnersReportContainer from "./components/key_partners_report/container";
 import SingleIndicator from "./components/partners_report/SingleIndicator";
-import {faChartBar, faClock, faEdit, faPray, faSpinner} from '@fortawesome/free-solid-svg-icons';
-import TimeAccountingDictionaryDisplay from "./components/time_acctounting/TimeAccountingDictionaryDisplay";
+import {faClock, faEdit, faSpinner} from '@fortawesome/free-solid-svg-icons';
+import TimeAccountingDictionaryDisplay from "./components/time_accounting/TimeAccountingDictionaryDisplay";
 import IssueDetails from "./components/high_priority_issues"
-import TimeAcounting from "./components/time_acctounting"
+import TimeAccounting from "./components/time_accounting"
+import Reports from "./components/reports"
+import KPI from "./components/kpi";
+import ConnectedScatterPlot from "./components/charts/ConnectedScatterPlot";
 
 export const drawerWidth = 300;
 export const [sidebarWidthOpen, sidebarWidthOpenWide, sidebarWidthClosed] = ['320px', '640px', '60px'];
 export const PAGES = [
     {
+        id: -3,
+        name: 'Scatter',
+        path: '/scatter',
+        component: ConnectedScatterPlot,
+        availableInDrawer: true,
+        appBarActions: null,
+        icon: faEdit
+    },
+    Reports,
+    /*{
         id: 0,
         name: 'Отчёты',
         path: '/',
@@ -29,8 +38,8 @@ export const PAGES = [
         availableInDrawer: true,
         appBarActions: <ReportsAppBarActions key={'asdfasdfasd'}/>,
         icon: faChartBar
-    },
-    TimeAcounting,
+    },*/
+    TimeAccounting,
     /*{
         id: 1,
         name: 'Трудозатраты',
@@ -83,7 +92,8 @@ export const PAGES = [
         availableInDrawer: false,
         appBarActions: null
     },
-    {
+    KPI,
+    /*{
         id: 9,
         name: 'KPI',
         path: '/kpi',
@@ -91,7 +101,7 @@ export const PAGES = [
         availableInDrawer: true,
         appBarActions: <KPIAppBarActions/>,
         icon: faPray
-    },
+    },*/
     {
         id: 10,
         name: 'Репозитории',

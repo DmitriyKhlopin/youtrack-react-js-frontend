@@ -5,7 +5,7 @@ import etlFiltersReducers from "./reducers/etlFiltersReducers";
 import licenseRequestReducers from "./reducers/licenseRequestReducers";
 import userReducers from "./reducers/userReducers";
 import timeAccountingFiltersReducers from "./reducers/timeAccountingFiltersReducers";
-import timeAccountingReducers from "./reducers/timeAccountingReducers";
+import timeAccountingReducers, {timeAccountingReducer} from "./reducers/timeAccountingReducers";
 import actualTimeReducers from "./reducers/actualTimeReducers";
 import possibleErrorsReducers from "./reducers/possibleErrorsReducers";
 import drillDownReducers from "./reducers/drillDownReducers";
@@ -20,11 +20,15 @@ import abstractReportReducers from "./reducers/abstractReportReducer";
 import {mainDialogReducer} from "./combined/mainDialog";
 import {navigationReducer} from "./combined/navigation";
 import {appBarReducer} from "./combined/appBar";
+import {kpiReducer} from "./combined/kpi";
+import {timeAccountingDictionaryReducer} from "./combined/timeAccountingDictionary";
+import {dictionariesReducer} from "./combined/dictionaries";
+import {reportFiltersReducer} from "./combined/reportFilters";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
     kpiFilters: kpiFiltersReducers,
-    timeAccountingData: timeAccountingReducers,
+    /*timeAccountingData: timeAccountingReducers,*/
     timeAccountingFilters: timeAccountingFiltersReducers,
     etlFilters: etlFiltersReducers,
     reports: reportsReducer,
@@ -43,5 +47,10 @@ export default combineReducers({
     abstractReportData: abstractReportReducers,
     ...mainDialogReducer,
     ...navigationReducer,
-    ...appBarReducer
+    ...appBarReducer,
+    ...kpiReducer,
+    ...timeAccountingDictionaryReducer,
+    ...timeAccountingReducer,
+    ...dictionariesReducer,
+    ...reportFiltersReducer
 });

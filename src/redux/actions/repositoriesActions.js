@@ -12,6 +12,7 @@ export function getAllRepositoriesData() {
         fetch(`${ENDPOINT}/api/hints/repositories`, obj)
             .then(res => res.json())
             .then(json => {
+                    console.log(json);
                     dispatch({
                         type: 'FETCH_ALL_REPOSITORIES_FULFILLED',
                         payload: json

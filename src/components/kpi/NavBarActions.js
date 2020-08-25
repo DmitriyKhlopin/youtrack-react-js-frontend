@@ -10,6 +10,8 @@ import {openDialog} from "../../redux/combined/mainDialog";
 import {format} from "date-fns";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faFileExcel, faFilter, faSync} from "@fortawesome/free-solid-svg-icons";
+import KPIFilterDialog from "../dialogs/KPIFilterDialog";
+import {fetchKpiData} from "../../redux/combined/kpi";
 
 function NavBarActions({timeAccountingData}) {
     const dispatch = useDispatch();
@@ -43,19 +45,19 @@ function NavBarActions({timeAccountingData}) {
     const filters = <FontAwesomeIcon
         icon={faFilter}
         className={cx(styles.iconButton, styles.defaultPadding)}
-        onClick={() => dispatch(openDialog(<TimeAccountingFilterDialog/>))} size={'2x'}
+        onClick={() => dispatch(openDialog(<KPIFilterDialog/>))} size={'1x'}
     />;
 
     const refresh = <FontAwesomeIcon
         icon={faSync}
         className={cx(styles.iconButton, styles.defaultPadding)}
-        onClick={() => dispatch(fetchTimeAccountingData())} size={'2x'}
+        onClick={() => dispatch(fetchKpiData())} size={'1x'}
     />;
 
     const exp = <FontAwesomeIcon
         icon={faFileExcel}
         className={cx(styles.iconButton, styles.defaultPadding)}
-        onClick={exportToExcel} size={'2x'}
+        onClick={exportToExcel} size={'1x'}
     />;
 
 
@@ -63,7 +65,6 @@ function NavBarActions({timeAccountingData}) {
         <div className={cx(styles.row, styles.centered)}>
             {filters}
             {refresh}
-            {exp}
         </div>
     )
 

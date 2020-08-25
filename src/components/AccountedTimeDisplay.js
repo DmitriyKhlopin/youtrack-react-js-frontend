@@ -27,27 +27,27 @@ function AccountedTimeDisplay({actualTimeData}) {
     const [items, setItems] = useState([]);
     const [labelWidth, setLabelWidth] = useState(0);
     const dispatch = useDispatch();
-    const users = this.props.actualTimeData.usersData.map(item => item.fullName).sort();
+    const users = actualTimeData.usersData.map(item => item.fullName).sort();
 
     const requestData = () => {
-        dispatch(setCurrentlySelectedUsers(this.state.name));
+        dispatch(setCurrentlySelectedUsers(name));
         dispatch(getData());
     };
 
 
     useEffect(() => {
         dispatch(getActualTimeUsers());
-        setLabelWidth(ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth);
+        /*setLabelWidth(ReactDOM.findDOMNode(InputLabelRef).offsetWidth);*/
     }, [])
 
     useEffect(() => {
         const users = actualTimeData.usersData.map(item => item.fullName).sort();
-        this.setState({name: users});
+        setName( users);
     }, [actualTimeData.usersData]);
 
 
     const handleChange = event => {
-        this.setState({name: event.target.value});
+        setName(event.target.value);
     };
 
     const dataSource = new PivotGridDataSource({
@@ -139,7 +139,7 @@ function AccountedTimeDisplay({actualTimeData}) {
                 return cellInfo.valueText;
             }
         }],
-        store: this.props.actualTimeData.reportData
+        store: actualTimeData.reportData
     });
 
     const onCR = (e) => {
@@ -182,19 +182,19 @@ function AccountedTimeDisplay({actualTimeData}) {
             </FormControl>*/}
             <text id="date"
                   type="date"
-                  value={this.props.actualTimeData.dateFrom}
-                  onChange={field => store.dispatch(setActualTimeDateFrom(field.target.value))}
+                  value={actualTimeData.dateFrom}
+                  onChange={field => dispatch(setActualTimeDateFrom(field.target.value))}
             />
             <text
                 variant="outlined"
                 id="date"
                 label="Date to"
                 type="date"
-                defaultValue={this.props.actualTimeData.dateTo}
-                onChange={field => store.dispatch(setActualTimeDateTo(field.target.value))}
+                defaultValue={actualTimeData.dateTo}
+                onChange={field => dispatch(setActualTimeDateTo(field.target.value))}
                 InputLabelProps={{shrink: true,}}
             />
-            <button className={styles.button} onClick={this.requestData}>Загрузить</button>
+            <button className={styles.button} onClick={requestData}>Загрузить</button>
         </div>
         <PivotGrid
             dataSource={dataSource}
@@ -210,8 +210,8 @@ function AccountedTimeDisplay({actualTimeData}) {
                 enabled: true,
                 fileName: 'test'
             }}
-            onContentReady={(e) => this.onCR(e)}
-            onCellPrepared={(cell) => this.onCellP(cell)}
+            onContentReady={(e) => onCR(e)}
+            onCellPrepared={(cell) => onCellP(cell)}
         >
             <FieldChooser enabled={true} height={400}/>
         </PivotGrid>

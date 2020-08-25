@@ -180,7 +180,6 @@ function mapStateToProps(state) {
     return {
         filters: state.reportFilters,
         data: state.partnersData,
-        appBarState: state.appBarState.drawerOpened,
         reportData: state.abstractReportData,
     }
 }

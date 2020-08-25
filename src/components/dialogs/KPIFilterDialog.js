@@ -1,102 +1,54 @@
 import React, {useState} from "react";
-import ChipsArray from "../ChipArray";
-import connect from "react-redux/es/connect/connect";
-import {store} from "../../redux/store";
-import {selectProjectsByMode} from "../../redux/actions/reportFiltersActions";
 import DatePicker from "react-datepicker";
-import {format, parseISO} from "date-fns";
-import {setTimeAccountingDateFrom} from "../../redux/actions/timeAccountingFiltersActions";
 import styles from "../../styles/components.module.css";
+import cx from "classnames";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchKpiData, selectKpiDateFrom, selectKpiDateTo, setKpiDateFrom, setKpiDateTo} from "../../redux/combined/kpi";
+import {closeDialog} from "../../redux/combined/mainDialog";
 
-function KPIFilterDialog({filters, open, handleClose, dispatchDateFrom, dispatchDateTo}) {
+function KPIFilterDialog() {
+    const [dateFrom, setDateFrom] = useState(useSelector(selectKpiDateFrom));
+    const [dateTo, setDateTo] = useState(useSelector(selectKpiDateTo));
 
-    const [dateFrom, setDateFrom] = useState(filters.dateFrom);
-    const [dateTo, setDateTo] = useState(filters.dateTo);
-
-    const close = () => {
-        handleClose(false, null, null, [])
-    };
-
-    const apply = () => {
-        dispatchDateFrom(dateFrom);
-        dispatchDateTo(dateTo);
-        handleClose(false, null, null, [])
-    };
+    const dispatch = useDispatch();
+    const handleClick = () => {
+        dispatch(setKpiDateFrom(dateFrom));
+        dispatch(setKpiDateTo(dateTo));
+        dispatch(closeDialog());
+        dispatch(fetchKpiData());
+    }
 
     return (<div className={styles.column}>
-        <div id="scroll-dialog-title">Параметры отчёта</div>
-        <ChipsArray/>
         <div className={styles.row}>
-            <button className={styles.button} onClick={() => store.dispatch(selectProjectsByMode('PP'))}>
-                Внешние проекты
-            </button>
-            <button className={styles.button} onClick={() => store.dispatch(selectProjectsByMode('notPP'))}>
-                Внутренние проекты
-            </button>
-            <button className={styles.button} onClick={() => store.dispatch(selectProjectsByMode('LIC'))}>
-                Лицензирование
-            </button>
-            <button className={styles.button} onClick={() => store.dispatch(selectProjectsByMode('ALL'))}>
-                Все проекты
-            </button>
-            <button className={styles.button} onClick={() => store.dispatch(selectProjectsByMode('NONE'))}>
-                Снять отметку
-            </button>
-        </div>
-        <div style={{
-            width: '100%',
-            minWidth: '160px',
-            height: '100%',
-            minHeight: '300px',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            backgroundColor: 'transparent',
-        }}>
-            <div style={{padding: 4}}>
+            <div className={cx(styles.column, styles.defaultMargin)}>
                 <div style={{textAlign: 'center'}}>Начало периода</div>
                 <DatePicker
                     inline
-                    selected={parseISO(dateFrom)}
+                    selected={dateFrom}
                     selectsStart
-                    startDate={parseISO(dateFrom)}
-                    endDate={parseISO(dateTo)}
-                    maxDate={parseISO(dateTo)}
-                    onChange={date => setDateFrom(format(date, 'yyyy-MM-dd'))}
+                    startDate={dateFrom}
+                    endDate={dateTo}
+                    maxDate={dateTo}
+                    onChange={date => setDateFrom(date)}
                 />
             </div>
-            <div style={{padding: 4}}>
+            <div className={cx(styles.column, styles.defaultMargin)}>
                 <div style={{textAlign: 'center'}}>Конец периода</div>
                 <DatePicker
                     inline
-                    selected={parseISO(dateTo)}
+                    selected={dateTo}
                     selectsEnd
-                    startDate={parseISO(dateFrom)}
-                    endDate={parseISO(dateTo)}
-                    minDate={parseISO(dateFrom)}
-                    onChange={date => setDateTo(format(date, 'yyyy-MM-dd'))}
+                    startDate={dateFrom}
+                    endDate={dateTo}
+                    minDate={dateFrom}
+                    onChange={date => setDateTo(date)}
                 />
             </div>
         </div>
         <div className={styles.row}>
-            <button onClick={apply} color="primary">Применить</button>
-            <button onClick={close} color="primary">Закрыть</button>
+            <button className={styles.textButton} onClick={handleClick}>Применить</button>
         </div>
     </div>)
-
 }
 
-function mapStateToProps(state) {
-    return {
-        filters: state.reportFilters,
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        dispatchDateFrom: (dateFrom) => dispatch(setTimeAccountingDateFrom(dateFrom)),
-        dispatchDateTo: (dateFrom) => dispatch(setTimeAccountingDateFrom(dateFrom))
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(KPIFilterDialog);
+export default KPIFilterDialog;
