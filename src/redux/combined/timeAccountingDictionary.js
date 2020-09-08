@@ -1,4 +1,5 @@
 import {ENDPOINT} from "../../Const";
+import {setError} from "./error";
 
 export function fetchTimeAccountingDictionaryData() {
     return function (dispatch, getState) {
@@ -30,6 +31,22 @@ export function fetchTimeAccountingDictionaryData() {
     }
 }
 
+async function read(stream) {
+    const reader = stream.getReader();
+    let v;
+    while (true) {
+        const {done, value} = await reader.read();
+
+        if (done) {
+            break;
+        }
+        console.log(`Получено ${value.length} байт`)
+        console.log(value);
+        v = value;
+    }
+    return v;
+}
+
 export function postTimeAccountingDictionaryItem(data) {
     return function (dispatch) {
         dispatch({type: 'FETCH_TIME_ACCOUNTING_DICTIONARY_ITEM_POST_PENDING'});
@@ -41,13 +58,43 @@ export function postTimeAccountingDictionaryItem(data) {
         };
         fetch(`${ENDPOINT}/api/time/dictionary`, obj)
             .then(res => {
+
                 console.log(res);
-                dispatch({type: 'FETCH_TIME_ACCOUNTING_DICTIONARY_ITEM_POST_FULFILLED'});
-                dispatch(fetchTimeAccountingDictionaryData());
+                switch (res.status) {
+                    case 400: {
+                        dispatch({type: 'FETCH_TIME_ACCOUNTING_DICTIONARY_ITEM_POST_FULFILLED'});
+                        Promise.resolve(res.json()).then(json => dispatch(setError(json.value)));
+                        break;
+                    }
+                    default: {
+                        dispatch({type: 'FETCH_TIME_ACCOUNTING_DICTIONARY_ITEM_POST_FULFILLED'});
+                        dispatch(fetchTimeAccountingDictionaryData());
+                        break;
+                    }
+                }
+
             })
+            /*.then(res => res.json())
+            .then((json,res) => {
+                console.log(json);
+                console.log(res);
+                switch (json.status) {
+                    case 400: {
+                        read(json.body).then(value => dispatch(setError(value)));
+                        dispatch({type: 'FETCH_TIME_ACCOUNTING_DICTIONARY_ITEM_POST_FULFILLED'});
+                        break;
+                    }
+                    default: {
+                        dispatch({type: 'FETCH_TIME_ACCOUNTING_DICTIONARY_ITEM_POST_FULFILLED'});
+                        dispatch(fetchTimeAccountingDictionaryData());
+                        break;
+                    }
+                }
+
+            })*/
             .catch(err => {
                 console.log(err);
-                /*dispatch({type: 'POST_REPOSITORY_FAILED'})*/
+
             })
     }
 }

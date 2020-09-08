@@ -460,6 +460,31 @@ Layouts
     padding: 1rem;
 }
 
+.modalError {
+    display: block;
+    /*flex-direction: column;*/
+    z-index: 1;
+    position: fixed;
+    width: 20rem;
+    right: 1rem;
+    top: 5rem;
+    padding: 1rem;
+    background: #D32F2F;
+    border-radius: 4px;
+    color: white;
+}
+
+.modalErrorClose {
+    display: block;
+    /*flex-direction: column;*/
+    z-index: 2;
+    position: absolute;
+    /*width: 1rem;*/
+    /*left: 80%;*/
+    right: .5rem;
+    top: .5rem;
+}
+
 .drawer {
     display: flex;
     flex-direction: column;

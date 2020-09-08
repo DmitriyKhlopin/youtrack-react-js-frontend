@@ -42,7 +42,7 @@ function AccountedTimeDisplay({actualTimeData}) {
 
     useEffect(() => {
         const users = actualTimeData.usersData.map(item => item.fullName).sort();
-        setName( users);
+        setName(users);
     }, [actualTimeData.usersData]);
 
 

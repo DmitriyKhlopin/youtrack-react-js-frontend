@@ -24,6 +24,7 @@ import {kpiReducer} from "./combined/kpi";
 import {timeAccountingDictionaryReducer} from "./combined/timeAccountingDictionary";
 import {dictionariesReducer} from "./combined/dictionaries";
 import {reportFiltersReducer} from "./combined/reportFilters";
+import {errorReducer} from "./combined/error";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
@@ -52,5 +53,6 @@ export default combineReducers({
     ...timeAccountingDictionaryReducer,
     ...timeAccountingReducer,
     ...dictionariesReducer,
-    ...reportFiltersReducer
+    ...reportFiltersReducer,
+    ...errorReducer
 });
