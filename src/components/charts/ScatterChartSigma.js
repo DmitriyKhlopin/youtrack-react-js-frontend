@@ -1,18 +1,18 @@
 import {Legend, ReferenceArea, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis} from "recharts";
 import {MATERIAL_SIGMA_COLORS} from "../../Const";
 import React, {useEffect} from "react";
-import connect from "react-redux/es/connect/connect";
 import {openDialog} from "../../redux/combined/mainDialog";
 import {useDispatch, useSelector} from "react-redux";
 import styles from "../../styles/components.module.css";
 import {selectProjects} from "../../redux/combined/dictionaries";
-import {fetchSigmaData} from "../../redux/combined/sigmaReport";
+import {fetchSigmaData, fetchSigmaDataByDayValue, selectSigmaData, selectSigmaDetails, selectSigmaIsLoading} from "../../redux/combined/sigmaReport";
 import {selectSelectedProjects} from "../../redux/combined/reportFilters";
 
-const ScatterChartSigma = (props) => {
+const ScatterChartSigma = () => {
     const dispatch = useDispatch();
     const projects = useSelector(selectProjects);
     const selectedProjects = useSelector(selectSelectedProjects);
+    const sigma2 = useSelector(selectSigmaData);
 
     useEffect(() => {
         dispatch(fetchSigmaData())
@@ -23,7 +23,7 @@ const ScatterChartSigma = (props) => {
         dispatch(openDialog(<DayDetails day={data.day}/>))
     };
 
-    const sigma2 = props.reports.sigmaData;
+
     return <div>
         <div>Продолжительность работ по запросам</div>
         <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
@@ -70,25 +70,23 @@ const ScatterChartSigma = (props) => {
 
 }
 
-function mapStateToProps(state) {
-    return {
-        reportFilters: state.reportFilters,
-        reports: state.reports,
-        appBarState: state.appBarState,
-    }
-}
-
-export default connect(mapStateToProps, null)(ScatterChartSigma);
+export default ScatterChartSigma;
 
 
 const DayDetails = ({day}) => {
     const dispatch = useDispatch();
     useEffect(() => {
-        /*dispatch();*/
-    }, [])
+        dispatch(fetchSigmaDataByDayValue(day));
+    }, [day]);
+    const items = useSelector(selectSigmaDetails);
+    const isLoading = useSelector(selectSigmaIsLoading)
 
     return <div className={styles.column}>
-        {day}
-        <div className={styles.linearProgress}/>
+        <div>Продолжительность работы над задачами: {day}</div>
+        {isLoading ? <div className={styles.linearProgress}/> : items.map((item, index) => <div key={`sigma-item-detail-${index}`}>
+            <a href={`https://support.fsight.ru/issue/${item}`} target="_blank" style={{textDecoration: 'none', overflowWrap: 'break-word'}}>{item}</a>
+        </div>)}
     </div>
 }
+
+

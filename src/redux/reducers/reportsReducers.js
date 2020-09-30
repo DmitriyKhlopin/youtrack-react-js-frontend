@@ -1,10 +1,10 @@
 export default function reducer(state = {
-    sigmaData: {
+/*    sigmaData: {
         sigmaItems: [],
         sigma: 0,
         sigmaMaxX: 0,
         sigmaMaxY: 0
-    },
+    },*/
     aggregatedIssuesByPartner: [],
     aggregatedTimeAccountingByProjectType: []
 }, action) {
@@ -17,13 +17,13 @@ export default function reducer(state = {
             };
             break;
         }
-        case 'FETCH_SIGMA_REPORT_FULFILLED': {
+/*        case 'FETCH_SIGMA_REPORT_FULFILLED': {
             state = {
                 ...state,
                 sigmaData: action.payload
             };
             break;
-        }
+        }*/
         case 'FETCH_CREATED_BY_PARTNER_ON_WEEK_REPORT_FULFILLED': {
             state = {
                 ...state,

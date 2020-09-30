@@ -16,6 +16,7 @@ import TimeAccounting from "./components/time_accounting"
 import Reports from "./components/reports"
 import KPI from "./components/kpi";
 import ConnectedScatterPlot from "./components/charts/ConnectedScatterPlot";
+import CustomFieldsManagement from "./components/custom_fields_management/CustomFieldsManagement";
 
 export const drawerWidth = 300;
 export const [sidebarWidthOpen, sidebarWidthOpenWide, sidebarWidthClosed] = ['320px', '640px', '60px'];
@@ -158,6 +159,14 @@ export const PAGES = [
         path: '/key_partners',
         component: KeyPartnersReportContainer,
         availableInDrawer: false,
+        appBarActions: null
+    },
+    {
+        id: 18,
+        name: 'Добавление полей',
+        path: '/custom_fields_management',
+        component: CustomFieldsManagement,
+        availableInDrawer: true,
         appBarActions: null
     },
 ];

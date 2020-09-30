@@ -13,8 +13,8 @@ function ReportContainer() {
     const size = useWindowDimensions();
     let percentage;
     switch (true) {
-        case (size.width >= 1600):
-            percentage = 32;
+        case (size.width >= 1920):
+            percentage = 33;
             break;
         case (size.width >= 900):
             percentage = 50;
@@ -26,7 +26,7 @@ function ReportContainer() {
     useEffect(() => {
         dispatch(fetchProjects());
     }, []);
-    percentage = 100;
+    /*percentage = 100;*/
     return (
         <div className={cx(styles.row, styles.wrap, styles.defaultMargin)}>
             <div style={{width: `calc(${percentage}% - 1rem)`}}><LineChartByWeeks/></div>
