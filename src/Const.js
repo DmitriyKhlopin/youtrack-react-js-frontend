@@ -31,6 +31,7 @@ export const PAGES = [
         icon: faEdit
     },
     Reports,
+    Reports,
     /*{
         id: 0,
         name: 'Отчёты',
@@ -353,4 +354,10 @@ export const STATES_DICTIONARY = [
     {value: 'Подтверждена', label: 'Подтверждена', color: '#00B8D9', resolved: true},
     {value: 'Без подтверждения', label: 'Без подтверждения', color: '#00B8D9', resolved: true},
     {value: 'Duplicate', label: 'Дубликат', color: '#00B8D9', resolved: true},
+]
+
+export const TYPES_DICTIONARY = [
+    {value: "Feature", label: "Новая функциональность"},
+    {value: "Консультация", label: "Консультация"},
+    {value: "Bug", label: "Ошибка"}
 ]

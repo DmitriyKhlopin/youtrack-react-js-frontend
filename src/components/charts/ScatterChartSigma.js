@@ -1,29 +1,45 @@
 import {Legend, ReferenceArea, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis} from "recharts";
 import {MATERIAL_SIGMA_COLORS} from "../../Const";
-import React, {useEffect} from "react";
-import {openDialog} from "../../redux/combined/mainDialog";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import styles from "../../styles/components.module.css";
 import {selectProjects} from "../../redux/combined/dictionaries";
 import {fetchSigmaData, fetchSigmaDataByDayValue, selectSigmaData, selectSigmaDetails, selectSigmaIsLoading} from "../../redux/combined/sigmaReport";
-import {selectSelectedProjects} from "../../redux/combined/reportFilters";
+import {selectSelectedProjects, selectSelectedTypes} from "../../redux/combined/reportFilters";
+import {openDialog} from "../../redux/combined/mainDialog";
+
+const CustomTooltip = ({active, payload, label}) => {
+    if (active) {
+        return (
+            <div className="custom-tooltip">
+                <p className="label">{`${payload[0].name} : ${payload[0].value}`}</p>
+                <p className="label">{`${payload[1].name} : ${payload[1].value}`}</p>
+            </div>
+        );
+    }
+
+    return null;
+};
 
 const ScatterChartSigma = () => {
     const dispatch = useDispatch();
+    const [activeTooltip, setActiveTooltip] = useState(true);
     const projects = useSelector(selectProjects);
+    const selectedTypes = useSelector(selectSelectedTypes);
     const selectedProjects = useSelector(selectSelectedProjects);
     const sigma2 = useSelector(selectSigmaData);
 
+
     useEffect(() => {
         dispatch(fetchSigmaData())
-    }, [projects, selectedProjects])
+    }, [projects, selectedProjects, selectedTypes])
 
     const handleClick = (data) => {
-        console.log({...data});
-        dispatch(openDialog(<DayDetails day={data.day}/>))
+        dispatch(openDialog(<DayDetails day={data.day}/>));
+
     };
 
-
+    console.log(activeTooltip);
     return <div>
         <div>Продолжительность работ по запросам</div>
         <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
@@ -41,8 +57,9 @@ const ScatterChartSigma = () => {
                 <XAxis dataKey={'day'} type="number" name='Дни' unit='' domain={[0, sigma2.sigmaMaxX]}/>
                 <YAxis axisLine={false} dataKey={'count'} type="number" name='Количетство запросов' unit=''
                        domain={[0, sigma2.sigmaMaxY]}/>
+                <Tooltip cursor={{strokeDasharray: '4 6'}} content={<CustomTooltip/>}/>
                 <Scatter name='Активные запросы' data={sigma2.sigmaItems} fill={MATERIAL_SIGMA_COLORS[0]} onClick={handleClick}/>
-                <Tooltip cursor={{strokeDasharray: '4 6'}}/>
+
                 <Legend
                     payload={[
                         {

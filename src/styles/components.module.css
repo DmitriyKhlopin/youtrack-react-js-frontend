@@ -91,6 +91,15 @@ Navigation
     outline: 1px solid darkPrimaryColor;
 }
 
+.floatRight {
+    display: block;
+    position: absolute;
+    margin: 16px;
+    top:0;
+    right: 0;
+z-index:2;
+}
+
 /*
 .baseContainer > .contentContainer {
     scrollbar-color: darkPrimaryColor lightPrimaryColor;
@@ -317,6 +326,20 @@ Layouts
 /* Darker background on mouse-over */
 .iconButton:hover {
     color: lightPrimaryColor;
+    opacity: 0.9;
+    transition-duration: .3s;
+}
+
+.iconButtonInverted {
+    border-radius: 0.25rem;
+    border: none;
+    color: primaryColor;
+    cursor: pointer;
+}
+
+/* Darker background on mouse-over */
+.iconButtonInverted:hover {
+    color: darkPrimaryColor;
     opacity: 0.9;
     transition-duration: .3s;
 }

@@ -1,13 +1,14 @@
-import React, {useState} from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import styles from "../../styles/components.module.css";
 import cx from "classnames";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSync} from "@fortawesome/free-solid-svg-icons";
-import {fetchSigmaData} from "../../redux/actions/reportsActions";
 import Select, {components} from "react-select";
 import {selectProjects} from "../../redux/combined/dictionaries";
-import {selectSelectedProjects, setSelectedProjects} from "../../redux/combined/reportFilters";
+import {selectSelectedProjects, selectSelectedTypes, setSelectedProjects, setSelectedTypes} from "../../redux/combined/reportFilters";
+import {TYPES_DICTIONARY} from "../../Const";
+import {fetchSigmaData} from "../../redux/combined/sigmaReport";
 
 
 const customStyles = {
@@ -43,21 +44,33 @@ const ValueContainer = ({children, ...props}) => {
     );
 };
 
+
 function NavBarActions() {
     const dispatch = useDispatch();
     const options = useSelector(selectProjects);
-    const projects=useSelector(selectSelectedProjects);
+    const projects = useSelector(selectSelectedProjects);
+    const types = useSelector(selectSelectedTypes);
     const components = {ValueContainer};
+
+    useEffect(() => {
+        dispatch(setSelectedTypes([TYPES_DICTIONARY[1]]));
+    }, [])
+
     const handleProjectsChange = (selectedOption) => {
-        /*setProjects(selectedOption);*/
         dispatch(setSelectedProjects(selectedOption));
     }
+
+    const handleTypesChange = (selectedOption) => {
+        dispatch(setSelectedTypes(selectedOption));
+    }
+
 
     const refresh = <FontAwesomeIcon
         icon={faSync}
         className={cx(styles.iconButton, styles.defaultPadding)}
         onClick={() => dispatch(fetchSigmaData())} size={'1x'}
     />;
+
 
     return (
         <div className={cx(styles.row, styles.centered)}>
@@ -71,6 +84,18 @@ function NavBarActions() {
                 closeMenuOnSelect={false}
                 components={components}
                 isSearchable={true}
+            />
+            <Select
+                styles={customStyles}
+                isMulti
+                options={TYPES_DICTIONARY}
+                /*defaultValue={[TYPES_DICTIONARY[1]]}*/
+                /*placeholder="Типы"*/
+                value={types}
+                onChange={handleTypesChange}
+                closeMenuOnSelect={false}
+                components={components}
+                /*isSearchable={true}*/
             />
             {refresh}
         </div>

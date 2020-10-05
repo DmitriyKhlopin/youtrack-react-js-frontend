@@ -11,10 +11,12 @@ export function fetchSigmaData() {
         };
         const state = getState();
         const projects = state.reportFilters2.projects.map(item => item.value);
+        const types = state.reportFilters2.types.map(item => item.value);
+        console.log(types);
         const dateFrom = state.reportFilters.dateFrom;
         const dateTo = state.reportFilters.dateTo;
         const baseUrl = `${ENDPOINT}/api/chart/`;
-        const filters = '?projects=' + projects + '&dateFrom=' + dateFrom + '&dateTo=' + dateTo;
+        const filters = '?projects=' + projects  + '&types=' + types + '&dateFrom=' + dateFrom + '&dateTo=' + dateTo;
 
         fetch(baseUrl + 'sigma' + filters, obj)
             .then(res => res.json())
@@ -44,7 +46,8 @@ export function fetchSigmaDataByDayValue(day) {
                 'Content-Type': 'application/json;charset=UTF-8',
             },
             body: JSON.stringify({
-                'projects': state.reportFilters2.projects.map(item => item.value)
+                'projects': state.reportFilters2.projects.map(item => item.value),
+                'types': state.reportFilters2.types.map(item => item.value)
             })
         };
         const url = `${ENDPOINT}/api/issues/sigma?days=${day}`;
