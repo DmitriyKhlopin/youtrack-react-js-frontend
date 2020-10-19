@@ -1,21 +1,30 @@
 import React, {useEffect, useState} from "react";
-import {fetchProjects} from "../../redux/actions/reportFiltersActions";
+
 import LineChartByWeeks from "./../charts/LineChartByWeeks";
 import PieChartByPartners from "./../charts/PieChartByPartners";
 import ScatterChartSigma from "./../charts/ScatterChartSigma";
 import useWindowDimensions from "../../helper_functions/dimensions";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import styles from "../../styles/components.module.css";
 import cx from "classnames";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCompressAlt, faExpandAlt} from "@fortawesome/free-solid-svg-icons";
+import {fetchProjects, selectProjects} from "../../redux/combined/dictionaries";
+import {selectSigmaIssuesCount} from "../../redux/combined/sigmaReport";
+
 
 function ReportContainer() {
     const [maximized, setMaximized] = useState(false);
     const [index, setIndex] = useState(0);
     const dispatch = useDispatch();
     const size = useWindowDimensions();
-    const widgets = [<LineChartByWeeks/>, <PieChartByPartners/>, <ScatterChartSigma/>];
+    const count = useSelector(selectSigmaIssuesCount);
+    const projectsDictionary = useSelector(selectProjects);
+    const widgets = [
+        {title: 'Количество поступивших и закрытых запросов', element: <LineChartByWeeks/>},
+        {title: 'Количество новых запросов от партнёров за текущую неделю', element: <PieChartByPartners/>},
+        {title: `Продолжительность работ по запросам (${count} шт.)`, element: <ScatterChartSigma/>}
+    ];
 
     let percentage;
     switch (true) {
@@ -30,7 +39,7 @@ function ReportContainer() {
             break;
     }
     useEffect(() => {
-        dispatch(fetchProjects());
+        if (projectsDictionary.length === 0) dispatch(fetchProjects());
     }, []);
 
     function button(index) {
@@ -47,15 +56,15 @@ function ReportContainer() {
         setMaximized(!maximized);
         setIndex(index);
     }
-    return (maximized ? <div style={{width: `calc(100% - 1rem)`, position: 'relative'}}>
-                {button(null)}
-                {widgets[index]}
+
+    return (maximized ? <div style={{width: `100%`, position: 'relative'}}>
+                <div className={cx(styles.centeredText, styles.mediumMargin)}>{widgets[index].title}{button(null)}</div>
+                {widgets[index].element}
             </div> :
-            <div className={cx(styles.row, styles.wrap, styles.defaultMargin)}>
-                {widgets.map((item, index) => <div style={{width: `calc(${percentage}% - 1rem)`, position: 'relative'}}>
-                    {/*<div className={styles.floatRight} onClick={() => toggle(0)}>test</div>*/}
-                    {button(index)}
-                    {item}
+            <div className={cx(styles.row, styles.wrap)}>
+                {widgets.map((item, index) => <div key={`report-${index}`} style={{width: `calc(${percentage}%)`, position: 'relative'}}>
+                    <div className={cx(styles.centeredText, styles.defaultMargin)}>{item.title}{button(index)}</div>
+                    {item.element}
                 </div>)}
             </div>
     );

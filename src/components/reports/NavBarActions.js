@@ -6,8 +6,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSync} from "@fortawesome/free-solid-svg-icons";
 import Select, {components} from "react-select";
 import {selectProjects} from "../../redux/combined/dictionaries";
-import {selectSelectedProjects, selectSelectedTypes, setSelectedProjects, setSelectedTypes} from "../../redux/combined/reportFilters";
-import {TYPES_DICTIONARY} from "../../Const";
+import {selectSelectedProjects, selectSelectedStates, selectSelectedTypes, setSelectedProjects, setSelectedStates, setSelectedTypes} from "../../redux/combined/reportFilters";
+import {STATES_DICTIONARY, TYPES_DICTIONARY} from "../../Const";
 import {fetchSigmaData} from "../../redux/combined/sigmaReport";
 
 
@@ -47,23 +47,29 @@ const ValueContainer = ({children, ...props}) => {
 
 function NavBarActions() {
     const dispatch = useDispatch();
-    const options = useSelector(selectProjects);
+    const projectsDictionary = useSelector(selectProjects);
     const projects = useSelector(selectSelectedProjects);
     const types = useSelector(selectSelectedTypes);
+    const states = useSelector(selectSelectedStates);
     const components = {ValueContainer};
 
     useEffect(() => {
         dispatch(setSelectedTypes([TYPES_DICTIONARY[1]]));
+        dispatch(setSelectedStates([STATES_DICTIONARY[3]]));
     }, [])
 
     const handleProjectsChange = (selectedOption) => {
-        dispatch(setSelectedProjects(selectedOption));
+        dispatch(setSelectedProjects(selectedOption?selectedOption:[]));
     }
 
     const handleTypesChange = (selectedOption) => {
-        dispatch(setSelectedTypes(selectedOption));
+        dispatch(setSelectedTypes(selectedOption?selectedOption:[]));
     }
 
+
+    const handleStatesChange = (selectedOption) => {
+        dispatch(setSelectedStates(selectedOption?selectedOption:[]));
+    }
 
     const refresh = <FontAwesomeIcon
         icon={faSync}
@@ -77,11 +83,12 @@ function NavBarActions() {
             <Select
                 styles={customStyles}
                 isMulti
-                options={options.map(e => new Object({value: e.shortName, label: e.name, color: '#00B8D9'}))}
+                options={projectsDictionary}
                 placeholder="Проекты"
                 value={projects}
                 onChange={handleProjectsChange}
                 closeMenuOnSelect={false}
+                hideSelectedOptions={false}
                 components={components}
                 isSearchable={true}
             />
@@ -90,10 +97,23 @@ function NavBarActions() {
                 isMulti
                 options={TYPES_DICTIONARY}
                 /*defaultValue={[TYPES_DICTIONARY[1]]}*/
-                /*placeholder="Типы"*/
+                placeholder="Типы"
                 value={types}
                 onChange={handleTypesChange}
                 closeMenuOnSelect={false}
+                hideSelectedOptions={false}
+                components={components}
+                /*isSearchable={true}*/
+            />
+            <Select
+                styles={customStyles}
+                isMulti
+                options={STATES_DICTIONARY}
+                placeholder="Состояния"
+                value={states}
+                onChange={handleStatesChange}
+                closeMenuOnSelect={false}
+                hideSelectedOptions={false}
                 components={components}
                 /*isSearchable={true}*/
             />

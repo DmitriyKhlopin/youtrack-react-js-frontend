@@ -1,9 +1,10 @@
-import React, {Component} from "react";
+import React, {useEffect} from "react";
 import {Cell, Legend, Pie, PieChart, ResponsiveContainer} from "recharts";
-import connect from "react-redux/es/connect/connect";
-import {MATERIAL_COLORS, RADIAN} from "../../Const";
-import {store} from "../../redux/store";
-import {fetchCreatedOnWeekData} from "../../redux/actions/reportsActions";
+import {CHART_DEFAULT_MARGINS, MATERIAL_COLORS, RADIAN} from "../../Const";
+import {useDispatch, useSelector} from "react-redux";
+import {selectProjects} from "../../redux/combined/dictionaries";
+import {selectSelectedProjects, selectSelectedStates, selectSelectedTypes} from "../../redux/combined/reportFilters";
+import {fetchCreatedOnWeekByPartnersData, selectCreatedOnWeekByPartnersData} from "../../redux/combined/createdOnWeekByPartners";
 
 export const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index, value, name, fill}) => {
     const sin = Math.sin(-RADIAN * midAngle);
@@ -26,55 +27,43 @@ export const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadiu
     );
 };
 
-class PieChartByPartners extends Component {
-    handleClick = (data, index) => {
+const PieChartByPartners = () => {
+    const dispatch = useDispatch();
+    const projects = useSelector(selectProjects);
+    const selectedTypes = useSelector(selectSelectedTypes);
+    const selectedProjects = useSelector(selectSelectedProjects);
+    const selectedStates = useSelector(selectSelectedStates);
+    const data = useSelector(selectCreatedOnWeekByPartnersData);
+    useEffect(() => {
+        dispatch(fetchCreatedOnWeekByPartnersData());
+    }, [projects, selectedProjects, selectedTypes, selectedStates]);
+    const handleClick = (data, index) => {
         console.log(data);
         console.log(index);
     };
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        const prevFilters = prevProps.reportFilters;
-        if (prevFilters && prevFilters !== this.props.reportFilters) {
-            store.dispatch(fetchCreatedOnWeekData());
-        }
-    }
+    return <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
+        <PieChart margin={CHART_DEFAULT_MARGINS}>
+            <Pie data={data}
+                 nameKey={'key'}
+                 dataKey={'value'}
+                 labelLine={true}
+                 label={renderCustomizedLabel}
+                 fill="#8884d8"
+                 startAngle={450}
+                 endAngle={90}
+                 paddingAngle={1}
+                 onClick={handleClick}
+                 isAnimationActive={false}
+                 legendType={'none'}
+            >
+                {data.map((entry, index) => <Cell key={`cell-${index}`} fill={MATERIAL_COLORS[index % MATERIAL_COLORS.length]}/>)}
+            </Pie>
+            <Legend/>
+        </PieChart>
+    </ResponsiveContainer>
 
-    render() {
-        const aggregatedIssuesByPartner = this.props.reports.aggregatedIssuesByPartner;
-        return <div>
-            <div>Количество запросов от партнёров</div>
-            <ResponsiveContainer width='100%' aspect={4.0 / 2.0}>
-                <PieChart margin={{top: 30, right: 0, left: 0, bottom: 30}}>
-                    <Pie data={aggregatedIssuesByPartner}
-                         nameKey={'name'}
-                         dataKey={'value'}
-                         labelLine={true}
-                         label={renderCustomizedLabel}
-                         fill="#8884d8"
-                         startAngle={450}
-                         endAngle={90}
-                         paddingAngle={1}
-                         onClick={this.handleClick}
-                         legendType={'none'}
-                    >
-                        {
-                            aggregatedIssuesByPartner.map((entry, index) => <Cell key={`cell-${index}`}
-                                                                                  fill={MATERIAL_COLORS[index % MATERIAL_COLORS.length]}/>)
-                        }
-                    </Pie>
-                    <Legend/>
-                </PieChart>
-            </ResponsiveContainer>
-        </div>
-    }
 }
 
-function mapStateToProps(state) {
-    return {
-        reportFilters: state.reportFilters,
-        reports: state.reports,
-        appBarState: state.appBarState,
-    }
-}
 
-export default connect(mapStateToProps, null)(PieChartByPartners);
+export default PieChartByPartners;

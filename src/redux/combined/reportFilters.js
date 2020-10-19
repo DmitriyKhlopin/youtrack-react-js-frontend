@@ -18,9 +18,19 @@ export function setSelectedTypes(types) {
     }
 }
 
+export function setSelectedStates(projects) {
+    return function (dispatch) {
+        dispatch({
+            type: 'SET_SELECTED_STATES',
+            payload: projects
+        })
+    }
+}
+
 export default function reducer(state = {
     projects: [],
-    types: []
+    types: [],
+    states: []
 }, action) {
     switch (action.type) {
         case 'SET_SELECTED_PROJECTS': {
@@ -37,6 +47,13 @@ export default function reducer(state = {
             };
             break;
         }
+        case 'SET_SELECTED_STATES': {
+            state = {
+                ...state,
+                states: action.payload
+            };
+            break;
+        }
     }
     return state;
 };
@@ -44,3 +61,4 @@ export default function reducer(state = {
 export const reportFiltersReducer = {reportFilters2: reducer}
 export const selectSelectedProjects = (state) => state.reportFilters2.projects;
 export const selectSelectedTypes = (state) => state.reportFilters2.types;
+export const selectSelectedStates = (state) => state.reportFilters2.states;

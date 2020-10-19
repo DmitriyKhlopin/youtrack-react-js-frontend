@@ -26,6 +26,8 @@ import {dictionariesReducer} from "./combined/dictionaries";
 import {reportFiltersReducer} from "./combined/reportFilters";
 import {errorReducer} from "./combined/error";
 import {sigmaReducer} from "./combined/sigmaReport";
+import {dynamicsReducer} from "./combined/dynamicsReport";
+import {createdOnWeekByPartnersReducer} from "./combined/createdOnWeekByPartners";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
@@ -56,5 +58,7 @@ export default combineReducers({
     ...dictionariesReducer,
     ...reportFiltersReducer,
     ...errorReducer,
-    ...sigmaReducer
+    ...sigmaReducer,
+    ...dynamicsReducer,
+    ...createdOnWeekByPartnersReducer
 });

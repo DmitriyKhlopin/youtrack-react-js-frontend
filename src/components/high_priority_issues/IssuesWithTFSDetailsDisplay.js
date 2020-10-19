@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {PRIORITIES_DICTIONARY, STATES_DICTIONARY} from "../../Const";
 import {getIssuesWithDetails} from "../../redux/actions/highPriorityIssuesActions";
-import {fetchPartnerCustomers, fetchTags} from "../../redux/actions/reportFiltersActions";
 import HighPriorityIssueView from "./HighPriorityIssueView";
 import {customSort} from "../../HelperFunctions";
 import {useDispatch, useSelector} from "react-redux";
@@ -14,6 +13,7 @@ import * as XLSX from 'xlsx';
 import cx from "classnames";
 import {format} from "date-fns";
 import button from "devextreme/ui/button";
+import {fetchPartnerCustomers, fetchProjects, fetchTags, selectProjects} from "../../redux/combined/dictionaries";
 
 const customStyles = {
     container: base => ({
@@ -25,7 +25,7 @@ const customStyles = {
     }),
 };
 
-function IssuesWithTFSDetailsDisplay({location}) {
+function IssuesWithTFSDetailsDisplay() {
     const dispatch = useDispatch();
     const [priorities, setPriorities] = useState([PRIORITIES_DICTIONARY[0]]);
     const [states, setStates] = useState([]);
@@ -35,8 +35,11 @@ function IssuesWithTFSDetailsDisplay({location}) {
     const [tags, setTags] = useState([]);
     const [allTags, setAllTags] = useState(false);
     const [expanded, setExpanded] = useState(false);
+    const projectsDictionary = useSelector(selectProjects);
+
     useEffect(() => {
         dispatch(fetchPartnerCustomers());
+        if (projectsDictionary.length === 0) dispatch(fetchProjects());
         dispatch(fetchTags());
     }, []);
 
@@ -81,8 +84,7 @@ function IssuesWithTFSDetailsDisplay({location}) {
             <Select
                 styles={customStyles}
                 isMulti
-                options={[...new Set(partnerCustomers.map((item) => item.project))]
-                    .sort(customSort).map(e => new Object({value: e, label: e, color: '#00B8D9'}))
+                options={projectsDictionary
                 }
                 placeholder="Проекты"
                 value={projects}

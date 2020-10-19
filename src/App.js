@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect} from 'react';
 import './App.css';
 import {createBrowserHistory} from 'history';
 import {BrowserRouter, Link, NavLink, Route, Router, Switch} from "react-router-dom";
@@ -12,7 +12,6 @@ import BaseDialog from "./components/dialogs/BaseDialog";
 import {selectMainDialogState} from "./redux/combined/mainDialog";
 import {fetchPartnerCustomers, fetchProjects} from "./redux/combined/dictionaries";
 import ErrorDialog from "./components/error/ErrorDialog";
-import {selectErrorExists, selectErrorText} from "./redux/combined/error";
 
 
 export const history = createBrowserHistory();
@@ -22,10 +21,10 @@ function App() {
     const drawerOpened = useSelector(selectDrawerState);
     const mainDialogOpened = useSelector(selectMainDialogState);
 
-    useEffect(() => {
+    /*useEffect(() => {
         dispatch(fetchProjects())
         dispatch(fetchPartnerCustomers())
-    }, [])
+    }, [])*/
 
     const toggle = () => {
         dispatch(toggleAppBar())
@@ -40,14 +39,14 @@ function App() {
     return (
         <BrowserRouter history={history} style={{background: mainDialogOpened ? 'grey' : 'white'}}>
             <BaseDialog/>
-            <div className={styles.navBar} style={{zIndex: 1}} >
+            <div className={styles.navBar} style={{zIndex: 1}}>
                 {hamburger}
                 <Switch>
                     {PAGES.map((item, index) => <Route exact path={item.path} component={item.navBar} key={`key-route-help-content-${index}`}/>)}
                 </Switch>
                 <Link to="/login">Login</Link>
             </div>
-            <ErrorDialog />
+            <ErrorDialog/>
 
             <div className={styles.baseContainer}>
                 {drawerOpened

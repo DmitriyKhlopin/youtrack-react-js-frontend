@@ -4,10 +4,10 @@ import {store} from "../redux/store";
 import connect from "react-redux/es/connect/connect";
 import {fetchTimeAccountingData} from "../redux/actions/timeAccountingActions";
 import * as ReactDOM from "react-dom";
-import {fetchProjects} from "../redux/actions/reportFiltersActions";
 import {getWorkDuration} from "../redux/actions/workDurationActions";
 import * as X from 'xlsx';
 import {Select} from "react-select";
+import {fetchProjects} from "../redux/combined/dictionaries";
 
 /*import { withTheme } from '@material-ui/styles';*/
 

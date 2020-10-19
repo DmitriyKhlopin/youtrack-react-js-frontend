@@ -31,7 +31,6 @@ export const PAGES = [
         icon: faEdit
     },
     Reports,
-    Reports,
     /*{
         id: 0,
         name: 'Отчёты',
@@ -176,7 +175,7 @@ export const PAGES = [
 export const YT_ENDPOINT = 'http://support.fsight.ru/api/';
 export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://10.30.207.22:8080';
 export const RADIAN = Math.PI / 180;
-export const innerProjects = ['PP_Lic', 'FMP_LIC', 'SD', 'PDP', 'W', 'P_PROJ1', 'T', 'TEST', 'SPAM', 'TC', 'RELEASE', 'PO', 'P'];
+export const innerProjects = ['PP_Lic', 'FMP_LIC', 'SD', 'PDP', 'W', 'P_PROJ1', 'T', 'TEST', 'SPAM', 'TC', 'RELEASE', 'PO', 'P', 'BL'];
 export const licProjects = ['PP_Lic',];
 
 /**https://flatuicolors.com/palette/defo*/
@@ -361,3 +360,5 @@ export const TYPES_DICTIONARY = [
     {value: "Консультация", label: "Консультация"},
     {value: "Bug", label: "Ошибка"}
 ]
+
+export const CHART_DEFAULT_MARGINS = {top: 0, right: 30, left: 0, bottom: 20}

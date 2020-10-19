@@ -1,6 +1,31 @@
 import {ENDPOINT} from "../../Const";
 import {stringSort} from "../../helper_functions/sorting";
 
+export function fetchTags() {
+    return function (dispatch) {
+        dispatch({type: "FETCH_TAGS_PENDING"});
+        const obj = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        };
+
+        const url = `${ENDPOINT}/api/dictionary/tags`;
+        fetch(url, obj)
+            .then(res => res.json())
+            .then(json => {
+                dispatch({
+                    type: "FETCH_TAGS_FULFILLED",
+                    payload: json.map(e => new Object({value: e, label: e, color: '#00B8D9'})),
+                });
+            })
+            .catch(err => dispatch({
+                type: "FETCH_TAGS_REJECTED",
+                payload: err
+            }));
+    }
+}
 
 export function fetchProjects() {
     return function (dispatch) {
@@ -12,7 +37,7 @@ export function fetchProjects() {
             }
         };
 
-        const url = `${ENDPOINT}/api/project`;
+        const url = `${ENDPOINT}/api/dictionary/project/commercial`;
         fetch(url, obj)
             .then(res => res.json())
             .then(json => {
@@ -38,7 +63,7 @@ export function fetchPartnerCustomers() {
             }
         };
 
-        const url = `${ENDPOINT}/api/partner_customers`;
+        const url = `${ENDPOINT}/api/dictionary/partner_customers`;
         fetch(url, obj)
             .then(res => res.json())
             .then(json => {

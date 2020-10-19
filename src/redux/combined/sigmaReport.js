@@ -11,12 +11,13 @@ export function fetchSigmaData() {
         };
         const state = getState();
         const projects = state.reportFilters2.projects.map(item => item.value);
+        const states = state.reportFilters2.states.map(item => item.value);
         const types = state.reportFilters2.types.map(item => item.value);
         console.log(types);
         const dateFrom = state.reportFilters.dateFrom;
         const dateTo = state.reportFilters.dateTo;
         const baseUrl = `${ENDPOINT}/api/chart/`;
-        const filters = '?projects=' + projects  + '&types=' + types + '&dateFrom=' + dateFrom + '&dateTo=' + dateTo;
+        const filters = `?projects=${projects}&types=${types}&states=${encodeURIComponent(states)}&dateFrom=${dateFrom}&dateTo=${dateTo}`;
 
         fetch(baseUrl + 'sigma' + filters, obj)
             .then(res => res.json())
@@ -47,7 +48,8 @@ export function fetchSigmaDataByDayValue(day) {
             },
             body: JSON.stringify({
                 'projects': state.reportFilters2.projects.map(item => item.value),
-                'types': state.reportFilters2.types.map(item => item.value)
+                'types': state.reportFilters2.types.map(item => item.value),
+                'states': state.reportFilters2.states.map(item => item.value)
             })
         };
         const url = `${ENDPOINT}/api/issues/sigma?days=${day}`;
@@ -102,5 +104,6 @@ export default function reducer(state = {
 
 export const sigmaReducer = {sigma: reducer};
 export const selectSigmaData = (state) => state.sigma.sigmaData;
+export const selectSigmaIssuesCount = (state) => state.sigma.sigmaData.sigmaItems.sum('count');
 export const selectSigmaDetails = (state) => state.sigma.details;
 export const selectSigmaIsLoading = (state) => state.sigma.isLoading;
