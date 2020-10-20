@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import './App.css';
 import {createBrowserHistory} from 'history';
 import {BrowserRouter, Link, NavLink, Route, Router, Switch} from "react-router-dom";
@@ -10,7 +10,6 @@ import {faBars} from '@fortawesome/free-solid-svg-icons'
 import {useDispatch, useSelector} from "react-redux";
 import BaseDialog from "./components/dialogs/BaseDialog";
 import {selectMainDialogState} from "./redux/combined/mainDialog";
-import {fetchPartnerCustomers, fetchProjects} from "./redux/combined/dictionaries";
 import ErrorDialog from "./components/error/ErrorDialog";
 
 
@@ -20,12 +19,6 @@ function App() {
     const dispatch = useDispatch();
     const drawerOpened = useSelector(selectDrawerState);
     const mainDialogOpened = useSelector(selectMainDialogState);
-
-    /*useEffect(() => {
-        dispatch(fetchProjects())
-        dispatch(fetchPartnerCustomers())
-    }, [])*/
-
     const toggle = () => {
         dispatch(toggleAppBar())
     };

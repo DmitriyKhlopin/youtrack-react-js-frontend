@@ -13,7 +13,6 @@ export function fetchSigmaData() {
         const projects = state.reportFilters2.projects.map(item => item.value);
         const states = state.reportFilters2.states.map(item => item.value);
         const types = state.reportFilters2.types.map(item => item.value);
-        console.log(types);
         const dateFrom = state.reportFilters.dateFrom;
         const dateTo = state.reportFilters.dateTo;
         const baseUrl = `${ENDPOINT}/api/chart/`;

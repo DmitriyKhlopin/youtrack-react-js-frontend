@@ -38,9 +38,7 @@ function ReportContainer() {
             percentage = 100;
             break;
     }
-    useEffect(() => {
-        if (projectsDictionary.length === 0) dispatch(fetchProjects());
-    }, []);
+
 
     function button(index) {
         return <FontAwesomeIcon

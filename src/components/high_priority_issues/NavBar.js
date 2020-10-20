@@ -5,6 +5,7 @@ import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
 import {openDialog} from "../../redux/combined/mainDialog";
 import {useDispatch} from "react-redux";
 import Help from "./Help";
+import {NavBarActions} from "./NavBarActions";
 
 
 export function NavBar() {
@@ -19,10 +20,6 @@ export function NavBar() {
         <span className={styles.title}>Детализация по запросам</span>
         {infoButton}
         <div className={styles.expand}/>
-        <Actions/>
+        <NavBarActions/>
     </>
-}
-
-export function Actions() {
-    return null
 }

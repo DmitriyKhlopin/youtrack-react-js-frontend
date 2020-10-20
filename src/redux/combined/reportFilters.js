@@ -1,42 +1,77 @@
-import {TYPES_DICTIONARY} from "../../Const";
-
-export function setSelectedProjects(projects) {
+export function setSelectedProjects(payload) {
     return function (dispatch) {
         dispatch({
             type: 'SET_SELECTED_PROJECTS',
-            payload: projects
+            payload: payload
         })
     }
 }
 
-export function setSelectedTypes(types) {
+export function setSelectedPartnerCustomers(payload) {
+    return function (dispatch) {
+        dispatch({
+            type: 'SET_SELECTED_PARTNER_CUSTOMERS',
+            payload: payload
+        })
+    }
+}
+
+export function setSelectedPriorities(payload) {
+    return function (dispatch) {
+        dispatch({
+            type: 'SET_SELECTED_PRIORITIES',
+            payload: payload
+        })
+    }
+}
+
+export function setSelectedTypes(payload) {
     return function (dispatch) {
         dispatch({
             type: 'SET_SELECTED_TYPES',
-            payload: types
+            payload: payload
         })
     }
 }
 
-export function setSelectedStates(projects) {
+export function setSelectedStates(payload) {
     return function (dispatch) {
         dispatch({
             type: 'SET_SELECTED_STATES',
-            payload: projects
+            payload: payload
+        })
+    }
+}
+
+export function setSelectedTags(payload) {
+    return function (dispatch) {
+        dispatch({
+            type: 'SET_SELECTED_TAGS',
+            payload: payload
         })
     }
 }
 
 export default function reducer(state = {
     projects: [],
-    types: [],
-    states: []
+    partnerCustomers: [],
+    priorities: null,
+    types: null,
+    states: null,
+    tags: []
 }, action) {
     switch (action.type) {
         case 'SET_SELECTED_PROJECTS': {
             state = {
                 ...state,
                 projects: action.payload
+            };
+            break;
+        }
+        case 'SET_SELECTED_PARTNER_CUSTOMERS': {
+            state = {
+                ...state,
+                partnerCustomers: action.payload
             };
             break;
         }
@@ -54,11 +89,28 @@ export default function reducer(state = {
             };
             break;
         }
+        case 'SET_SELECTED_TAGS': {
+            state = {
+                ...state,
+                tags: action.payload
+            };
+            break;
+        }
+        case 'SET_SELECTED_PRIORITIES': {
+            state = {
+                ...state,
+                priorities: action.payload
+            };
+            break;
+        }
     }
     return state;
 };
 
 export const reportFiltersReducer = {reportFilters2: reducer}
 export const selectSelectedProjects = (state) => state.reportFilters2.projects;
+export const selectSelectedPriorities = (state) => state.reportFilters2.priorities;
+export const selectSelectedPartnerCustomers = (state) => state.reportFilters2.partnerCustomers;
 export const selectSelectedTypes = (state) => state.reportFilters2.types;
 export const selectSelectedStates = (state) => state.reportFilters2.states;
+export const selectSelectedTags = (state) => state.reportFilters2.tags;

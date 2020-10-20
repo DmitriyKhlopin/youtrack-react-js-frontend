@@ -5,7 +5,7 @@ import etlFiltersReducers from "./reducers/etlFiltersReducers";
 import licenseRequestReducers from "./reducers/licenseRequestReducers";
 import userReducers from "./reducers/userReducers";
 import timeAccountingFiltersReducers from "./reducers/timeAccountingFiltersReducers";
-import timeAccountingReducers, {timeAccountingReducer} from "./reducers/timeAccountingReducers";
+import {timeAccountingReducer} from "./reducers/timeAccountingReducers";
 import actualTimeReducers from "./reducers/actualTimeReducers";
 import possibleErrorsReducers from "./reducers/possibleErrorsReducers";
 import drillDownReducers from "./reducers/drillDownReducers";
@@ -14,7 +14,6 @@ import kpiReducers from "./reducers/kpiReducers";
 import repositoriesReducers from "./reducers/repositoriesReducers";
 import fixedDefectsReducers from "./reducers/fixedDefectsReducers";
 import workDurationReducers from "./reducers/workDurationReducers";
-import highPriorityIssuesReducers from "./reducers/highPriorityIssuesReducers";
 import partnersReducers from "./reducers/partnersReducers";
 import abstractReportReducers from "./reducers/abstractReportReducer";
 import {mainDialogReducer} from "./combined/mainDialog";
@@ -28,6 +27,7 @@ import {errorReducer} from "./combined/error";
 import {sigmaReducer} from "./combined/sigmaReport";
 import {dynamicsReducer} from "./combined/dynamicsReport";
 import {createdOnWeekByPartnersReducer} from "./combined/createdOnWeekByPartners";
+import {issuesWithDetailsReducer} from "./combined/issuesWithDetails";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
@@ -46,7 +46,6 @@ export default combineReducers({
     repositoriesData: repositoriesReducers,
     fixedDefectsData: fixedDefectsReducers,
     workDurationData: workDurationReducers,
-    highPriorityIssuesData: highPriorityIssuesReducers,
     partnersData: partnersReducers,
     abstractReportData: abstractReportReducers,
     ...mainDialogReducer,
@@ -60,5 +59,6 @@ export default combineReducers({
     ...errorReducer,
     ...sigmaReducer,
     ...dynamicsReducer,
-    ...createdOnWeekByPartnersReducer
+    ...createdOnWeekByPartnersReducer,
+    ...issuesWithDetailsReducer
 });

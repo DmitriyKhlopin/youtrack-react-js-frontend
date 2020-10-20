@@ -1,5 +1,6 @@
 import {ENDPOINT} from "../../Const";
 import {stringSort} from "../../helper_functions/sorting";
+import {customSort} from "../../HelperFunctions";
 
 export function fetchTags() {
     return function (dispatch) {
@@ -148,5 +149,8 @@ function reducer(state = {
 
 export const dictionariesReducer = {dictionaries: reducer}
 export const selectProjects = (state) => state.dictionaries.projects;
-export const selectPartnerCustomers = (state) => state.dictionaries.partnerCustomers;
+export const selectPartnerCustomers = (state) => [...new Set(state.dictionaries.partnerCustomers
+    .filter((item) => state.reportFilters2.projects.map(e => e.value).includes(item.project) && item.customer !== null)
+    .map((item) => item.customer))].sort(customSort).map(e => new Object({value: e, label: e, color: '#00B8D9'}));
+
 export const selectTags = (state) => state.dictionaries.tags;
