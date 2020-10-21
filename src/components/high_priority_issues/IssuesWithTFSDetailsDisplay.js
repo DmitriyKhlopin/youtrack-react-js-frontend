@@ -22,7 +22,7 @@ function IssuesWithTFSDetailsDisplay() {
     };
     const exportDefects = () => {
         const wb = new Workbook();
-        const d= data.map(e => e.flattenIssue());
+        const d = data.map(e => e.flattenIssue());
         console.log(d);
         let ws = XLSX.utils.json_to_sheet(d.flat());
         XLSX.utils.book_append_sheet(wb, ws, "issues");
@@ -69,7 +69,7 @@ Object.defineProperty(
                     'Проект': this.project,
                     'Заказчик': this.customer,
                     'Заголовок': this.summary,
-                    'Время создания': this.created? format(this.created, 'yyyy-MM-dd hh-mm'):'',
+                    'Время создания': this.created ? format(this.created, 'yyyy-MM-dd hh-mm') : '',
                     'Приоритет': this.priority,
                     'Состояние': this.state,
                     'Тип': this.type,
@@ -78,6 +78,13 @@ Object.defineProperty(
                     'Автор комментария': this.commentAuthor,
                     'Bug в DevOps': this.issue,
                     'Feature в DevOps': this.requirement,
+                    'SLA по первому ответу': this.firstResponseViolation,
+                    'SLA по решению': this.solutionViolation,
+                    'Продолжительность нахождения задачи в поддержке (часы)': this.timeAgent / 3600,
+                    'Продолжительность нахождения задачи в разработке (часы)': this.timeDeveloper / 3600,
+                    'Продолжительность нахождения задачи у заказчика (часы)': this.timeUser / 3600,
+                    'Время жизни задачи': (this.timeAgent + this.timeDeveloper + this.timeUser) / 3600,
+                    'Команда': this.team,
                     'Поля Devops': null,
                     'Тип (DevOps)': e.type,
                     'ID задачи (DevOps)': e.systemId,
@@ -90,13 +97,16 @@ Object.defineProperty(
                     'Исполнитель (DevOps)': e.assignee,
                     'Причина закрытия ': e.resolvedReason,
                     'Приоритет (DevOps)': e.priority,
+                    'Priority reason (DevOps)': e.priorityReason,
                     'Обнаружено в ': e.foundIn,
                     'Внесено в': e.integratedIn,
                     'Severity': e.severity,
                     'Area': e.area,
                     'Заголовок (DevOps)': e.title,
                     'triage': e.triage,
-                    'Author': e.author
+                    'Author': e.author,
+                    'team': e.team,
+                    'Product owner': e.teamPo
                 })
             })
         },

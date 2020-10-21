@@ -30,7 +30,7 @@ export function StatesFilter() {
             closeMenuOnSelect={false}
             hideSelectedOptions={false}
             components={components}
-            /*isSearchable={true}*/
+            isSearchable={true}
         />
     )
 }

@@ -18,6 +18,7 @@ export function ProjectsFilter() {
     const handleProjectsChange = (selectedOption) => {
         dispatch(setSelectedProjects(selectedOption ? selectedOption : []));
     }
+
     return (<Select
         styles={customStyles}
         isMulti

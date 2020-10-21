@@ -10,7 +10,6 @@ export function PartnerCustomersFilter() {
     const dispatch = useDispatch();
     const customersDictionary = useSelector(selectPartnerCustomers);
     const customers = useSelector(selectSelectedPartnerCustomers);
-    const projects = useSelector(selectSelectedProjects);
     const components = {ValueContainer};
     useEffect(() => {
         if (customersDictionary.length === 0) dispatch(fetchPartnerCustomers());
