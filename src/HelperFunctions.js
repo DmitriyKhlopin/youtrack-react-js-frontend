@@ -1,4 +1,8 @@
 import {dynamicSort} from "./helper_functions/sorting";
+import {Line} from "recharts";
+import {MATERIAL_LINE_CHART_COLORS} from "./Const";
+import React from "react";
+import {format} from "date-fns";
 
 export const groupBy = function (arr, criteria) {
     return arr.reduce(function (obj, item) {
@@ -36,4 +40,14 @@ Array.prototype.sum = function (prop) {
         total += this[i][prop]
     }
     return total
+}
+
+
+export function line(index, name, dataKey) {
+    return <Line type="monotone" dataKey={dataKey} stroke={MATERIAL_LINE_CHART_COLORS[index]} name={name} strokeWidth={3} isAnimationActive={false}/>
+}
+
+export function formatXAxis(tickItem) {
+// If using moment.js
+    return format(tickItem, 'yyyy.MM.dd');
 }

@@ -1,0 +1,63 @@
+import {ENDPOINT} from "../../Const";
+import {sumBy} from "lodash";
+
+export function fetchVelocityData() {
+    return function (dispatch, getState) {
+        dispatch({type: 'FETCH_VELOCITY_REPORT_PENDING'});
+        const state = getState();
+        const projects = state.reportFilters2.projects && state.reportFilters2.projects.map(item => item.value);
+        const types = state.reportFilters2.types && state.reportFilters2.types.map(item => item.value);
+        const body = {
+            "types": types,
+            "projects": projects,
+            "limit": 9
+        }
+        const obj = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body)
+        };
+
+        console.log(body);
+        fetch(`${ENDPOINT}/api/report/velocity`, obj)
+            .then(res => res.json())
+            .then(json =>
+                dispatch({
+                    type: 'FETCH_VELOCITY_REPORT_FULFILLED',
+                    payload: json
+                }))
+            .catch(err => console.log(err));
+    }
+}
+
+export default function reducer(state = {
+    data: [],
+    isLoading: false
+}, action) {
+    switch (action.type) {
+        case 'FETCH_VELOCITY_REPORT_PENDING': {
+            state = {
+                ...state,
+                isLoading: true
+            };
+            break;
+        }
+        case 'FETCH_VELOCITY_REPORT_FULFILLED': {
+            state = {
+                ...state,
+                data: action.payload,
+                isLoading: false
+            };
+            break;
+        }
+    }
+    return state;
+};
+
+export const velocityReducer = {velocity: reducer};
+export const selectVelocityData = (state) => state.velocity.data;
+export const selectVelocityIsLoading = (state) => state.velocity.isLoading;
+export const selectAverageVelocity = (state) => (sumBy(state.velocity.data, ({all})=>all)/state.velocity.data.length).toFixed(1);

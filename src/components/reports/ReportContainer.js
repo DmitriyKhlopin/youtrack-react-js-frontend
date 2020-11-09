@@ -11,17 +11,20 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCompressAlt, faExpandAlt} from "@fortawesome/free-solid-svg-icons";
 import {fetchProjects, selectProjects} from "../../redux/combined/dictionaries";
 import {selectSigmaIssuesCount} from "../../redux/combined/sigmaReport";
+import VelocityChartByWeeks from "../charts/VelocityChartByWeeks";
+import {selectAverageVelocity} from "../../redux/combined/velocityReport";
 
 
 function ReportContainer() {
     const [maximized, setMaximized] = useState(false);
     const [index, setIndex] = useState(0);
-    const dispatch = useDispatch();
     const size = useWindowDimensions();
     const count = useSelector(selectSigmaIssuesCount);
-    const projectsDictionary = useSelector(selectProjects);
+    const avgVelocity = useSelector(selectAverageVelocity);
+
     const widgets = [
         {title: 'Количество поступивших и закрытых запросов', element: <LineChartByWeeks/>},
+        {title: `Velocity (средний показатель - ${avgVelocity} шт.)`, element: <VelocityChartByWeeks/>},
         {title: 'Количество новых запросов от партнёров за текущую неделю', element: <PieChartByPartners/>},
         {title: `Продолжительность работ по запросам (${count} шт.)`, element: <ScatterChartSigma/>}
     ];

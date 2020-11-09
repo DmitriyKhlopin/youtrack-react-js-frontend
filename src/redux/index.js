@@ -28,6 +28,7 @@ import {sigmaReducer} from "./combined/sigmaReport";
 import {dynamicsReducer} from "./combined/dynamicsReport";
 import {createdOnWeekByPartnersReducer} from "./combined/createdOnWeekByPartners";
 import {issuesWithDetailsReducer} from "./combined/issuesWithDetails";
+import {velocityReducer} from "./combined/velocityReport";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
@@ -59,6 +60,7 @@ export default combineReducers({
     ...errorReducer,
     ...sigmaReducer,
     ...dynamicsReducer,
+    ...velocityReducer,
     ...createdOnWeekByPartnersReducer,
     ...issuesWithDetailsReducer
 });

@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import {useSelector} from "react-redux";
 import {selectDrawerState} from "../../redux/combined/appBar";
 import useWindowDimensions from "../../helper_functions/dimensions";
+import VelocityChartByWeeks from "./VelocityChartByWeeks";
 
 const data2 = [
     {orient: "left", name: "1956", x: 3683.6965, y: 2.3829},
