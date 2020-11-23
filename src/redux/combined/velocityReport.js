@@ -1,17 +1,12 @@
 import {ENDPOINT} from "../../Const";
 import {sumBy} from "lodash";
+import {filtersToBody} from "../../HelperFunctions";
 
 export function fetchVelocityData() {
     return function (dispatch, getState) {
         dispatch({type: 'FETCH_VELOCITY_REPORT_PENDING'});
         const state = getState();
-        const projects = state.reportFilters2.projects && state.reportFilters2.projects.map(item => item.value);
-        const types = state.reportFilters2.types && state.reportFilters2.types.map(item => item.value);
-        const body = {
-            "types": types,
-            "projects": projects,
-            "limit": 9
-        }
+        const body = {...filtersToBody(state.reportFilters2), limit: 9}
         const obj = {
             method: 'POST',
             headers: {

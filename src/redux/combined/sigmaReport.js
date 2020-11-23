@@ -1,24 +1,21 @@
 import {ENDPOINT} from "../../Const";
+import {filtersToBody} from "../../HelperFunctions";
 
 export function fetchSigmaData() {
     return function (dispatch, getState) {
         dispatch({type: 'FETCH_SIGMA_REPORT_PENDING'});
-        const obj = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
-        };
         const state = getState();
-        const projects = state.reportFilters2.projects.map(item => item.value);
-        const states = state.reportFilters2.states.map(item => item.value);
-        const types = state.reportFilters2.types.map(item => item.value);
-        const dateFrom = state.reportFilters.dateFrom;
-        const dateTo = state.reportFilters.dateTo;
-        const baseUrl = `${ENDPOINT}/api/chart/`;
-        const filters = `?projects=${projects}&types=${types}&states=${encodeURIComponent(states)}&dateFrom=${dateFrom}&dateTo=${dateTo}`;
+        const obj = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8',
+            },
+            body: JSON.stringify(filtersToBody(state.reportFilters2))
+        };
 
-        fetch(baseUrl + 'sigma' + filters, obj)
+
+        fetch(`${ENDPOINT}/api/chart/sigma`, obj)
             .then(res => res.json())
             .then(json =>
                 dispatch({
@@ -45,11 +42,7 @@ export function fetchSigmaDataByDayValue(day) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json;charset=UTF-8',
             },
-            body: JSON.stringify({
-                'projects': state.reportFilters2.projects.map(item => item.value),
-                'types': state.reportFilters2.types.map(item => item.value),
-                'states': state.reportFilters2.states.map(item => item.value)
-            })
+            body: JSON.stringify(filtersToBody(state.reportFilters2))
         };
         const url = `${ENDPOINT}/api/issues/sigma?days=${day}`;
         fetch(url, obj)

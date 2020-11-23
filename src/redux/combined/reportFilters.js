@@ -1,3 +1,5 @@
+import {subMonths} from "date-fns";
+
 export function setSelectedProjects(payload) {
     return function (dispatch) {
         dispatch({
@@ -52,12 +54,32 @@ export function setSelectedTags(payload) {
     }
 }
 
+export function setFilterDateFrom(dateFrom) {
+    return function (dispatch) {
+        dispatch({
+            type: "SET_FILTER_DATE_FROM",
+            payload: dateFrom
+        });
+    }
+}
+
+export function setFilterDateTo(dateTo) {
+    return function (dispatch) {
+        dispatch({
+            type: "SET_FILTER_DATE_TO",
+            payload: dateTo
+        });
+    }
+}
+
 export default function reducer(state = {
     projects: [],
     partnerCustomers: [],
-    priorities: null,
-    types: null,
-    states: null,
+    priorities: [],
+    types: [],
+    states: [],
+    dateFrom: subMonths(new Date(), 3),
+    dateTo: new Date(),
     tags: []
 }, action) {
     switch (action.type) {
@@ -103,6 +125,20 @@ export default function reducer(state = {
             };
             break;
         }
+        case 'SET_FILTER_DATE_FROM': {
+            state = {
+                ...state,
+                dateFrom: action.payload
+            };
+            break;
+        }
+        case 'SET_FILTER_DATE_TO': {
+            state = {
+                ...state,
+                dateTo: action.payload
+            };
+            break;
+        }
     }
     return state;
 };
@@ -114,3 +150,5 @@ export const selectSelectedPartnerCustomers = (state) => state.reportFilters2.pa
 export const selectSelectedTypes = (state) => state.reportFilters2.types;
 export const selectSelectedStates = (state) => state.reportFilters2.states;
 export const selectSelectedTags = (state) => state.reportFilters2.tags;
+export const selectDateFrom = (state) => state.reportFilters2.dateFrom;
+export const selectDateTo = (state) => state.reportFilters2.dateTo;

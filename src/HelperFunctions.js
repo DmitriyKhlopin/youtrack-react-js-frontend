@@ -27,7 +27,6 @@ export const groupBy = function (arr, criteria) {
 export const customSort = (a, b) => a > b ? 1 : -1;
 
 
-
 export function customMap(data, property) {
     return data.map((item) => {
         return {'indicator': item.agent, 'agent': item[property]}
@@ -36,7 +35,7 @@ export function customMap(data, property) {
 
 Array.prototype.sum = function (prop) {
     var total = 0
-    for ( var i = 0, _len = this.length; i < _len; i++ ) {
+    for (var i = 0, _len = this.length; i < _len; i++) {
         total += this[i][prop]
     }
     return total
@@ -50,4 +49,16 @@ export function line(index, name, dataKey) {
 export function formatXAxis(tickItem) {
 // If using moment.js
     return format(tickItem, 'yyyy.MM.dd');
+}
+
+
+export function filtersToBody(reportFilters) {
+    return {
+        'projects': reportFilters.projects.map(item => item.value),
+        'priorities': reportFilters.priorities.map(item => item.value),
+        'types': reportFilters.types.map(item => item.value),
+        'states': reportFilters.states.map(item => item.value),
+        'dateFrom':  format(reportFilters.dateFrom, "yyyy-MM-dd"),
+        'dateTo': format(reportFilters.dateTo, "yyyy-MM-dd")
+    }
 }

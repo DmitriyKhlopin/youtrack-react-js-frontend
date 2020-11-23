@@ -29,6 +29,12 @@ import {dynamicsReducer} from "./combined/dynamicsReport";
 import {createdOnWeekByPartnersReducer} from "./combined/createdOnWeekByPartners";
 import {issuesWithDetailsReducer} from "./combined/issuesWithDetails";
 import {velocityReducer} from "./combined/velocityReport";
+import {prioritiesReport} from "./combined/prioritiesReport";
+import {averageLifetimeReport} from "./combined/averageLifetimeReport";
+import {averageLifetimeUnresolvedReport} from "./combined/averageLifetimeUnresolvedReport";
+import {slaViolationsReport} from "./combined/SLAViolationsReport";
+import {typesReport} from "./combined/typesReport";
+import {commercialSlaViolationsReport} from "./combined/commercialSLAViolationsReport";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
@@ -62,5 +68,11 @@ export default combineReducers({
     ...dynamicsReducer,
     ...velocityReducer,
     ...createdOnWeekByPartnersReducer,
-    ...issuesWithDetailsReducer
+    ...issuesWithDetailsReducer,
+    ...prioritiesReport,
+    ...averageLifetimeReport,
+    ...averageLifetimeUnresolvedReport,
+    ...slaViolationsReport,
+    ...typesReport,
+    ...commercialSlaViolationsReport
 });

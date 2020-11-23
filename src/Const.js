@@ -174,6 +174,10 @@ export const PAGES = [
 
 export const YT_ENDPOINT = 'http://support.fsight.ru/api/';
 export const ENDPOINT = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://10.30.207.22:8080';
+export const DEFAULT_POST_HEADERS = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json;charset=UTF-8',
+}
 export const RADIAN = Math.PI / 180;
 export const innerProjects = ['PP_Lic', 'FMP_LIC', 'SD', 'PDP', 'W', 'P_PROJ1', 'T', 'TEST', 'SPAM', 'TC', 'RELEASE', 'PO', 'P', 'BL'];
 export const licProjects = ['PP_Lic',];

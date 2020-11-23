@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import styles from "../../styles/components.module.css";
 import {selectProjects} from "../../redux/combined/dictionaries";
 import {fetchSigmaData, fetchSigmaDataByDayValue, selectSigmaData, selectSigmaDetails, selectSigmaIsLoading} from "../../redux/combined/sigmaReport";
-import {selectSelectedProjects, selectSelectedStates, selectSelectedTypes} from "../../redux/combined/reportFilters";
+import {selectSelectedPriorities, selectSelectedProjects, selectSelectedStates, selectSelectedTypes} from "../../redux/combined/reportFilters";
 import {openDialog} from "../../redux/combined/mainDialog";
 
 const CustomTooltip = ({active, payload, label}) => {
@@ -27,12 +27,13 @@ const ScatterChartSigma = () => {
     const selectedTypes = useSelector(selectSelectedTypes);
     const selectedProjects = useSelector(selectSelectedProjects);
     const selectedStates = useSelector(selectSelectedStates);
+    const selectedPriorities = useSelector(selectSelectedPriorities);
     const sigma2 = useSelector(selectSigmaData);
 
 
     useEffect(() => {
         dispatch(fetchSigmaData())
-    }, [projects, selectedProjects, selectedTypes, selectedStates])
+    }, [projects, selectedProjects, selectedTypes, selectedStates, selectedPriorities])
 
     const handleClick = (data) => {
         dispatch(openDialog(<DayDetails day={data.day}/>));

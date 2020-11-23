@@ -3,7 +3,7 @@ import {Legend, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "rec
 import {CHART_DEFAULT_MARGINS} from "../../Const";
 import {useDispatch, useSelector} from "react-redux";
 import {selectProjects} from "../../redux/combined/dictionaries";
-import {selectSelectedProjects, selectSelectedTypes} from "../../redux/combined/reportFilters";
+import {selectSelectedPriorities, selectSelectedProjects, selectSelectedTypes} from "../../redux/combined/reportFilters";
 import {format} from "date-fns";
 import {fetchVelocityData, selectVelocityData} from "../../redux/combined/velocityReport";
 import {formatXAxis, line} from "../../HelperFunctions";
@@ -13,10 +13,11 @@ function VelocityChartByWeeks() {
     const projects = useSelector(selectProjects);
     const selectedTypes = useSelector(selectSelectedTypes);
     const selectedProjects = useSelector(selectSelectedProjects);
+    const selectedPriorities = useSelector(selectSelectedPriorities);
     const data = useSelector(selectVelocityData);
     useEffect(() => {
         dispatch(fetchVelocityData());
-    }, [projects, selectedProjects, selectedTypes]);
+    }, [projects, selectedProjects, selectedTypes, selectedPriorities]);
 
     const handleClick = (d, index) => {
         console.log(d);
@@ -32,7 +33,7 @@ function VelocityChartByWeeks() {
             <YAxis axisLine={false} strokeWidth={0} padding={{top: 30}}/>
             <Tooltip labelFormatter={t => format(t, 'yyyy.MM.dd')}/>
             <Legend/>
-            {line(0, 'Всего', 'all')}
+            {(selectedTypes && selectedTypes.length !== 1) ? line(0, 'Всего', 'all') : null}
             {selectedTypes && (selectedTypes.length === 0 || selectedTypes.map(e => e.value).includes("Bug")) ? line(1, 'Ошибки', 'bugs') : null}
             {selectedTypes && (selectedTypes.length === 0 || selectedTypes.map(e => e.value).includes("Feature")) ? line(2, 'Фичи', 'features') : null}
             {selectedTypes && (selectedTypes.length === 0 || selectedTypes.map(e => e.value).includes("Консультация")) ? line(3, 'Консультации', 'consultations') : null}
