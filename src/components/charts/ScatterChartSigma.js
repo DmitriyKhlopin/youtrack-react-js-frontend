@@ -1,4 +1,4 @@
-import {Legend, ReferenceArea, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis} from "recharts";
+import {Legend, ReferenceArea, ReferenceLine, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis} from "recharts";
 import {CHART_DEFAULT_MARGINS, MATERIAL_SIGMA_COLORS} from "../../Const";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -54,6 +54,7 @@ const ScatterChartSigma = () => {
             <XAxis dataKey={'day'} type="number" name='Дни' unit='' domain={[0, sigma2.sigmaMaxX]}/>
             <YAxis axisLine={false} dataKey={'count'} type="number" name='Количетство запросов' unit=''
                    domain={[0, sigma2.sigmaMaxY]}/>
+            <ReferenceLine x={10} label={{position: 'right', value: '10 дней', fill: 'red', fontSize: 14}} stroke="red" strokeDasharray="3 3" isFront={true}/>
             <Tooltip cursor={{strokeDasharray: '4 6'}} content={<CustomTooltip/>}/>
             <Scatter name='Активные запросы' data={sigma2.sigmaItems} fill={MATERIAL_SIGMA_COLORS[0]} onClick={handleClick}/>
 

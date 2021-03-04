@@ -32,7 +32,7 @@ const BarChartByAverageLifetimeUnresolved = () => {
             <YAxis type="number" tick={false} axisLine={false} domain={[0, dataMax => (dataMax > 30 ? dataMax * 1.2 : dataMax + 4)]}/>
             <Bar dataKey="value" fill={MATERIAL_COLORS[0]} isAnimationActive={false} label={CustomBarLabel}>
                 {data.map((entry, index) => (
-                    <Cell fill={MATERIAL_COLORS[index]}/>
+                    <Cell key={`cell-average-lifetime-unresolved-${index}`} fill={MATERIAL_COLORS[index]}/>
                 ))}
             </Bar>
         </BarChart>

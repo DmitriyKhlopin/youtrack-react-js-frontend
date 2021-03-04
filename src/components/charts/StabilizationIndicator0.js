@@ -40,7 +40,7 @@ const BarChartByStabilityIndicator0 = () => {
                         } else {
                             i = 7;
                         }
-                        return (<Cell fill={MATERIAL_COLORS[i]}/>)
+                        return (<Cell key={`cell-stability-indicator-0-${index}`} fill={MATERIAL_COLORS[i]}/>)
                     })
                 }
             </Bar>

@@ -33,7 +33,7 @@ const BarChartBySLAViolations = () => {
             <Tooltip/>
             <Bar dataKey="good" stackId="a" fill={'green'} isAnimationActive={false}>
                 {data.map((entry, index) => (
-                    <Cell fill={MATERIAL_COLORS[index]}/>
+                    <Cell key={`cell-sla-violations-${index}`} fill={MATERIAL_COLORS[index]}/>
                 ))}
             </Bar>
             <Bar dataKey="violated" stackId="a" fill={'red'} isAnimationActive={false} label={CustomBarLabel}/>
