@@ -3,7 +3,7 @@ import {Cell, Legend, Pie, PieChart, ResponsiveContainer} from "recharts";
 import {CHART_DEFAULT_MARGINS, MATERIAL_COLORS, RADIAN} from "../../Const";
 import {useDispatch, useSelector} from "react-redux";
 import {selectProjects} from "../../redux/combined/dictionaries";
-import {selectSelectedProjects, selectSelectedStates, selectSelectedTypes} from "../../redux/combined/reportFilters";
+import {selectSelectedPriorities, selectSelectedProjects, selectSelectedStates, selectSelectedTypes} from "../../redux/combined/reportFilters";
 import {fetchCreatedOnWeekByPartnersData, selectCreatedOnWeekByPartnersData} from "../../redux/combined/createdOnWeekByPartners";
 
 export const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index, value, name, fill}) => {
@@ -32,11 +32,12 @@ const PieChartByPartners = () => {
     const projects = useSelector(selectProjects);
     const selectedTypes = useSelector(selectSelectedTypes);
     const selectedProjects = useSelector(selectSelectedProjects);
+    const selectedPriorities = useSelector(selectSelectedPriorities);
     const selectedStates = useSelector(selectSelectedStates);
     const data = useSelector(selectCreatedOnWeekByPartnersData);
     useEffect(() => {
         dispatch(fetchCreatedOnWeekByPartnersData());
-    }, [projects, selectedProjects, selectedTypes, selectedStates]);
+    }, [projects, selectedProjects, selectedTypes, selectedStates, selectedPriorities]);
     const handleClick = (data, index) => {
         console.log(data);
         console.log(index);
@@ -50,6 +51,8 @@ const PieChartByPartners = () => {
                  labelLine={true}
                  label={renderCustomizedLabel}
                  fill="#8884d8"
+                 innerRadius={"50%"}
+                 outerRadius={"70%"}
                  startAngle={450}
                  endAngle={90}
                  paddingAngle={1}

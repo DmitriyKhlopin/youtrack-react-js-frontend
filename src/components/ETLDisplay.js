@@ -18,10 +18,12 @@ function ETLDisplay() {
     const [bundlesChecked, setBundlesChecked] = useState(false);
     const [usersChecked, setUsersChecked] = useState(false);
     const [timelineChecked, setTimelineChecked] = useState(false);
+    const [detailedTimelineChecked, setDetailedTimelineChecked] = useState(false);
     const [periodTimelineChecked, setPeriodTimelineChecked] = useState(false);
     const [deletedChecked, setDeletedChecked] = useState(false);
     const [pendingChecked, setPendingChecked] = useState(false);
-    const handleClick = () => {
+
+    function handleClick() {
         dispatch(fetchETL(
             created ? 'created' : 'updated',
             format(startDate, 'yyyy-MM-dd'),
@@ -34,12 +36,62 @@ function ETLDisplay() {
                 usersChecked ? 'users' : null,
                 timelineChecked ? 'timeline' : null,
                 periodTimelineChecked ? 'timelineAll' : null,
+                detailedTimelineChecked ? 'timelineDetailedForPeriod' : null,
                 deletedChecked ? 'deleted' : null,
                 pendingChecked ? 'pending' : null].filter(e => e != null).join(',')
         ));
     }
 
-    console.log(created);
+    function onChange(e) {
+        e.stopPropagation();
+        switch (e.target.id) {
+            case 'cb-issuesChecked': {
+                setIssuesChecked(!issuesChecked);
+                break;
+            }
+            case 'cb-workItemsChecked': {
+                setWorkItemsChecked(!workItemsChecked);
+                break;
+            }
+            case 'cb-historyChecked': {
+                setHistoryChecked(!historyChecked)
+                break;
+            }
+            case 'cb-timelineChecked': {
+                setTimelineChecked(!timelineChecked);
+                break;
+            }
+            case 'cb-periodTimelineChecked': {
+                setPeriodTimelineChecked(!periodTimelineChecked);
+                break;
+            }
+            case 'cb-detailedTimelineChecked': {
+                setDetailedTimelineChecked(!detailedTimelineChecked);
+                break;
+            }
+            case 'cb-pendingChecked': {
+                setPendingChecked(!pendingChecked);
+                break;
+            }
+            case 'cb-deletedChecked': {
+                setDeletedChecked(!deletedChecked);
+                break;
+            }
+            case 'cb-usersChecked': {
+                setUsersChecked(!usersChecked);
+                break;
+            }
+            case 'cb-projectsChecked': {
+                setProjectsChecked(!projectsChecked);
+                break;
+            }
+            case 'cb-bundlesChecked': {
+                setBundlesChecked(!bundlesChecked)
+                break;
+            }
+        }
+    }
+
     return (
         <div className={styles.column}>
             <div className={cx(styles.row, styles.centered, styles.defaultMargin, styles.defaultPadding)}>
@@ -69,17 +121,25 @@ function ETLDisplay() {
                     />
                 </div>
             </div>
-            <div className={cx(styles.row, styles.centered, styles.defaultMargin, styles.defaultPadding, styles.wrap)}>
-                <CheckBox id={'issuesChecked'} checked={issuesChecked} onChange={() => setIssuesChecked(!issuesChecked)} label={'Заявки (текущие значения всех полей)'}/>
-                <CheckBox id={'workItemsChecked'} checked={workItemsChecked} onChange={() => setWorkItemsChecked(!workItemsChecked)} label={'Трудозатраты'}/>
-                <CheckBox id={'historyChecked'} checked={historyChecked} onChange={() => setHistoryChecked(!historyChecked)} label={'История'}/>
-                <CheckBox id={'bundlesChecked'} checked={bundlesChecked} onChange={() => setBundlesChecked(!bundlesChecked)} label={'Bundles'}/>
-                <CheckBox id={'projectsChecked'} checked={projectsChecked} onChange={() => setProjectsChecked(!projectsChecked)} label={'Проекты'}/>
-                <CheckBox id={'usersChecked'} checked={usersChecked} onChange={() => setUsersChecked(!usersChecked)} label={'Пользователи'}/>
-                <CheckBox id={'timelineChecked'} checked={timelineChecked} onChange={() => setTimelineChecked(!timelineChecked)} label={'Вычисление периодов'}/>
-                <CheckBox id={'periodTimelineChecked'} checked={periodTimelineChecked} onChange={() => setPeriodTimelineChecked(!periodTimelineChecked)} label={'Вычисление периодов за всё время'}/>
-                <CheckBox id={'deletedChecked'} checked={deletedChecked} onChange={() => setDeletedChecked(!deletedChecked)} label={'Поиск удалённых задач'}/>
-                <CheckBox id={'pendingChecked'} checked={pendingChecked} onChange={() => setPendingChecked(!pendingChecked)} label={'Поиск ожидающих задач'}/>
+            <div className={cx(styles.centered, styles.defaultMargin, styles.defaultPadding)}>Задачи</div>
+            <div className={cx(styles.centered, styles.defaultMargin, styles.defaultPadding, styles.wrap)}>
+                <CheckBox id={'issuesChecked'} checked={issuesChecked} onChange={onChange} label={'Текущие значения всех полей'}/>
+                <CheckBox id={'workItemsChecked'} checked={workItemsChecked} onChange={onChange} label={'Трудозатраты'}/>
+                <CheckBox id={'historyChecked'} checked={historyChecked} onChange={onChange} label={'История изменений'}/>
+            </div>
+            <div className={cx(styles.centered, styles.defaultMargin, styles.defaultPadding)}>Переходы</div>
+            <div className={cx(styles.centered, styles.defaultMargin, styles.defaultPadding, styles.wrap)}>
+                <CheckBox id={'timelineChecked'} checked={timelineChecked} onChange={onChange} label={'Вычисление переходов активных и закрытых сегодня задач'}/>
+                <CheckBox id={'periodTimelineChecked'} checked={periodTimelineChecked} onChange={onChange} label={'Вычисление переходов за период'}/>
+                <CheckBox id={'detailedTimelineChecked'} checked={detailedTimelineChecked} onChange={onChange} label={'Вычисление детализированных переходов за период'}/>
+            </div>
+            <div className={cx(styles.centered, styles.defaultMargin, styles.defaultPadding)}>Администрирование (не зависит от выбранных дат)</div>
+            <div className={cx(styles.centered, styles.defaultMargin, styles.defaultPadding)}>
+                <CheckBox id={'bundlesChecked'} checked={bundlesChecked} onChange={onChange} label={'Bundles'}/>
+                <CheckBox id={'projectsChecked'} checked={projectsChecked} onChange={onChange} label={'Проекты'}/>
+                <CheckBox id={'usersChecked'} checked={usersChecked} onChange={onChange} label={'Пользователи'}/>
+                <CheckBox id={'deletedChecked'} checked={deletedChecked} onChange={onChange} label={'Поиск удалённых задач'}/>
+                <CheckBox id={'pendingChecked'} checked={pendingChecked} onChange={onChange} label={'Поиск ожидающих задач'}/>
             </div>
             <div className={cx(styles.row, styles.centered, styles.defaultMargin, styles.defaultPadding)}>
                 <button className={styles.textButton} onClick={handleClick}>Загрузить данные</button>
@@ -92,7 +152,7 @@ export default ETLDisplay;
 
 const CheckBox = ({id, label, checked, onChange}) => {
     return <div className={styles.defaultMargin}>
-        <input type="checkbox" id={`cb-${id}`} onChange={onChange.bind(this)} checked={checked} defaultChecked={checked}/> <label htmlFor={`cb-${id}`}>{label}</label>
+        <input type="checkbox" id={`cb-${id}`} onChange={onChange.bind(this)} checked={checked}/> <label htmlFor={`cb-${id}`}>{label}</label>
     </div>
 }
 

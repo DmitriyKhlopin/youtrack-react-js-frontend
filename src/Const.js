@@ -17,6 +17,7 @@ import Reports from "./components/reports"
 import KPI from "./components/kpi";
 import ConnectedScatterPlot from "./components/charts/ConnectedScatterPlot";
 import CustomFieldsManagement from "./components/custom_fields_management/CustomFieldsManagement";
+import timelineCheck from "./components/timeline_check";
 
 export const drawerWidth = 300;
 export const [sidebarWidthOpen, sidebarWidthOpenWide, sidebarWidthClosed] = ['320px', '640px', '60px'];
@@ -169,6 +170,7 @@ export const PAGES = [
         availableInDrawer: true,
         appBarActions: null
     },
+    timelineCheck
 ];
 
 
@@ -342,6 +344,7 @@ export const renderLegend = (props) => {
 };
 
 export const PRIORITIES_DICTIONARY = [
+    {value: 'Критичный', label: 'Критичный', color: '#00B8D9'},
     {value: 'Major', label: 'Высокий', color: '#00B8D9'},
     {value: 'Normal', label: 'Обычный', color: '#00B8D9'},
     {value: 'Minor', label: 'Низкий', color: '#00B8D9'}

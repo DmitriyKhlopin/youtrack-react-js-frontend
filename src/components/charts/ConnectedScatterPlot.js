@@ -3,7 +3,6 @@ import * as d3 from "d3";
 import {useSelector} from "react-redux";
 import {selectDrawerState} from "../../redux/combined/appBar";
 import useWindowDimensions from "../../helper_functions/dimensions";
-import VelocityChartByWeeks from "./VelocityChartByWeeks";
 
 const data2 = [
     {orient: "left", name: "1956", x: 3683.6965, y: 2.3829},
@@ -260,6 +259,25 @@ const ConnectedScatterPlot = () => {
 
     }, [dimensions])
     return <div ref={targetRef} style={{width: '100%'}}>
+        <div style={{width: 400, height: 400, background: 'green'}} onMouseOut={(e => {
+            console.log('Parent')
+        })}>
+            <div style={{width: 200, height: 200, background: 'yellow', margin: -10}} onMouseOut={(e => {
+                e.stopPropagation();
+                console.log('Nested element')
+            })}/>
+        </div>
+
+        {/*<div style={{width: 400, height: 400, background: 'green'}} onClick={() => {
+                        console.log('Parent')
+        }}>
+            <button style={{width: 200, height: 200, background: 'yellow'}} onClick={(e) => {
+
+
+                console.log('Nested element')
+            }}/>
+        </div>*/}
+
         <p>{dimensions.width}</p>
         <p>{dimensions.height}</p>
         <svg id="chart1"

@@ -6,7 +6,7 @@ export function fetchVelocityData() {
     return function (dispatch, getState) {
         dispatch({type: 'FETCH_VELOCITY_REPORT_PENDING'});
         const state = getState();
-        const body = {...filtersToBody(state.reportFilters2), limit: 9}
+        const body = {...filtersToBody(state.reportFilters2)}
         const obj = {
             method: 'POST',
             headers: {
@@ -17,7 +17,7 @@ export function fetchVelocityData() {
         };
 
         console.log(body);
-        fetch(`${ENDPOINT}/api/report/velocity`, obj)
+        fetch(`${ENDPOINT}/api/chart/velocity`, obj)
             .then(res => res.json())
             .then(json =>
                 dispatch({

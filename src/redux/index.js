@@ -35,6 +35,9 @@ import {averageLifetimeUnresolvedReport} from "./combined/averageLifetimeUnresol
 import {slaViolationsReport} from "./combined/SLAViolationsReport";
 import {typesReport} from "./combined/typesReport";
 import {commercialSlaViolationsReport} from "./combined/commercialSLAViolationsReport";
+import {timelineCheckReducer} from "./combined/timelineCheck";
+import {stabilityIndicator0Report} from "./combined/stabilityIndicator0Report";
+import {stabilityIndicator1Report} from "./combined/stabilityIndicator1Report";
 
 export default combineReducers({
     reportFilters: reportFiltersReducers,
@@ -74,5 +77,8 @@ export default combineReducers({
     ...averageLifetimeUnresolvedReport,
     ...slaViolationsReport,
     ...typesReport,
-    ...commercialSlaViolationsReport
+    ...commercialSlaViolationsReport,
+    ...timelineCheckReducer,
+    ...stabilityIndicator0Report,
+    ...stabilityIndicator1Report,
 });
