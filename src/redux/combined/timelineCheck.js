@@ -11,7 +11,7 @@ export function fetchTimelineDataById(issueId) {
         };
 
 
-        fetch(`${ENDPOINT}/api/issues/detailed_state_transitions?issueId=${issueId}`, obj)
+        fetch(`${ENDPOINT}/api/issues/state_transitions?issueId=${issueId}`, obj)
             .then(res => res.json())
             .then(json =>
                 dispatch({

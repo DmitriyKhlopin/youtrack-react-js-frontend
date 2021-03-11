@@ -39,17 +39,33 @@ const BarChartByStabilityIndicator1 = () => {
             <XAxis dataKey="key" axisLine={false}/>
             <YAxis type="number" tick={false} axisLine={false} domain={[0, 110]}/>
             <ReferenceLine y={90} label={{position: 'top', value: 'Целевой показатель (90%)', fill: 'red', fontSize: 14}} stroke="red" strokeDasharray="3 3" isFront={true}/>
-            <Bar dataKey="value" fill={MATERIAL_COLORS[0]} isAnimationActive={false} label={CustomBarLabel}>
+            {/*            <Bar dataKey="value1" fill={MATERIAL_COLORS[0]} isAnimationActive={false} label={CustomBarLabel}>
                 {
 
                     data.map((entry, index) => {
+                        console.log(entry);
                         let i;
-                        if (data[index] && data[index].value < 90) {
+                        if (entry && entry.value1 < 90) {
                             i = 13;
                         } else {
                             i = 7;
                         }
-                        return (<Cell key={`cell-stability-indicator-1-${index}`} fill={MATERIAL_COLORS[i]}/>)
+                        return (<Cell key={`cell-stability-indicator-1-v1-${index}`} fill={MATERIAL_COLORS[i]}/>)
+                    })
+                }
+            </Bar>*/}
+            <Bar dataKey="value2" fill={MATERIAL_COLORS[0]} isAnimationActive={false} label={CustomBarLabel}>
+                {
+
+                    data.map((entry, index) => {
+                        let i;
+                        if (entry && entry.value2 < 90) {
+                            i = 13;
+                        } else {
+                            i = 7;
+                        }
+                        console.log('i = ' + i)
+                        return (<Cell key={`cell-stability-indicator-1_v2-${index}`} fill={MATERIAL_COLORS[i]}/>)
                     })
                 }
             </Bar>
